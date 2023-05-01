@@ -1,0 +1,54 @@
+.signupContainer {
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.signupContainer .signup {
+  width: 100%;
+  max-width: 900px;
+  padding: 45px;
+  background: #fff;
+  margin: 0 auto;
+  height: max-content;
+  margin-top: 60px;
+  border-radius: 10px;
+}
+
+.signup .signupTitle {
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #202020;
+}
+
+.signup .signupSubtitle {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #202020;
+}
+
+.signup .primButton {
+  min-width: 180px;
+  margin: 0 auto;
+}
+
+.signup .signupLogo {
+  width: auto;
+  height: 60px;
+  object-fit: contain;
+  margin: 15px auto 30px;
+  display: block;
+}
+
+.signupContainer .loginHelper {
+  font-size: 16px;
+  color: #646464;
+  margin: 20px auto 60px;
+  text-align: center;
+}
