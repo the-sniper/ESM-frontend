@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
@@ -11,15 +11,13 @@ const Signup = () => {
   const authContext = useContext(AuthContext);
   const { register, responseStatus, clearResponse } = authContext;
 
-  const location = useLocation();
-
   const validationArray = Yup.object({
     name: Yup.string().required("This field is required!"),
     serviceNumber: Yup.string().required("This field is required!"),
     email: Yup.string()
       .email("Invalid email format")
       .required("This field is required!"),
-    phone: Yup.string().required("This field is required!"),
+    mobile: Yup.string().required("This field is required!"),
     password: Yup.string()
       .min(8, "Minimum 8 characters")
       .required("This field is required!"),
@@ -34,7 +32,7 @@ const Signup = () => {
       name: "",
       serviceNumber: "",
       email: "",
-      phone: "",
+      mobile: "",
       password: "",
       confirmPassword: "",
       regType: "",
@@ -74,7 +72,7 @@ const Signup = () => {
     },
     {
       label: "Phone number",
-      name: "phone",
+      name: "mobile",
       type: "text",
       placeholder: "Enter your phone number",
       class: "col-sm-6 col-12",

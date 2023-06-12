@@ -28,7 +28,7 @@ function CustomInput({ id, variant, label, className, ...props }) {
         disabled={props.disabled}
         placeholder={props.placeholder}
         error={props.error}
-        helperText={props.helperText}
+        helpertext={props.helpertext}
       />
     </div>
   );

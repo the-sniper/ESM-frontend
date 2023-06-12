@@ -40,7 +40,7 @@ const errorCheck = (data, formik) => {
     : formik.touched[data.name] && formik.errors[data.name];
 };
 
-const helperText = (data, formik) => {
+const helpertext = (data, formik) => {
   return data.filter &&
     formik &&
     formik.touched &&
@@ -80,7 +80,7 @@ export const mapData = (page, props) => {
               type={data.type}
               options={data.options}
               error={errorCheck(data, formik)}
-              helperText={helperText(data, formik)}
+              helpertext={helpertext(data, formik)}
             ></CustomSelect>
           </>
         ) : data.type === "check" ? (
@@ -152,7 +152,7 @@ export const mapData = (page, props) => {
               //   "aria-label": "change date",
               // }}
               // error={formik.touched[data.name] && formik.errors[data.name]}
-              // helperText={
+              // helpertext={
               //   formik.errors[data.name] &&
               //   formik.touched[data.name] &&
               //   formik.errors[data.name]
@@ -187,7 +187,7 @@ export const mapData = (page, props) => {
               placeholder={data.placeholder}
               type={data.type}
               error={formik.touched[data.name] && formik.errors[data.name]}
-              helperText={
+              helpertext={
                 formik.errors[data.name] &&
                 formik.touched[data.name] &&
                 formik.errors[data.name]
@@ -206,7 +206,7 @@ export const mapData = (page, props) => {
               }}
               name={data.name}
               error={formik.touched[data.name] && formik.errors[data.name]}
-              helperText={
+              helpertext={
                 formik.errors[data.name] &&
                 formik.touched[data.name] &&
                 formik.errors[data.name]
@@ -233,14 +233,14 @@ export const mapData = (page, props) => {
           <>
             <CustomRadio
               error={formik.touched[data.name] && formik.errors[data.name]}
-              helperText={
+              helpertext={
                 formik.errors[data.name] &&
                 formik.touched[data.name] &&
                 formik.errors[data.name]
               }
-              title={data.title}
+              label={data.label}
               name={data.name}
-              items={data.item}
+              options={data.options}
               value={formik.values[data.name]}
               onChange={formik.handleChange}
               int={data.int}
@@ -278,7 +278,7 @@ export const mapData = (page, props) => {
               startAdornment={data.startAdornment}
               endAdornment={data.endAdornment}
               error={errorCheck(data, formik)}
-              helperText={helperText(data, formik)}
+              helpertext={helpertext(data, formik)}
               inputStyle={data.inputStyle}
             />
           </>

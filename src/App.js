@@ -10,6 +10,7 @@ import AuthState from "./context/auth/authState";
 import AlertState from "./context/alert/alertState";
 import { SnackbarProvider } from "notistack";
 import Alerts from "./utils/alert";
+import EsmRegState from "./context/EsmRegistration/esmRegState";
 
 function App() {
   global.site_url = process.env.REACT_APP_DOMAIN;
@@ -17,16 +18,18 @@ function App() {
   return (
     <>
       <AuthState>
-        <AlertState>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <SnackbarProvider maxSnack={3}>
-              <div className="App">
-                <Alerts />
-                <RoutesRoot />
-              </div>
-            </SnackbarProvider>
-          </LocalizationProvider>
-        </AlertState>
+        <EsmRegState>
+          <AlertState>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <SnackbarProvider maxSnack={3}>
+                <div className="App">
+                  <Alerts />
+                  <RoutesRoot />
+                </div>
+              </SnackbarProvider>
+            </LocalizationProvider>
+          </AlertState>
+        </EsmRegState>
       </AuthState>
     </>
   );

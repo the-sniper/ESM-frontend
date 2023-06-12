@@ -21,7 +21,7 @@ function CustomSelect({ id, value, label, className, options, ...props }) {
           autoFocus={props.autoFocus}
           onChange={props.onChange || props.onChange}
           error={props.error}
-          helperText={props.helperText}
+          helpertext={props.helpertext}
         >
           {options &&
             options.map((data, index) => (

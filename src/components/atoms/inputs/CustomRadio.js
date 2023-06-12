@@ -8,24 +8,26 @@ import { v4 as uuidv4 } from "uuid";
 
 function CustomRadio({ label, options }) {
   return (
-    <FormControl>
-      <FormLabel id="radio-label">{label}</FormLabel>
-      <RadioGroup
-        aria-labelledby="radio-label"
-        defaultValue="female"
-        name="radio-buttons-group"
-      >
-        {options &&
-          options.map((data, index) => (
-            <FormControlLabel
-              value={data.value}
-              key={uuidv4()}
-              control={<Radio />}
-              label={data.show}
-            />
-          ))}
-      </RadioGroup>
-    </FormControl>
+    <div className="customRadio">
+      <FormControl>
+        <FormLabel id="radio-label">{label}</FormLabel>
+        <RadioGroup
+          aria-labelledby="radio-label"
+          defaultValue="female"
+          name="radio-buttons-group"
+        >
+          {options &&
+            options.map((data, index) => (
+              <FormControlLabel
+                value={data.value}
+                key={uuidv4()}
+                control={<Radio />}
+                label={data.show}
+              />
+            ))}
+        </RadioGroup>
+      </FormControl>
+    </div>
   );
 }
 

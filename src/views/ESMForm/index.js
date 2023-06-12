@@ -6,17 +6,23 @@ import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import "./ESMForm.css";
-import Step1 from "./Step1";
+import ServiceDetails from "./ServiceDetails";
+import PersonalDetails from "./PersonalDetails";
+import PensionDetails from "./PensionDetails";
+import EmploymentDetails from "./EmploymentDetails";
+import FamilyMemberDetails from "./FamilyMemberDetails";
+import SpouseDetails from "./SpouseDetails";
+import DependentDetails from "./DependentDetails";
+import ContactDetails from "./ContactDetails";
 
 const steps = [
-  "Step 1",
-  "Step 2",
-  "Step 3",
-  "Step 4",
-  "Step 5",
-  "Step 6",
-  "Step 7",
-  "Step 8",
+  "Service Details",
+  "Personal Details",
+  "Pension Details",
+  "Employment Details",
+  "Spouse Details",
+  "Dependent Details",
+  "Contact Details",
 ];
 
 function ESMForm() {
@@ -94,7 +100,23 @@ function ESMForm() {
         ) : (
           <React.Fragment>
             <div className="stepperBody">
-              {activeStep === 0 ? <Step1 /> : "none"}
+              {activeStep === 0 ? (
+                <ServiceDetails />
+              ) : activeStep === 1 ? (
+                <PersonalDetails />
+              ) : activeStep === 2 ? (
+                <PensionDetails />
+              ) : activeStep === 3 ? (
+                <EmploymentDetails />
+              ) : activeStep === 4 ? (
+                <SpouseDetails />
+              ) : activeStep === 5 ? (
+                <DependentDetails />
+              ) : activeStep === 6 ? (
+                <ContactDetails />
+              ) : (
+                "none"
+              )}
             </div>
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
               <Button

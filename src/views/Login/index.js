@@ -13,9 +13,10 @@ const Login = () => {
   const alertContext = useContext(AlertContext);
 
   const location = useLocation();
-  const { login, responseStatus, clearResponse, isAuthenticated } = authContext;
+  const { user, login, responseStatus, clearResponse, isAuthenticated } =
+    authContext;
   const { setAlert } = alertContext;
-
+  console.log(user, "UserLog");
   let [passwordShown, setPasswordShown] = useState(false);
 
   const togglePasswordVisiblity = () => {
@@ -23,15 +24,13 @@ const Login = () => {
   };
 
   const validationArray = Yup.object({
-    serviceNumber: Yup.string().required("This field is required!"),
+    username: Yup.string().required("This field is required!"),
     password: Yup.string().required("This field is required!"),
   });
 
   const formik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.serviceNumber
-        ? localStorage.serviceNumber
-        : "",
+      username: localStorage.serviceNumber ? localStorage.serviceNumber : "",
       password: localStorage.password ? localStorage.password : "",
       regType: "ESM",
       remember_me: localStorage.remember_me ? localStorage.remember_me : false,
@@ -39,11 +38,11 @@ const Login = () => {
     validationSchema: validationArray,
     onSubmit: (values) => {
       if (values.remember_me) {
-        localStorage.serviceNumber = values.serviceNumber;
+        localStorage.username = values.serviceNumber;
         localStorage.password = values.password;
         localStorage.remember_me = values.remember_me;
       } else {
-        delete localStorage.serviceNumber;
+        delete localStorage.username;
         delete localStorage.password;
         delete localStorage.remember_me;
       }
@@ -64,10 +63,10 @@ const Login = () => {
 
   const loginInfo = [
     {
-      label: "Service Number",
-      name: "serviceNumber",
+      label: "Username",
+      name: "username",
       type: "text",
-      placeholder: "Enter your service number",
+      placeholder: "Enter your username",
       class: "col-12",
       autoFocus: true,
       formik: formik,

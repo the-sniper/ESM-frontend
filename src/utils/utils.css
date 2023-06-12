@@ -77,6 +77,27 @@
   width: 100% !important;
 }
 
+.customRadio {
+  margin: 10px 0;
+}
+
+.customRadio .MuiFormControl-root {
+  flex-direction: row;
+  align-items: center;
+}
+
+.customRadio .MuiFormLabel-root {
+  margin: 0 10px 0 0;
+}
+
+.customRadio .MuiFormGroup-root {
+  flex-direction: row;
+}
+
+.customRadio .MuiFormGroup-root label {
+  margin: 0 10px 0 0;
+}
+
 @media (max-width: 500px) {
   .primButton.small.MuiButton-root,
   .secButton.small.MuiButton-root,
