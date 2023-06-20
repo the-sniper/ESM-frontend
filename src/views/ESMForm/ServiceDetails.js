@@ -11,26 +11,26 @@ function ServiceDetails() {
   const { registerESM, responseStatus, clearResponse } = esmRegContext;
 
   const validationArray = Yup.object({
-    serviceName: Yup.string(),
-    serviceName: Yup.string(),
-    corpsName: Yup.string(),
-    recordOfficeName: Yup.string(),
-    groupName: Yup.string(),
-    tradeName: Yup.string(),
-    rankName: Yup.string(),
-    rankCategory: Yup.string(),
-    name: Yup.string(),
-    gender: Yup.string(),
-    dob: Yup.string(),
-    enrollDate: Yup.string(),
+    serviceName: Yup.string().required("This field is required!"),
+    serviceName: Yup.string().required("This field is required!"),
+    corpsName: Yup.string().required("This field is required!"),
+    recordOfficeName: Yup.string().required("This field is required!"),
+    groupName: Yup.string().required("This field is required!"),
+    tradeName: Yup.string().required("This field is required!"),
+    rankName: Yup.string().required("This field is required!"),
+    rankCategory: Yup.string().required("This field is required!"),
+    name: Yup.string().required("This field is required!"),
+    gender: Yup.string().required("This field is required!"),
+    dob: Yup.string().required("This field is required!"),
+    enrollDate: Yup.string().required("This field is required!"),
     worldWar2: Yup.boolean(),
-    optAttend: Yup.string(),
-    decoration: Yup.string(),
+    optAttend: Yup.string().required("This field is required!"),
+    decoration: Yup.string().required("This field is required!"),
   });
 
   const formik = useFormik({
     initialValues: {
-      serviceNumber: "102030",
+      serviceNumber: localStorage.username,
       serviceName: "",
       corpsName: "",
       recordOfficeName: "",

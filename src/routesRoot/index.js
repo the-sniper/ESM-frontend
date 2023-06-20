@@ -4,6 +4,7 @@ import ESMForm from "../views/ESMForm";
 import Login from "../views/Login";
 import Signup from "../views/Signup";
 import PrivateRoute from "./privateRoute";
+import Dashboard from "../views/Dashboard";
 
 function RoutesRoot() {
   return (
@@ -16,6 +17,14 @@ function RoutesRoot() {
           element={
             <PrivateRoute>
               <ESMForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
             </PrivateRoute>
           }
         />

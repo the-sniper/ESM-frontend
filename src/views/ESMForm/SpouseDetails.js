@@ -46,7 +46,7 @@ function SpouseDetails() {
 
   const formik = useFormik({
     initialValues: {
-      serviceNumber: "102030",
+      serviceNumber: localStorage.username,
       maritalStatus: "",
       marriageDate: "",
       spouseName: "",

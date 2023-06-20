@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { LOGO, SITE_NAME, mapData } from "../../utils";
+import { LOGO, SITE_NAME, handleRedirectInternal, mapData } from "../../utils";
 import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
 import "./login.css";
@@ -17,6 +17,8 @@ const Login = () => {
     authContext;
   const { setAlert } = alertContext;
   console.log(user, "UserLog");
+
+  const navigate = useNavigate();
   let [passwordShown, setPasswordShown] = useState(false);
 
   const togglePasswordVisiblity = () => {
@@ -30,7 +32,7 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      username: localStorage.serviceNumber ? localStorage.serviceNumber : "",
+      username: localStorage.username ? localStorage.username : "",
       password: localStorage.password ? localStorage.password : "",
       regType: "ESM",
       remember_me: localStorage.remember_me ? localStorage.remember_me : false,
@@ -108,6 +110,7 @@ const Login = () => {
         if (responseStatus.status === "success") {
           console.log("Login successful!");
           setAlert("Logged in successfully", "success");
+          navigate("/dashboard");
           clearResponse();
         } else if (responseStatus.status === "error") {
           setAlert(responseStatus.message, "error");

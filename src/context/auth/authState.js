@@ -40,7 +40,7 @@ const AuthState = (props) => {
         } else {
           localStorage.setItem("token", res.data.data.token);
         }
-        // loadUser();
+        loadUser();
       }
     } catch (err) {
       resp.commonErrorResponse("register");
@@ -65,15 +65,17 @@ const AuthState = (props) => {
       const [res] = await Promise.all([
         apiCall("post", "login", formData, "", ""),
       ]);
-      console.log(res, "checkResLogin");
+      console.log(res, formData, "checkResLogin");
       resp.commonResponse(res, "login");
       if (res && res.status === 200) {
         if (global.session) {
           sessionStorage.setItem("token", res.data.token);
+          sessionStorage.setItem("username", formData.username);
         } else {
           localStorage.setItem("token", res.data.token);
+          localStorage.setItem("username", formData.username);
         }
-        // loadUser();
+        loadUser();
       }
     } catch (err) {
       resp.commonErrorResponse("login");
@@ -81,38 +83,46 @@ const AuthState = (props) => {
   };
 
   // Load User
-  // const loadUser = async () => {
-  //   if (localStorage.token) {
-  //     setAuthToken(localStorage.token);
-  //   } else if (sessionStorage.token) {
-  //     setAuthToken(sessionStorage.token);
-  //   }
-
-  //   const [res] = await Promise.all([
-  //     apiCall("post", "getUserDetails", {}, "", "user"),
-  //   ]);
-  //   console.log(res, "resAfterLogin");
-  //   if (res.data.status === "success") {
-  //     await dispatch({
-  //       type: USER_LOADED,
-  //       payload: {
-  //         data: res.data,
-  //       },
-  //     });
-  //   } else if (res.data.status === 400) {
-  //     await dispatch({
-  //       type: LOGOUT,
-  //     });
-  //   } else {
-  //     await dispatch({
-  //       type: LOGOUT,
-  //     });
-  //   }
-  //   await dispatch({
-  //     type: CALL_END,
-  //     payload: res.data,
-  //   });
-  // };
+  const loadUser = async () => {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token);
+    } else if (sessionStorage.token) {
+      setAuthToken(sessionStorage.token);
+    }
+    console.log(localStorage.username, "localStorage.username");
+    const [res] = await Promise.all([
+      apiCall(
+        "post",
+        "getUserDetails",
+        {
+          serviceNumber: localStorage.username,
+        },
+        "",
+        ""
+      ),
+    ]);
+    console.log(res, "resAfterLogin");
+    if (res && res.status === 200) {
+      await dispatch({
+        type: USER_LOADED,
+        payload: {
+          data: res && res.data,
+        },
+      });
+    } else if (res.data.status === 400) {
+      await dispatch({
+        type: LOGOUT,
+      });
+    } else {
+      await dispatch({
+        type: LOGOUT,
+      });
+    }
+    await dispatch({
+      type: CALL_END,
+      payload: res.data,
+    });
+  };
 
   // Load Count
   const loadPendingCount = async (formData, data) => {
@@ -141,6 +151,8 @@ const AuthState = (props) => {
       type: CLEAR_RESPONSE,
     });
 
+  console.log(state, "checkState");
+
   return (
     <AuthContext.Provider
       value={{
@@ -156,7 +168,7 @@ const AuthState = (props) => {
         checkValidation,
         login,
         logout,
-        // loadUser,
+        loadUser,
         loadPendingCount,
         clearResponse,
       }}
