@@ -5,13 +5,12 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 
-function ServiceDetails() {
+function ServiceDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
 
   const { registerESM, responseStatus, clearResponse } = esmRegContext;
 
   const validationArray = Yup.object({
-    serviceName: Yup.string().required("This field is required!"),
     serviceName: Yup.string().required("This field is required!"),
     corpsName: Yup.string().required("This field is required!"),
     recordOfficeName: Yup.string().required("This field is required!"),
@@ -27,6 +26,12 @@ function ServiceDetails() {
     optAttend: Yup.string().required("This field is required!"),
     decoration: Yup.string().required("This field is required!"),
   });
+
+  const handleSubmit = () => {
+    registerESM("serviceDetails", formik.values);
+    props.handleComplete();
+    console.log(formik.values, "ESMValues");
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -48,8 +53,8 @@ function ServiceDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("serviceDetails", values);
-      console.log(values, "ESMValues");
+      // registerESM("serviceDetails", values);
+      // handleSubmit();
     },
   });
 
@@ -232,12 +237,12 @@ function ServiceDetails() {
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={() => handleSubmit()}>
         <div className="row">{Object.values(mapData(formValues))}</div>
         <CustomButton
           label="Save"
           type="submit"
-          onClick={formik.handleSubmit}
+          onClick={() => handleSubmit()}
           buttonType="primary"
         />
       </form>

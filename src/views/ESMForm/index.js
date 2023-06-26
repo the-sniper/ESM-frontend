@@ -67,7 +67,13 @@ function ESMForm() {
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
-    handleNext();
+    const newActiveStep =
+      isLastStep() && !allStepsCompleted()
+        ? // It's the last step, but not all steps have been completed,
+          // find the first step that has been completed
+          steps.findIndex((step, i) => !(i in completed))
+        : activeStep + 1;
+    setActiveStep(newActiveStep);
   };
 
   const handleReset = () => {
@@ -101,19 +107,19 @@ function ESMForm() {
           <React.Fragment>
             <div className="stepperBody">
               {activeStep === 0 ? (
-                <ServiceDetails />
+                <ServiceDetails handleComplete={handleComplete} />
               ) : activeStep === 1 ? (
-                <PersonalDetails />
+                <PersonalDetails handleComplete={handleComplete} />
               ) : activeStep === 2 ? (
-                <PensionDetails />
+                <PensionDetails handleComplete={handleComplete} />
               ) : activeStep === 3 ? (
-                <EmploymentDetails />
+                <EmploymentDetails handleComplete={handleComplete} />
               ) : activeStep === 4 ? (
-                <SpouseDetails />
+                <SpouseDetails handleComplete={handleComplete} />
               ) : activeStep === 5 ? (
-                <DependentDetails />
+                <DependentDetails handleComplete={handleComplete} />
               ) : activeStep === 6 ? (
-                <ContactDetails />
+                <ContactDetails handleComplete={handleComplete} />
               ) : (
                 "none"
               )}

@@ -110,8 +110,8 @@ const Login = () => {
         if (responseStatus.status === "success") {
           console.log("Login successful!");
           setAlert("Logged in successfully", "success");
-          navigate("/dashboard");
           clearResponse();
+          navigate("/dashboard");
         } else if (responseStatus.status === "error") {
           setAlert(responseStatus.message, "error");
           clearResponse();

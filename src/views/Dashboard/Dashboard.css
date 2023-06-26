@@ -1,0 +1,46 @@
+.dashboard {
+  background: #f2f2f2;
+  min-height: calc(100vh - 80px);
+}
+.dashboard .welcomeText {
+  font-size: 24px;
+  padding: 30px 0 10px;
+  font-weight: 600;
+  color: #333;
+}
+
+.dashboard .dashBox {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 25px;
+}
+
+.dashboard .dashInfo {
+  background: #fff;
+  padding: 30px;
+  width: 100%;
+  border-radius: 15px;
+}
+
+.dashboard .dashInfo h4 {
+  font-size: 18px;
+  color: #7e7e7e;
+}
+
+.dashboard .dashInfo h4:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.dashboard .dashInfo h4 span {
+  color: #333;
+  padding-left: 5px;
+}
+
+.dashboard .dashFormStatus,
+.dashboard .dashDocStatus {
+  background: #fff;
+  width: 100%;
+  padding: 30px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+}

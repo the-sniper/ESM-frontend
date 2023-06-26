@@ -90,38 +90,40 @@ const AuthState = (props) => {
       setAuthToken(sessionStorage.token);
     }
     console.log(localStorage.username, "localStorage.username");
-    const [res] = await Promise.all([
-      apiCall(
-        "post",
-        "getUserDetails",
-        {
-          serviceNumber: localStorage.username,
-        },
-        "",
-        ""
-      ),
-    ]);
-    console.log(res, "resAfterLogin");
-    if (res && res.status === 200) {
+    if (localStorage.username) {
+      const [res] = await Promise.all([
+        apiCall(
+          "post",
+          "getUserDetails",
+          {
+            serviceNumber: localStorage.username,
+          },
+          "",
+          ""
+        ),
+      ]);
+      console.log(res, "resAfterLogin");
+      if (res && res.status === 200) {
+        await dispatch({
+          type: USER_LOADED,
+          payload: {
+            data: res && res.data,
+          },
+        });
+      } else if (res.data.status === 400) {
+        await dispatch({
+          type: LOGOUT,
+        });
+      } else {
+        await dispatch({
+          type: LOGOUT,
+        });
+      }
       await dispatch({
-        type: USER_LOADED,
-        payload: {
-          data: res && res.data,
-        },
-      });
-    } else if (res.data.status === 400) {
-      await dispatch({
-        type: LOGOUT,
-      });
-    } else {
-      await dispatch({
-        type: LOGOUT,
+        type: CALL_END,
+        payload: res.data,
       });
     }
-    await dispatch({
-      type: CALL_END,
-      payload: res.data,
-    });
   };
 
   // Load Count

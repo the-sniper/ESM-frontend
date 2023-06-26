@@ -7,6 +7,16 @@
   --backgroundColor: rgb(241, 243, 246);
 }
 
+a,
+button {
+  font-family: var(--fontFamily) !important;
+  letter-spacing: initial !important;
+}
+
+button:focus {
+  outline: 0 !important;
+}
+
 .primButton.MuiButton-root {
   color: #fff;
   border-radius: 3px;
