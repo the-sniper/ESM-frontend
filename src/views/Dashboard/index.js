@@ -67,13 +67,11 @@ const Dashboard = () => {
                   label="Complete ESM Profile"
                   onClick={() => navigate("/esm")}
                   buttonType="primary"
-                />  
+                />
               </div>
               <div className="dashDocStatus">
                 <h6>Document Upload Progress</h6>
-                <LinearProgressWithLabel
-                  value={(user.formProgressCount / 7) * 100}
-                />
+                <LinearProgressWithLabel value={0} />
                 <CustomButton
                   label="Submit Documents"
                   //   onClick={() => navigate("/esm")}
