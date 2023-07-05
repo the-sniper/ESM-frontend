@@ -1,16 +1,17 @@
 import React, { useContext } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Route, Navigate, useLocation } from "react-router-dom";
 import AuthContext from "../context/auth/authContext";
 
 function PrivateRoute({ children }) {
   const authContext = useContext(AuthContext);
   const { token } = authContext;
   let location = useLocation();
+  console.log(token, "checktoken");
 
-  return token ? (
+  return localStorage.token ? (
     children
   ) : (
-    <Navigate to="/" replace state={{ from: location }} />
+    <Navigate to="/a" replace state={{ from: location }} />
   );
 }
 

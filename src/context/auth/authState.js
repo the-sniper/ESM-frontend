@@ -89,12 +89,12 @@ const AuthState = (props) => {
     } else if (sessionStorage.token) {
       setAuthToken(sessionStorage.token);
     }
-    console.log(localStorage.username, "localStorage.username");
+    console.log(localStorage, "localStorage.username");
     if (localStorage.username) {
       const [res] = await Promise.all([
         apiCall(
           "post",
-          "getUserDetails",
+          "GetUserDetails",
           {
             serviceNumber: localStorage.username,
           },
@@ -110,7 +110,7 @@ const AuthState = (props) => {
             data: res && res.data,
           },
         });
-      } else if (res.data.status === 400) {
+      } else if (res.status === 400) {
         await dispatch({
           type: LOGOUT,
         });

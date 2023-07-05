@@ -33,34 +33,34 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       {console.log(user, isAuthenticated, "checkUser 1112")}
-      {user && user.name != undefined ? (
+      {user && user.data && user.data.name != undefined ? (
         <div className="customContainer">
           <h2 className="welcomeText">
-            Good Morning {user.name.split(" ")[0] + ","}
+            Good Morning {user.data.name.split(" ")[0] + ","}
           </h2>
           <div className="dashBox">
             <div className="dashInfo">
               <h4>
-                Name: <span>{user.name}</span>
+                Name: <span>{user.data.name}</span>
               </h4>
               <h4>
-                Service number: <span>{user.serviceNumber}</span>
+                Service number: <span>{user.data.serviceNumber}</span>
               </h4>
               <h4>
-                Email address: <span>{user.email}</span>
+                Email address: <span>{user.data.email}</span>
               </h4>
               <h4>
-                Mobile number: <span>{user.mobile}</span>
+                Mobile number: <span>{user.data.mobile}</span>
               </h4>
               <h4>
-                Type: <span>{user.regType}</span>
+                Type: <span>{user.data.regType}</span>
               </h4>
             </div>
             <div className="dashStatus">
               <div className="dashFormStatus">
                 <h6>Form Completion Progress</h6>
                 <LinearProgressWithLabel
-                  value={(user.formProgressCount / 7) * 100}
+                  value={(user.data.formProgressCount / 7) * 100}
                 />
 
                 <CustomButton
