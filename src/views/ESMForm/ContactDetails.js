@@ -65,7 +65,7 @@ function ContactDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("contactDetails", values);
+      registerESM("ContactDetails", values);
       console.log(values, "ESMValues");
     },
   });

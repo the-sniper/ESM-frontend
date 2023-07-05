@@ -58,7 +58,7 @@ function PensionDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("pensionDetails", values);
+      registerESM("PensionDetails", values);
       console.log(values, "ESMValues");
     },
   });

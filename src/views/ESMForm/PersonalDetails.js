@@ -48,7 +48,7 @@ function PersonalDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("personalDetails", values);
+      registerESM("PersonalDetails", values);
       console.log(values, "ESMValues");
     },
   });

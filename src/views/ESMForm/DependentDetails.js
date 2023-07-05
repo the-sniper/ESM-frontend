@@ -42,7 +42,7 @@ function DependentDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("dependentDetails", values);
+      registerESM("DependentDetails", values);
       console.log(values, "ESMValues");
     },
   });

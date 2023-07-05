@@ -74,7 +74,7 @@ function SpouseDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("spouseDetails", values);
+      registerESM("SpouseDetails", values);
       console.log(values, "ESMValues");
     },
   });

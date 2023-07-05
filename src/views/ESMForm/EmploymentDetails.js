@@ -46,7 +46,7 @@ function EmploymentDetails() {
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      registerESM("employmentDetails", values);
+      registerESM("EmploymentDetails", values);
       console.log(values, "ESMValues");
     },
   });

@@ -28,7 +28,7 @@ function ServiceDetails(props) {
   });
 
   const handleSubmit = () => {
-    registerESM("serviceDetails", formik.values);
+    registerESM("ServiceDetails", formik.values);
     props.handleComplete();
     console.log(formik.values, "ESMValues");
   };

@@ -31,7 +31,7 @@ const AuthState = (props) => {
   const register = async (formData) => {
     try {
       const [res] = await Promise.all([
-        apiCall("post", "registerUser", formData, "", ""),
+        apiCall("post", "RegisterUser", formData, "", ""),
       ]);
       resp.commonResponse(res.data, "register");
       if (global.registerToken) {
