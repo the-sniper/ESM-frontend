@@ -8,6 +8,7 @@ function CustomButton({
   label,
   className,
   buttonType,
+  disabled,
 }) {
   const buttonTypeClass =
     buttonType === "tertiary"
@@ -17,6 +18,7 @@ function CustomButton({
       : "primButton";
   return (
     <Button
+      disabled={disabled}
       className={className + " " + buttonTypeClass}
       variant={variant || "contained"}
       onClick={onClick}

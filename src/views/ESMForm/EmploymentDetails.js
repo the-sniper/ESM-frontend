@@ -4,13 +4,19 @@ import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
+import AlertContext from "../../context/alert/alertContext";
 
-function EmploymentDetails() {
+function EmploymentDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
+  const alertContext = useContext(AlertContext);
 
-  const { registerESM, responseStatus, clearResponse } = esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+    esmRegContext;
 
-  const validationArray = Yup.object({
+  const [reload, setReload] = useState(false);
+  const { setAlert } = alertContext;
+
+  const employmentValidationArray = Yup.object({
     serviceName: Yup.string(),
     civilQualification: Yup.string().required("This is a required field."),
     additionalCourse: Yup.string().required("This is a required field."),
@@ -27,9 +33,8 @@ function EmploymentDetails() {
     civilPpoNumber: Yup.string().required("This is a required field."),
   });
 
-  const formik = useFormik({
+  const employmentFormik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
       civilQualification: "",
       additionalCourse: "",
       equivalentTest: "",
@@ -44,12 +49,37 @@ function EmploymentDetails() {
       retirementDate: "",
       civilPpoNumber: "",
     },
-    validationSchema: validationArray,
+    validationSchema: employmentValidationArray,
     onSubmit: (values) => {
-      registerESM("EmploymentDetails", values);
-      console.log(values, "ESMValues");
+      handleSubmit();
     },
   });
+
+  useEffect(() => {
+    getESM("GetEmploymentDetails");
+  }, []);
+
+  useEffect(() => {
+    if (fetchESM) {
+      employmentFormik.values.civilQualification = fetchESM.civilQualification;
+      employmentFormik.values.additionalCourse = fetchESM.additionalCourse;
+      employmentFormik.values.equivalentTest = fetchESM.equivalentTest;
+      employmentFormik.values.civilEmployment = fetchESM.civilEmployment;
+      employmentFormik.values.presentDesignation = fetchESM.presentDesignation;
+      employmentFormik.values.department = fetchESM.department;
+      employmentFormik.values.sector = fetchESM.sector;
+      employmentFormik.values.employer = fetchESM.employer;
+      employmentFormik.values.monthlyIncome = fetchESM.monthlyIncome;
+      employmentFormik.values.officialContactNumber =
+        fetchESM.officialContactNumber;
+      employmentFormik.values.designationOnRetirement =
+        fetchESM.designationOnRetirement;
+      employmentFormik.values.retirementDate = fetchESM.retirementDate;
+      employmentFormik.values.civilPpoNumber = fetchESM.civilPpoNumber;
+
+      setReload(!reload);
+    }
+  }, [fetchESM]);
 
   const formValues = [
     {
@@ -58,15 +88,15 @@ function EmploymentDetails() {
       name: "civilQualification",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Additional courses",
       placeholder: "Enter any additional courses taken",
       name: "additionalCourse",
-      type: "date",
+      type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
 
     {
@@ -84,14 +114,14 @@ function EmploymentDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Civil employment",
       name: "civilEmployment",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Present designation",
@@ -99,7 +129,7 @@ function EmploymentDetails() {
       name: "presentDesignation",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Department",
@@ -107,7 +137,7 @@ function EmploymentDetails() {
       name: "department",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Sector",
@@ -115,7 +145,7 @@ function EmploymentDetails() {
       name: "sector",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Employer's name",
@@ -123,7 +153,7 @@ function EmploymentDetails() {
       name: "employer",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Monthly income",
@@ -131,7 +161,7 @@ function EmploymentDetails() {
       name: "monthlyIncome",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Official contact number",
@@ -139,7 +169,7 @@ function EmploymentDetails() {
       name: "officialContactNumber",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Designation on retirement",
@@ -147,7 +177,7 @@ function EmploymentDetails() {
       name: "designationOnRetirement",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Date of retirement",
@@ -155,40 +185,63 @@ function EmploymentDetails() {
       name: "retirementDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
     {
       label: "Civil PPO number",
       placeholder: "Enter your civil PPO number",
       name: "civilPpoNumber",
-      type: "date",
+      type: "text",
       class: "col-6",
-      formik: formik,
+      formik: employmentFormik,
     },
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (Object.keys(employmentFormik.errors).length > 0) {
+      setAlert("Please fill out all the mandatory fields!", "error");
+    } else {
+      registerESM("EmploymentDetails", employmentFormik.values);
+      props.handleComplete();
+    }
+  };
 
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
           clearResponse();
-          console.log("ESM Registration Success!");
         }
+        // else if (responseStatus.status === "error") {
+        //   setAlert(responseStatus.message, "error");
+        //   clearResponse();
+        // }
       }
     }
   }, [responseStatus]);
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
-        <CustomButton
-          label="Save"
-          type="submit"
-          onClick={formik.handleSubmit}
-          buttonType="primary"
-        />
+        <div className="esmAction">
+          <CustomButton
+            label="Previous"
+            className="esmSubmitBtn"
+            disabled={false}
+            onClick={() => props.handlePrevious()}
+            buttonType="secondary"
+          />
+          <CustomButton
+            label="Next"
+            className="esmSubmitBtn"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            buttonType="primary"
+          />
+        </div>
       </form>
     </div>
   );

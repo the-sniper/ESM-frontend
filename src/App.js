@@ -12,9 +12,10 @@ import { SnackbarProvider } from "notistack";
 import Alerts from "./utils/alert";
 import EsmRegState from "./context/EsmRegistration/esmRegState";
 
-function App() {
-  global.site_url = process.env.REACT_APP_DOMAIN;
+global.site_url = process.env.REACT_APP_DOMAIN;
+// global.registerToken = true;
 
+function App() {
   return (
     <>
       <AuthState>

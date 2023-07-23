@@ -26,6 +26,10 @@ button:focus {
   box-shadow: none;
 }
 
+.primButton.MuiButton-root.Mui-disabled {
+  border-color: currentColor;
+}
+
 .primButton.MuiButton-root:hover {
   background-color: var(--primColor);
   border: 1px solid var(--primColor);
@@ -41,6 +45,10 @@ button:focus {
   border: 1px solid var(--primColor);
   transition: 200ms all ease-in-out;
   box-shadow: none;
+}
+
+.secButton.MuiButton-root.Mui-disabled {
+  border-color: currentColor;
 }
 
 .secButton.MuiButton-root:hover {

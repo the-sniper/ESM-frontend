@@ -107,7 +107,7 @@ const Login = () => {
     if (responseStatus) {
       console.log(responseStatus, "checkresponseStatus");
       if (responseStatus.from === "login") {
-        if (responseStatus.status === "success") {
+        if (responseStatus.status === "SUCCESS") {
           console.log("Login successful!");
           setAlert("Logged in successfully", "success");
           clearResponse();

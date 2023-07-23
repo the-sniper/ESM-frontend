@@ -34,14 +34,7 @@ const AuthState = (props) => {
         apiCall("post", "RegisterUser", formData, "", ""),
       ]);
       resp.commonResponse(res.data, "register");
-      if (global.registerToken) {
-        if (global.session) {
-          sessionStorage.setItem("token", res.data.data.token);
-        } else {
-          localStorage.setItem("token", res.data.data.token);
-        }
-        loadUser();
-      }
+      console.log(res, "checkResData");
     } catch (err) {
       resp.commonErrorResponse("register");
     }
@@ -131,7 +124,7 @@ const AuthState = (props) => {
     const [res] = await Promise.all([
       apiCall("post", "pendingCount", formData, "", "cart"),
     ]);
-    if (res.data.status === "success") {
+    if (res.data.status === "SUCCESS") {
       dispatch({
         type: COUNT_LOADED,
         payload: {

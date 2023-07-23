@@ -18,18 +18,29 @@ export class response {
 
   async commonResponse(data, from) {
     console.log(data, from, this.RESPONSE_STATUS, "checkCommon");
-    if (data && data.status && data.status == 200) {
+    if (data && data.message && data.message == "SUCCESS") {
       this.dispatch({
         type: this.RESPONSE_STATUS,
         payload: {
-          status: "success",
+          status: "SUCCESS",
           message: data.statusText || "Request processed successfully!",
           type: data.data.responseType,
           data: data,
           from: from,
         },
       });
-    } else if (data && data.status && data.status === "error") {
+    } else if (data && data.status && data.status == 200) {
+      this.dispatch({
+        type: this.RESPONSE_STATUS,
+        payload: {
+          status: "SUCCESS",
+          message: data.statusText || "Request processed successfully!",
+          type: data.data.responseType,
+          data: data,
+          from: from,
+        },
+      });
+    } else if (data && data.message && data.message === "ERROR") {
       this.dispatch({
         type: this.RESPONSE_STATUS,
         payload: {

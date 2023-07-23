@@ -154,7 +154,7 @@ function FamilyMemberDetails() {
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
+        if (responseStatus.status === "SUCCESS") {
           // handleRedirectInternal(history, 'login')
           clearResponse();
           console.log("ESM Registration Success!");

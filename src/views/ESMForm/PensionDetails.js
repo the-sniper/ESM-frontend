@@ -4,13 +4,19 @@ import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
+import AlertContext from "../../context/alert/alertContext";
 
-function PensionDetails() {
+function PensionDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
+  const alertContext = useContext(AlertContext);
 
-  const { registerESM, responseStatus, clearResponse } = esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+    esmRegContext;
 
-  const validationArray = Yup.object({
+  const [reload, setReload] = useState(false);
+  const { setAlert } = alertContext;
+
+  const pensionValidationArray = Yup.object({
     serviceName: Yup.string(),
     unitLastServed: Yup.string().required("This is a required field."),
     dischargeDate: Yup.string().required("This is a required field."),
@@ -35,7 +41,7 @@ function PensionDetails() {
     ifsc: Yup.string().required("This is a required field."),
   });
 
-  const formik = useFormik({
+  const pensionformik = useFormik({
     initialValues: {
       serviceNumber: localStorage.username,
       unitLastServed: "",
@@ -56,12 +62,42 @@ function PensionDetails() {
       branch: "",
       ifsc: "",
     },
-    validationSchema: validationArray,
+    validationSchema: pensionValidationArray,
     onSubmit: (values) => {
-      registerESM("PensionDetails", values);
-      console.log(values, "ESMValues");
+      // registerESM("PensionDetails", values);
+      handleSubmit();
     },
   });
+
+  useEffect(() => {
+    getESM("GetPensionDetails");
+  }, []);
+
+  useEffect(() => {
+    if (fetchESM) {
+      pensionformik.values.unitLastServed = fetchESM.fetchESM;
+      pensionformik.values.dischargeDate = fetchESM.dischargeDate;
+      pensionformik.values.dischargeReason = fetchESM.dischargeReason;
+      pensionformik.values.dischargeMedicalCategory =
+        fetchESM.dischargeMedicalCategory;
+      pensionformik.values.dischargeCharacter = fetchESM.dischargeCharacter;
+      pensionformik.values.dischargeBookNumber = fetchESM.dischargeBookNumber;
+      pensionformik.values.isPensioner = fetchESM.isPensioner;
+      pensionformik.values.ppoNumber = fetchESM.ppoNumber;
+      pensionformik.values.pensionSanctioned = fetchESM.pensionSanctioned;
+      pensionformik.values.presentPension = fetchESM.presentPension;
+      pensionformik.values.isSanctionedDisabilityPension =
+        fetchESM.isSanctionedDisabilityPension;
+      pensionformik.values.disabilityPension = fetchESM.disabilityPension;
+      pensionformik.values.disabilityPercentage = fetchESM.disabilityPercentage;
+      pensionformik.values.pensionAccountNumber = fetchESM.pensionAccountNumber;
+      pensionformik.values.bankName = fetchESM.bankName;
+      pensionformik.values.branch = fetchESM.branch;
+      pensionformik.values.ifsc = fetchESM.ifsc;
+
+      setReload(!reload);
+    }
+  }, [fetchESM]);
 
   const formValues = [
     {
@@ -70,7 +106,8 @@ function PensionDetails() {
       name: "unitLastServed",
       type: "text",
       class: "col-6",
-      formik: formik,
+      autoFocus: true,
+      formik: pensionformik,
     },
     {
       label: "Date of discharge",
@@ -78,7 +115,7 @@ function PensionDetails() {
       name: "dischargeDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Reason for discharge",
@@ -86,7 +123,7 @@ function PensionDetails() {
       name: "dischargeReason",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Discharge medical category",
@@ -103,7 +140,7 @@ function PensionDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Discharge character",
@@ -120,7 +157,7 @@ function PensionDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Discharge book number",
@@ -128,7 +165,7 @@ function PensionDetails() {
       name: "dischargeBookNumber",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Is pensioner",
@@ -145,7 +182,7 @@ function PensionDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "PPO number",
@@ -153,7 +190,7 @@ function PensionDetails() {
       name: "ppoNumber",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Pension sanctioned",
@@ -161,7 +198,7 @@ function PensionDetails() {
       name: "pensionSanctioned",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Present pension",
@@ -169,7 +206,7 @@ function PensionDetails() {
       name: "presentPension",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Disability pension sanctioned",
@@ -186,7 +223,7 @@ function PensionDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Disability pension",
@@ -194,7 +231,7 @@ function PensionDetails() {
       name: "disabilityPension",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Disability percentage",
@@ -202,7 +239,7 @@ function PensionDetails() {
       name: "disabilityPercentage",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Pension account number",
@@ -210,7 +247,7 @@ function PensionDetails() {
       name: "pensionAccountNumber",
       type: "number",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Bank name",
@@ -218,7 +255,7 @@ function PensionDetails() {
       name: "bankName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Bank branch",
@@ -226,7 +263,7 @@ function PensionDetails() {
       name: "branch",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
     {
       label: "Bank IFSC",
@@ -234,32 +271,55 @@ function PensionDetails() {
       name: "ifsc",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: pensionformik,
     },
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (Object.keys(pensionformik.errors).length > 0) {
+      setAlert("Please fill out all the mandatory fields!", "error");
+    } else {
+      registerESM("PensionDetails", pensionformik.values);
+      props.handleComplete();
+    }
+  };
 
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
           clearResponse();
-          console.log("ESM Registration Success!");
         }
+        // else if (responseStatus.status === "error") {
+        //   setAlert(responseStatus.message, "error");
+        //   clearResponse();
+        // }
       }
     }
   }, [responseStatus]);
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
-        <CustomButton
-          label="Save"
-          type="submit"
-          onClick={formik.handleSubmit}
-          buttonType="primary"
-        />
+        <div className="esmAction">
+          <CustomButton
+            label="Previous"
+            className="esmSubmitBtn"
+            disabled={false}
+            onClick={() => props.handlePrevious()}
+            buttonType="secondary"
+          />
+          <CustomButton
+            label="Next"
+            className="esmSubmitBtn"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            buttonType="primary"
+          />
+        </div>
       </form>
     </div>
   );

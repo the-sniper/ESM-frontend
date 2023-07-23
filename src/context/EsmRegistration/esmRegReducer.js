@@ -1,7 +1,13 @@
-import { RESPONSE_STATUS, CLEAR_RESPONSE } from "./esmRegTypes";
+import { ESM_FETCH, RESPONSE_STATUS, CLEAR_RESPONSE } from "./esmRegTypes";
 
 export default (state, action) => {
+  console.log(state, action, "fetchDetails");
   switch (action.type) {
+    case ESM_FETCH:
+      return {
+        ...state,
+        fetchESM: action.payload.data,
+      };
     case RESPONSE_STATUS:
       return {
         ...state,

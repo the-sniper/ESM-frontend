@@ -7,10 +7,11 @@ import Uploader from "./uploader";
 import CustomInput from "../components/atoms/inputs/CustomInput";
 import { DatePicker } from "@mui/x-date-pickers";
 import moment from "moment/moment";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 
 let serverTime = new Date();
 const monthFormat = "YYYY-MM";
-const dateFormat = "MM-DD-YYYY";
+const dateFormat = "DD-MM-YYYY";
 const dateTimeFormat = "MM-DD-YYYY h:mm a";
 const timeFormat = "h:mm a";
 
@@ -110,14 +111,15 @@ export const mapData = (page, props) => {
             </div>
           </>
         ) : data.type === "date" ? (
-          <>
+          <DemoContainer components={["DatePicker"]}>
+            {console.log(formik.values[data.name], "checkDate")}
             <DatePicker
               // autoOk={true}
               // showTodayButton={true}
               // id={data.name}
               // inputVariant="outlined"
               label={data.label}
-              // format={dateFormat}
+              format={dateFormat}
               disabled={data.disabled}
               disableFuture={data.disableFuture || false}
               disablePast={data.disablePast || false}
@@ -130,24 +132,25 @@ export const mapData = (page, props) => {
               //   data.minDateMessage || "Date should not be before minimal date"
               // }
               className="customDatepicker"
-              // value={
-              //   data.filter
-              //     ? formik.values.filters[data.name].value || null
-              //     : formik.values[data.name] || null
-              // }
               // inputValue={
               //   data.filter
               //     ? formik.values.filters[data.name].value || null
               //     : formik.values[data.name] || null
               // }
+              // value={
+              //   formik.values[data.name] &&
+              //   moment(formik.values[data.name], dateFormat).isValid()
+              //     ? moment(formik.values[data.name], dateFormat)
+              //     : null
+              // }
               // onChange={(val) => {
-              //   data.filter
-              //     ? formik.setFieldValue(
-              //         `filters.${data.name}.value`,
-              //         converDate(val)
-              //       )
-              //     : formik.setFieldValue(data.name, converDate(val));
+              //   if (moment(val, dateFormat).isValid()) {
+              //     formik.setFieldValue(data.name, val);
+              //   } else {
+              //     console.error("Invalid date:", val);
+              //   }
               // }}
+
               // KeyboardButtonProps={{
               //   "aria-label": "change date",
               // }}
@@ -158,7 +161,7 @@ export const mapData = (page, props) => {
               //   formik.errors[data.name]
               // }
             />
-          </>
+          </DemoContainer>
         ) : data.type === "uploadDropZone" ? (
           <>
             <Uploader
@@ -280,6 +283,7 @@ export const mapData = (page, props) => {
               error={errorCheck(data, formik)}
               helpertext={helpertext(data, formik)}
               inputStyle={data.inputStyle}
+              required={data.required}
             />
           </>
         )}
@@ -292,4 +296,43 @@ export const mapData = (page, props) => {
 export const handleRedirectInternal = (history, path) => {
   history.push(`/${path}`);
   window.scrollTo(0, 0);
+};
+
+export const greetingBasedOnTime = (greeting) => {
+  const hour = new Date().getHours();
+
+  if (hour < 12) {
+    return (
+      <>
+        <img
+          src="/assets/images/sunrise.png"
+          className="greetingIcon"
+          alt="Good Morning"
+        />
+        {greeting ? greeting : "Good morning"}
+      </>
+    );
+  } else if (hour < 18) {
+    return (
+      <>
+        <img
+          src="/assets/images/dawn.png"
+          className="greetingIcon"
+          alt="Good Afternoon"
+        />
+        {greeting ? greeting : "Good afternoon"}
+      </>
+    );
+  } else {
+    return (
+      <>
+        <img
+          src="/assets/images/night.png"
+          className="greetingIcon"
+          alt="Good Evening"
+        />
+        {greeting ? greeting : "Good evening"}
+      </>
+    );
+  }
 };

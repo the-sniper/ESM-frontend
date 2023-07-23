@@ -4,13 +4,19 @@ import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
+import AlertContext from "../../context/alert/alertContext";
 
-function SpouseDetails() {
+function SpouseDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
+  const alertContext = useContext(AlertContext);
 
-  const { registerESM, responseStatus, clearResponse } = esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+    esmRegContext;
 
-  const validationArray = Yup.object({
+  const [reload, setReload] = useState(false);
+  const { setAlert } = alertContext;
+
+  const spouseValidationArray = Yup.object({
     serviceName: Yup.string(),
     maritalStatus: Yup.string().required("This is a required field."),
     marriageDate: Yup.string().required("This is a required field."),
@@ -44,7 +50,7 @@ function SpouseDetails() {
     deathDate: Yup.string().required("This is a required field."),
   });
 
-  const formik = useFormik({
+  const spouseFormik = useFormik({
     initialValues: {
       serviceNumber: localStorage.username,
       maritalStatus: "",
@@ -72,12 +78,51 @@ function SpouseDetails() {
       courtOrder: "",
       deathDate: "",
     },
-    validationSchema: validationArray,
+    validationSchema: spouseValidationArray,
     onSubmit: (values) => {
-      registerESM("SpouseDetails", values);
-      console.log(values, "ESMValues");
+      handleSubmit();
     },
   });
+
+  useEffect(() => {
+    getESM("GetSpouseDetails");
+  }, []);
+
+  useEffect(() => {
+    if (fetchESM) {
+      spouseFormik.values.maritalStatus = fetchESM.maritalStatus;
+      spouseFormik.values.marriageDate = fetchESM.marriageDate;
+      spouseFormik.values.spouseName = fetchESM.spouseName;
+      spouseFormik.values.spouseRelationship = fetchESM.spouseRelationship;
+      spouseFormik.values.spouseDob = fetchESM.spouseDob;
+      spouseFormik.values.spouseIdentificationMark =
+        fetchESM.spouseIdentificationMark;
+      spouseFormik.values.spouseQualification = fetchESM.spouseQualification;
+      spouseFormik.values.spouseEmploymentStatus =
+        fetchESM.spouseEmploymentStatus;
+      spouseFormik.values.spouseAadhar = fetchESM.spouseAadhar;
+      spouseFormik.values.spouseVoterId = fetchESM.spouseVoterId;
+      spouseFormik.values.spousePan = fetchESM.spousePan;
+      spouseFormik.values.spouseCsd = fetchESM.spouseCsd;
+      spouseFormik.values.spouseEchs = fetchESM.spouseEchs;
+      spouseFormik.values.spouseDepartment = fetchESM.spouseDepartment;
+      spouseFormik.values.spouseSector = fetchESM.spouseSector;
+      spouseFormik.values.spousePresentDesignation =
+        fetchESM.spousePresentDesignation;
+      spouseFormik.values.spouseMonthlyIncome = fetchESM.spouseMonthlyIncome;
+      spouseFormik.values.spouseOfficialNumber = fetchESM.spouseOfficialNumber;
+      spouseFormik.values.spouseDesignationOnRetirement =
+        fetchESM.spouseDesignationOnRetirement;
+      spouseFormik.values.spouseRetirementDate = fetchESM.spouseRetirementDate;
+      spouseFormik.values.spouseCivilPpoNumber = fetchESM.spouseCivilPpoNumber;
+      spouseFormik.values.divorceDate = fetchESM.divorceDate;
+      spouseFormik.values.courtOrder = fetchESM.courtOrder;
+      spouseFormik.values.deathDate = fetchESM.deathDate;
+      spouseFormik.values.identificationMark2 = fetchESM.identificationMark2;
+
+      setReload(!reload);
+    }
+  }, [fetchESM]);
 
   const formValues = [
     {
@@ -99,7 +144,7 @@ function SpouseDetails() {
           value: "separated",
         },
       ],
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Date of marriage",
@@ -107,7 +152,7 @@ function SpouseDetails() {
       name: "marriageDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's name",
@@ -115,7 +160,7 @@ function SpouseDetails() {
       name: "spouseName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
 
     {
@@ -133,22 +178,22 @@ function SpouseDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's date of birth",
       name: "spouseDob",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's identification mark",
       placeholder: "Enter spouse's identification mark",
       name: "spouseIdentificationMark",
-      type: "date",
+      type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's qualification",
@@ -165,7 +210,7 @@ function SpouseDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
 
     {
@@ -174,7 +219,7 @@ function SpouseDetails() {
       name: "spouseAadhar",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's Voter ID",
@@ -182,7 +227,7 @@ function SpouseDetails() {
       name: "spouseVoterId",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's PAN",
@@ -190,7 +235,7 @@ function SpouseDetails() {
       name: "spousePan",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's CSD number",
@@ -198,7 +243,7 @@ function SpouseDetails() {
       name: "spouseCsd",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's ECHS number",
@@ -206,7 +251,7 @@ function SpouseDetails() {
       name: "spouseEchs",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's ECHS number",
@@ -214,7 +259,7 @@ function SpouseDetails() {
       name: "spouseDepartment",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's employment status",
@@ -231,7 +276,7 @@ function SpouseDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's employment sector",
@@ -248,7 +293,7 @@ function SpouseDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's present designation",
@@ -256,7 +301,7 @@ function SpouseDetails() {
       name: "spousePresentDesignation",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's monthly income",
@@ -264,7 +309,7 @@ function SpouseDetails() {
       name: "spouseMonthlyIncome",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's official number",
@@ -272,7 +317,7 @@ function SpouseDetails() {
       name: "spouseOfficialNumber",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's designation on retirement",
@@ -280,7 +325,7 @@ function SpouseDetails() {
       name: "spouseDesignationOnRetirement",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's retirement date",
@@ -288,7 +333,7 @@ function SpouseDetails() {
       name: "spouseRetirementDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Spouse's PPO number",
@@ -296,7 +341,7 @@ function SpouseDetails() {
       name: "spouseCivilPpoNumber",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Divorce date",
@@ -304,7 +349,7 @@ function SpouseDetails() {
       name: "divorceDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Court order",
@@ -312,7 +357,7 @@ function SpouseDetails() {
       name: "courtOrder",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
     {
       label: "Date of death",
@@ -320,32 +365,55 @@ function SpouseDetails() {
       name: "deathDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: spouseFormik,
     },
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (Object.keys(spouseFormik.errors).length > 0) {
+      setAlert("Please fill out all the mandatory fields!", "error");
+    } else {
+      registerESM("SpouseDetails", spouseFormik.values);
+      props.handleComplete();
+    }
+  };
 
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
           clearResponse();
-          console.log("ESM Registration Success!");
         }
+        // else if (responseStatus.status === "error") {
+        //   setAlert(responseStatus.message, "error");
+        //   clearResponse();
+        // }
       }
     }
   }, [responseStatus]);
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
-        <CustomButton
-          label="Save"
-          type="submit"
-          onClick={formik.handleSubmit}
-          buttonType="primary"
-        />
+        <div className="esmAction">
+          <CustomButton
+            label="Previous"
+            className="esmSubmitBtn"
+            disabled={false}
+            onClick={() => props.handlePrevious()}
+            buttonType="secondary"
+          />
+          <CustomButton
+            label="Next"
+            className="esmSubmitBtn"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            buttonType="primary"
+          />
+        </div>
       </form>
     </div>
   );

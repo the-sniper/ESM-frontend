@@ -29,6 +29,7 @@ function CustomInput({ id, variant, label, className, ...props }) {
         placeholder={props.placeholder}
         error={props.error}
         helpertext={props.helpertext}
+        required={props.required}
       />
     </div>
   );

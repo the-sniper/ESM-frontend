@@ -4,13 +4,19 @@ import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
+import AlertContext from "../../context/alert/alertContext";
 
-function DependentDetails() {
+function DependentDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
+  const alertContext = useContext(AlertContext);
 
-  const { registerESM, responseStatus, clearResponse } = esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+    esmRegContext;
 
-  const validationArray = Yup.object({
+  const [reload, setReload] = useState(false);
+  const { setAlert } = alertContext;
+
+  const dependentValidationArray = Yup.object({
     serviceName: Yup.string(),
     dependentName: Yup.string().required("This is a required field."),
     registeredDate: Yup.string().required("This is a required field."),
@@ -26,7 +32,7 @@ function DependentDetails() {
     dependentMaritalStatus: Yup.string().required("This is a required field."),
   });
 
-  const formik = useFormik({
+  const dependentFormik = useFormik({
     initialValues: {
       serviceNumber: localStorage.username,
       dependentName: "",
@@ -40,12 +46,36 @@ function DependentDetails() {
       dependentEmploymentStatus: "",
       dependentMaritalStatus: "",
     },
-    validationSchema: validationArray,
+    validationSchema: dependentValidationArray,
     onSubmit: (values) => {
-      registerESM("DependentDetails", values);
-      console.log(values, "ESMValues");
+      handleSubmit();
     },
   });
+
+  useEffect(() => {
+    getESM("GetDependentDetails");
+  }, []);
+
+  useEffect(() => {
+    if (fetchESM) {
+      dependentFormik.values.dependentName = fetchESM.dependentName;
+      dependentFormik.values.dependentId = fetchESM.dependentId;
+      dependentFormik.values.registeredDate = fetchESM.registeredDate;
+      dependentFormik.values.relation = fetchESM.relation;
+      dependentFormik.values.dependentDob = fetchESM.dependentDob;
+      dependentFormik.values.dependentAadhar = fetchESM.dependentAadhar;
+      dependentFormik.values.dependentQualification =
+        fetchESM.dependentQualification;
+      dependentFormik.values.dependentAcademicYear =
+        fetchESM.dependentAcademicYear;
+      dependentFormik.values.dependentEmploymentStatus =
+        fetchESM.dependentEmploymentStatus;
+      dependentFormik.values.dependentMaritalStatus =
+        fetchESM.dependentMaritalStatus;
+
+      setReload(!reload);
+    }
+  }, [fetchESM]);
 
   const formValues = [
     {
@@ -54,7 +84,7 @@ function DependentDetails() {
       name: "dependentName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent ID number",
@@ -62,7 +92,7 @@ function DependentDetails() {
       name: "dependentId",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Date of registration",
@@ -70,7 +100,7 @@ function DependentDetails() {
       name: "registeredDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
 
     {
@@ -88,14 +118,14 @@ function DependentDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent's date of birth",
       name: "dependentDob",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent's Aadhar number",
@@ -103,7 +133,7 @@ function DependentDetails() {
       name: "dependentAadhar",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent's qualification",
@@ -111,7 +141,7 @@ function DependentDetails() {
       name: "dependentQualification",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent's year of graduation",
@@ -119,7 +149,7 @@ function DependentDetails() {
       name: "dependentAcademicYear",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent's employment status",
@@ -136,7 +166,7 @@ function DependentDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
     {
       label: "Dependent's marital status",
@@ -157,32 +187,55 @@ function DependentDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: dependentFormik,
     },
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (Object.keys(dependentFormik.errors).length > 0) {
+      setAlert("Please fill out all the mandatory fields!", "error");
+    } else {
+      registerESM("DependentDetails", dependentFormik.values);
+      props.handleComplete();
+    }
+  };
 
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
           clearResponse();
-          console.log("ESM Registration Success!");
         }
+        // else if (responseStatus.status === "error") {
+        //   setAlert(responseStatus.message, "error");
+        //   clearResponse();
+        // }
       }
     }
   }, [responseStatus]);
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
-        <CustomButton
-          label="Save"
-          type="submit"
-          onClick={formik.handleSubmit}
-          buttonType="primary"
-        />
+        <div className="esmAction">
+          <CustomButton
+            label="Previous"
+            className="esmSubmitBtn"
+            disabled={false}
+            onClick={() => props.handlePrevious()}
+            buttonType="secondary"
+          />
+          <CustomButton
+            label="Next"
+            className="esmSubmitBtn"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            buttonType="primary"
+          />
+        </div>
       </form>
     </div>
   );

@@ -1,15 +1,21 @@
 import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { LOGO, SITE_NAME, mapData } from "../../utils";
 import AuthContext from "../../context/auth/authContext";
+import AlertContext from "../../context/alert/alertContext";
 import "./signup.css";
 
 const Signup = () => {
   const authContext = useContext(AuthContext);
+  const alertContext = useContext(AlertContext);
+
+  const { setAlert } = alertContext;
+
   const { register, responseStatus, clearResponse } = authContext;
+  const navigate = useNavigate();
 
   const validationArray = Yup.object({
     name: Yup.string().required("This field is required!"),
@@ -111,16 +117,23 @@ const Signup = () => {
   ];
 
   useEffect(() => {
+    console.log(responseStatus, "login_responseStatus");
     if (responseStatus) {
       if (responseStatus.from === "register") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Registered successfully!", "success");
           clearResponse();
+          navigate("/login");
+
           console.log("Login Success 1");
         }
       } else if (responseStatus.from === "checkValidation") {
-        if (responseStatus.status !== "success") {
+        if (responseStatus.status !== "SUCCESS") {
         } else {
+          setAlert("Registered successfully!", "success");
+          clearResponse();
+          navigate("/login");
+
           console.log("Login Success 2");
 
           // window.scrollTo(0, 200)

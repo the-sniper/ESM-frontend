@@ -5,6 +5,7 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { LinearProgress } from "@mui/material";
+import { greetingBasedOnTime } from "../../utils";
 function LinearProgressWithLabel(props) {
   return (
     <div>
@@ -36,26 +37,32 @@ const Dashboard = () => {
       {user && user.data && user.data.name != undefined ? (
         <div className="customContainer">
           <h2 className="welcomeText">
-            Good Morning {user.data.name.split(" ")[0] + ","}
+            {greetingBasedOnTime()} {user.data.name.split(" ")[0]}
           </h2>
           <div className="dashBox">
-            <div className="dashInfo">
-              <h4>
-                Name: <span>{user.data.name}</span>
-              </h4>
-              <h4>
-                Service number: <span>{user.data.serviceNumber}</span>
-              </h4>
-              <h4>
-                Email address: <span>{user.data.email}</span>
-              </h4>
-              <h4>
-                Mobile number: <span>{user.data.mobile}</span>
-              </h4>
-              <h4>
-                Type: <span>{user.data.regType}</span>
-              </h4>
+            <div className="userInfoSection">
+              <div className="userInfoItem">
+                <span className="userInfoLabel">Name:</span>
+                <span className="userInfoValue">{user.data.name}</span>
+              </div>
+              <div className="userInfoItem">
+                <span className="userInfoLabel">Service number:</span>
+                <span className="userInfoValue">{user.data.serviceNumber}</span>
+              </div>
+              <div className="userInfoItem">
+                <span className="userInfoLabel">Email address:</span>
+                <span className="userInfoValue">{user.data.email}</span>
+              </div>
+              <div className="userInfoItem">
+                <span className="userInfoLabel">Mobile number:</span>
+                <span className="userInfoValue">{user.data.mobile}</span>
+              </div>
+              <div className="userInfoItem">
+                <span className="userInfoLabel">Type:</span>
+                <span className="userInfoValue">{user.data.regType}</span>
+              </div>
             </div>
+            {console.log(user.data.formProgressCount, "formProgressCount")}
             <div className="dashStatus">
               <div className="dashFormStatus">
                 <h6>Form Completion Progress</h6>

@@ -4,13 +4,19 @@ import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
+import AlertContext from "../../context/alert/alertContext";
 
-function PersonalDetails() {
+function PersonalDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
+  const alertContext = useContext(AlertContext);
 
-  const { registerESM, responseStatus, clearResponse } = esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+    esmRegContext;
 
-  const validationArray = Yup.object({
+  const [reload, setReload] = useState(false);
+  const { setAlert } = alertContext;
+
+  const personalValidationArray = Yup.object({
     serviceName: Yup.string(),
     fatherName: Yup.string().required("This is a required field."),
     motherName: Yup.string().required("This is a required field."),
@@ -28,7 +34,7 @@ function PersonalDetails() {
     identificationMark2: Yup.string().required("This is a required field."),
   });
 
-  const formik = useFormik({
+  const personalformik = useFormik({
     initialValues: {
       serviceNumber: localStorage.username,
       fatherName: "",
@@ -46,12 +52,37 @@ function PersonalDetails() {
       identificationMark1: "",
       identificationMark2: "",
     },
-    validationSchema: validationArray,
+    validationSchema: personalValidationArray,
     onSubmit: (values) => {
-      registerESM("PersonalDetails", values);
-      console.log(values, "ESMValues");
+      handleSubmit();
     },
   });
+
+  useEffect(() => {
+    getESM("GetPersonalDetails");
+  }, []);
+
+  useEffect(() => {
+    if (fetchESM) {
+      personalformik.values.fatherName = fetchESM.fatherName;
+      personalformik.values.motherName = fetchESM.motherName;
+      personalformik.values.relegion = fetchESM.relegion;
+      personalformik.values.casteCategory = fetchESM.casteCategory;
+      personalformik.values.birthState = fetchESM.birthState;
+      personalformik.values.birthDistrictSurname =
+        fetchESM.birthDistrictSurname;
+      personalformik.values.birthPlace = fetchESM.birthPlace;
+      personalformik.values.aadhar = fetchESM.aadhar;
+      personalformik.values.voterId = fetchESM.voterId;
+      personalformik.values.pan = fetchESM.pan;
+      personalformik.values.csd = fetchESM.csd;
+      personalformik.values.echs = fetchESM.echs;
+      personalformik.values.identificationMark1 = fetchESM.identificationMark1;
+      personalformik.values.identificationMark2 = fetchESM.identificationMark2;
+
+      setReload(!reload);
+    }
+  }, [fetchESM]);
 
   const formValues = [
     {
@@ -60,7 +91,8 @@ function PersonalDetails() {
       name: "fatherName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
+      autoFocus: true,
     },
     {
       label: "Mother's name",
@@ -68,7 +100,7 @@ function PersonalDetails() {
       name: "motherName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Religion",
@@ -76,7 +108,7 @@ function PersonalDetails() {
       name: "relegion",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Caste",
@@ -93,7 +125,7 @@ function PersonalDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Birth state",
@@ -110,7 +142,7 @@ function PersonalDetails() {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Birth district",
@@ -118,7 +150,7 @@ function PersonalDetails() {
       name: "birthDistrictSurname",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Place of birth",
@@ -126,7 +158,7 @@ function PersonalDetails() {
       name: "birthPlace",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Aadhar",
@@ -134,7 +166,7 @@ function PersonalDetails() {
       name: "aadhar",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Voter ID",
@@ -142,7 +174,7 @@ function PersonalDetails() {
       name: "voterId",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "PAN",
@@ -150,7 +182,7 @@ function PersonalDetails() {
       name: "pan",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "CSD number",
@@ -158,7 +190,7 @@ function PersonalDetails() {
       name: "csd",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "ECHS number",
@@ -166,7 +198,7 @@ function PersonalDetails() {
       name: "echs",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Identification mark 1",
@@ -174,7 +206,7 @@ function PersonalDetails() {
       name: "identificationMark1",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
     {
       label: "Identification mark 2",
@@ -182,32 +214,55 @@ function PersonalDetails() {
       name: "identificationMark2",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: personalformik,
     },
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (Object.keys(personalformik.errors).length > 0) {
+      setAlert("Please fill out all the mandatory fields!", "error");
+    } else {
+      registerESM("PersonalDetails", personalformik.values);
+      props.handleComplete();
+    }
+  };
 
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
           clearResponse();
-          console.log("ESM Registration Success!");
         }
+        // else if (responseStatus.status === "error") {
+        //   setAlert(responseStatus.message, "error");
+        //   clearResponse();
+        // }
       }
     }
   }, [responseStatus]);
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
-        <CustomButton
-          label="Save"
-          type="submit"
-          onClick={formik.handleSubmit}
-          buttonType="primary"
-        />
+        <div className="esmAction">
+          <CustomButton
+            label="Previous"
+            className="esmSubmitBtn"
+            disabled={false}
+            onClick={() => props.handlePrevious()}
+            buttonType="secondary"
+          />
+          <CustomButton
+            label="Next"
+            className="esmSubmitBtn"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            buttonType="primary"
+          />
+        </div>
       </form>
     </div>
   );

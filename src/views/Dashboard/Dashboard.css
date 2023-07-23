@@ -15,6 +15,17 @@
   gap: 25px;
 }
 
+.dashboard .welcomeText img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-right: 15px;
+}
+.dashboard .dashInfo h4 {
+  font-size: 18px;
+  color: #333; /* Darker text color for better contrast */
+}
+
 .dashboard .dashInfo {
   background: #fff;
   padding: 30px;
@@ -22,18 +33,36 @@
   border-radius: 15px;
 }
 
-.dashboard .dashInfo h4 {
-  font-size: 18px;
-  color: #7e7e7e;
+.dashboard .dashInfo .infoItem:hover {
+  background-color: #f7f7f7;
+  cursor: pointer;
 }
 
-.dashboard .dashInfo h4:not(:last-child) {
+.userInfoSection {
+  background: #fff;
+  height: max-content;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.userInfoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  color: #333;
   margin-bottom: 15px;
 }
 
-.dashboard .dashInfo h4 span {
-  color: #333;
-  padding-left: 5px;
+.userInfoLabel {
+  font-weight: bold;
+  margin-right: 10px;
+  min-width: 150px;
+}
+
+.userInfoValue {
+  color: #7e7e7e;
 }
 
 .dashboard .dashFormStatus,

@@ -4,13 +4,19 @@ import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
+import AlertContext from "../../context/alert/alertContext";
 
 function ServiceDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
+  const alertContext = useContext(AlertContext);
 
-  const { registerESM, responseStatus, clearResponse } = esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+    esmRegContext;
 
-  const validationArray = Yup.object({
+  const [reload, setReload] = useState(false);
+  const { setAlert } = alertContext;
+
+  const serviceValidationArray = Yup.object({
     serviceName: Yup.string().required("This field is required!"),
     corpsName: Yup.string().required("This field is required!"),
     recordOfficeName: Yup.string().required("This field is required!"),
@@ -20,20 +26,14 @@ function ServiceDetails(props) {
     rankCategory: Yup.string().required("This field is required!"),
     name: Yup.string().required("This field is required!"),
     gender: Yup.string().required("This field is required!"),
-    dob: Yup.string().required("This field is required!"),
-    enrollDate: Yup.string().required("This field is required!"),
+    dob: Yup.string(),
+    enrollDate: Yup.string(),
     worldWar2: Yup.boolean(),
     optAttend: Yup.string().required("This field is required!"),
     decoration: Yup.string().required("This field is required!"),
   });
 
-  const handleSubmit = () => {
-    registerESM("ServiceDetails", formik.values);
-    props.handleComplete();
-    console.log(formik.values, "ESMValues");
-  };
-
-  const formik = useFormik({
+  const serviceFormik = useFormik({
     initialValues: {
       serviceNumber: localStorage.username,
       serviceName: "",
@@ -51,12 +51,34 @@ function ServiceDetails(props) {
       optAttend: "",
       decoration: "",
     },
-    validationSchema: validationArray,
+    validationSchema: serviceValidationArray,
     onSubmit: (values) => {
-      // registerESM("serviceDetails", values);
-      // handleSubmit();
+      handleSubmit();
     },
   });
+  useEffect(() => {
+    getESM("GetServiceDetails");
+  }, []);
+
+  useEffect(() => {
+    if (fetchESM) {
+      serviceFormik.values.serviceName = fetchESM.serviceName;
+      serviceFormik.values.corpsName = fetchESM.corpsName;
+      serviceFormik.values.recordOfficeName = fetchESM.recordOfficeName;
+      serviceFormik.values.groupName = fetchESM.groupName;
+      serviceFormik.values.tradeName = fetchESM.tradeName;
+      serviceFormik.values.rankName = fetchESM.rankName;
+      serviceFormik.values.rankCategory = fetchESM.rankCategory;
+      serviceFormik.values.name = fetchESM.name;
+      serviceFormik.values.gender = fetchESM.gender;
+      serviceFormik.values.dob = fetchESM.dob;
+      serviceFormik.values.enrollDate = fetchESM.enrollDate;
+      serviceFormik.values.worldWar2 = fetchESM.worldWar2;
+      serviceFormik.values.optAttend = fetchESM.optAttend;
+      serviceFormik.values.decoration = fetchESM.decoration;
+      setReload(!reload);
+    }
+  }, [fetchESM]);
 
   const formValues = [
     {
@@ -65,7 +87,9 @@ function ServiceDetails(props) {
       name: "name",
       type: "text",
       class: "col-6",
-      formik: formik,
+      autoFocus: true,
+      formik: serviceFormik,
+      required: false,
     },
     {
       label: "Gender",
@@ -82,7 +106,7 @@ function ServiceDetails(props) {
           value: "female",
         },
       ],
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Date of birth",
@@ -90,7 +114,7 @@ function ServiceDetails(props) {
       name: "date",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Service",
@@ -111,7 +135,7 @@ function ServiceDetails(props) {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Record office",
@@ -119,7 +143,7 @@ function ServiceDetails(props) {
       name: "recordOfficeName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Corps",
@@ -127,7 +151,7 @@ function ServiceDetails(props) {
       name: "corpsName",
       type: "text",
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Rank category",
@@ -140,7 +164,7 @@ function ServiceDetails(props) {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Rank",
@@ -153,7 +177,7 @@ function ServiceDetails(props) {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Group",
@@ -166,7 +190,7 @@ function ServiceDetails(props) {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Trade/Branch",
@@ -179,14 +203,14 @@ function ServiceDetails(props) {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Enrollment date",
       name: "enrollDate",
       type: "date",
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "World war II veteran",
@@ -203,7 +227,7 @@ function ServiceDetails(props) {
         },
       ],
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Operations attended",
@@ -211,7 +235,7 @@ function ServiceDetails(props) {
       type: "text",
       placeholder: "Enter the operations attended",
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
     {
       label: "Decorations",
@@ -219,32 +243,55 @@ function ServiceDetails(props) {
       type: "text",
       placeholder: "Enter your decorations",
       class: "col-6",
-      formik: formik,
+      formik: serviceFormik,
     },
   ];
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (Object.keys(serviceFormik.errors).length > 0) {
+      setAlert("Please fill out all the mandatory fields!", "error");
+    } else {
+      registerESM("ServiceDetails", serviceFormik.values);
+      props.handleComplete();
+    }
+  };
 
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "registerESM") {
-        if (responseStatus.status === "success") {
-          // handleRedirectInternal(history, 'login')
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
           clearResponse();
-          console.log("ESM Registration Success!");
         }
+        // else if (responseStatus.status === "error") {
+        //   setAlert(responseStatus.message, "error");
+        //   clearResponse();
+        // }
       }
     }
   }, [responseStatus]);
 
   return (
     <div>
-      <form onSubmit={() => handleSubmit()}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
-        <CustomButton
-          label="Save"
-          type="submit"
-          onClick={() => handleSubmit()}
-          buttonType="primary"
-        />
+        <div className="esmAction">
+          <CustomButton
+            label="Previous"
+            className="esmSubmitBtn"
+            disabled={true}
+            onClick={() => props.handlePrevious()}
+            buttonType="secondary"
+          />
+          <CustomButton
+            label="Next"
+            className="esmSubmitBtn"
+            type="submit"
+            onClick={(e) => handleSubmit(e)}
+            buttonType="primary"
+          />
+        </div>
       </form>
     </div>
   );

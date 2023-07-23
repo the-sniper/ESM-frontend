@@ -2,6 +2,23 @@
   margin-top: 30px;
 }
 
+.stepperContainer .MuiStepper-root {
+  margin: 50px 0;
+}
+
 .stepperBody {
   margin-top: 30px;
+}
+
+.stepperBody .esmAction {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.stepperBody .esmSubmitBtn {
+  min-width: 180px;
 }
