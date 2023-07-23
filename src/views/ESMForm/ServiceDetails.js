@@ -71,9 +71,9 @@ function ServiceDetails(props) {
       serviceFormik.values.rankCategory = fetchESM.rankCategory;
       serviceFormik.values.name = fetchESM.name;
       serviceFormik.values.gender = fetchESM.gender;
-      serviceFormik.values.dob = fetchESM.dob;
-      serviceFormik.values.enrollDate = fetchESM.enrollDate;
-      serviceFormik.values.worldWar2 = fetchESM.worldWar2;
+      serviceFormik.values.dob = "11-02-2014";
+      serviceFormik.values.enrollDate = "11-02-2014";
+      serviceFormik.values.worldWar2 = false;
       serviceFormik.values.optAttend = fetchESM.optAttend;
       serviceFormik.values.decoration = fetchESM.decoration;
       setReload(!reload);
@@ -247,6 +247,7 @@ function ServiceDetails(props) {
     },
   ];
 
+  console.log(serviceFormik.errors, "serviceFormik.errors");
   const handleSubmit = (event) => {
     event.preventDefault();
     if (Object.keys(serviceFormik.errors).length > 0) {
