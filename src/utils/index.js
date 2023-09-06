@@ -234,6 +234,7 @@ export const mapData = (page, props) => {
           ))
         ) : data.type === "radio" ? (
           <>
+            {console.log(formik.values[data.name], "radioValue1")}
             <CustomRadio
               error={formik.touched[data.name] && formik.errors[data.name]}
               helpertext={
@@ -334,5 +335,17 @@ export const greetingBasedOnTime = (greeting) => {
         {greeting ? greeting : "Good evening"}
       </>
     );
+  }
+};
+
+export const cleanDropdownData = (options, show, value) => {
+  if (options && options.length) {
+    let convertedData = options.map((data) => {
+      let dataCleaned = {};
+      dataCleaned.show = data[show];
+      dataCleaned.value = data[value];
+      return dataCleaned;
+    });
+    return convertedData;
   }
 };

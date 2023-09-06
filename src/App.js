@@ -11,6 +11,7 @@ import AlertState from "./context/alert/alertState";
 import { SnackbarProvider } from "notistack";
 import Alerts from "./utils/alert";
 import EsmRegState from "./context/EsmRegistration/esmRegState";
+import CommonState from "./context/common/commonState";
 
 global.site_url = process.env.REACT_APP_DOMAIN;
 // global.registerToken = true;
@@ -19,18 +20,20 @@ function App() {
   return (
     <>
       <AuthState>
-        <EsmRegState>
-          <AlertState>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <SnackbarProvider maxSnack={3}>
-                <div className="App">
-                  <Alerts />
-                  <RoutesRoot />
-                </div>
-              </SnackbarProvider>
-            </LocalizationProvider>
-          </AlertState>
-        </EsmRegState>
+        <CommonState>
+          <EsmRegState>
+            <AlertState>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <SnackbarProvider maxSnack={3}>
+                  <div className="App">
+                    <Alerts />
+                    <RoutesRoot />
+                  </div>
+                </SnackbarProvider>
+              </LocalizationProvider>
+            </AlertState>
+          </EsmRegState>
+        </CommonState>
       </AuthState>
     </>
   );

@@ -1,0 +1,12 @@
+// for common data
+export const SEARCH_VALUE = "SEARCH_VALUE";
+export const CLEAR_SEARCH = "CLEAR_SEARCH";
+export const RESPONSE_STATUS = "RESPONSE_STATUS";
+export const CLEAR_RESPONSE = "CLEAR_RESPONSE";
+export const GET_ALL_COUNTRIES = "GET_ALL_COUNTRIES";
+export const GET_ALL_STATES = "GET_ALL_STATES";
+export const GET_ALL_CITIES = "GET_ALL_CITIES";
+export const GET_ALL_SERVICES = "GET_ALL_SERVICES";
+export const GET_ALL_CORPS = "GET_ALL_CORPS";
+export const GET_ALL_RANK_CATEGORIES = "GET_ALL_RANK_CATEGORIES";
+export const GET_ALL_RANKS = "GET_ALL_RANKS";

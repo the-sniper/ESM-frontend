@@ -16,10 +16,11 @@ function CustomSelect({ id, value, label, className, options, ...props }) {
           value={value}
           label={label}
           disabled={props.disabled}
+          placeholder={props.placeholder}
           size={props.size}
           name={props.name}
-          autoFocus={props.autoFocus}
-          onChange={props.onChange || props.onChange}
+          // autoFocus={props.autoFocus}
+          onChange={props.onChange}
           error={props.error}
           helpertext={props.helpertext}
         >

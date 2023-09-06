@@ -2,19 +2,33 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { mapData } from "../../utils";
+import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
+import CommonContext from "../../context/common/commonContext";
+import { recordOffices, tradeData } from "../../utils/commonExports";
 
 function ServiceDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
+  const { setAlert } = alertContext;
+  const {
+    getAllServices,
+    getAllCorps,
+    getAllRankCategories,
+    getAllRanks,
+    allServices,
+    allCorps,
+    allRankCategories,
+    allRanks,
+  } = commonContext;
 
   const [reload, setReload] = useState(false);
-  const { setAlert } = alertContext;
+  const [services, setServices] = useState([]);
 
   const serviceValidationArray = Yup.object({
     serviceName: Yup.string().required("This field is required!"),
@@ -28,10 +42,19 @@ function ServiceDetails(props) {
     gender: Yup.string().required("This field is required!"),
     dob: Yup.string(),
     enrollDate: Yup.string(),
-    worldWar2: Yup.boolean(),
+    worldWar2: Yup.string(),
     optAttend: Yup.string().required("This field is required!"),
     decoration: Yup.string().required("This field is required!"),
   });
+
+  useEffect(() => {
+    getAllServices();
+    getAllCorps({ serviceId: 1 }); //To Fetch all Corps from Service: Army
+    getAllRankCategories();
+    getAllRanks({ serviceId: 2, rankCategoryId: 4 });
+  }, []);
+
+  console.log(allRanks, "allRanks");
 
   const serviceFormik = useFormik({
     initialValues: {
@@ -47,7 +70,7 @@ function ServiceDetails(props) {
       gender: "",
       dob: "",
       enrollDate: "",
-      worldWar2: false,
+      worldWar2: "",
       optAttend: "",
       decoration: "",
     },
@@ -56,6 +79,7 @@ function ServiceDetails(props) {
       handleSubmit();
     },
   });
+
   useEffect(() => {
     getESM("GetServiceDetails");
   }, []);
@@ -73,12 +97,19 @@ function ServiceDetails(props) {
       serviceFormik.values.gender = fetchESM.gender;
       serviceFormik.values.dob = "11-02-2014";
       serviceFormik.values.enrollDate = "11-02-2014";
-      serviceFormik.values.worldWar2 = false;
+      // serviceFormik.values.worldWar2 = fetchESM.worldWar2;
       serviceFormik.values.optAttend = fetchESM.optAttend;
       serviceFormik.values.decoration = fetchESM.decoration;
       setReload(!reload);
     }
   }, [fetchESM]);
+
+  useEffect(() => {
+    getAllRanks({
+      serviceId: serviceFormik.values.serviceName,
+      rankCategoryId: serviceFormik.values.rankCategory,
+    });
+  }, [serviceFormik.values.serviceName, serviceFormik.values.rankCategory]);
 
   const formValues = [
     {
@@ -119,50 +150,37 @@ function ServiceDetails(props) {
     {
       label: "Service",
       name: "serviceName",
+      placeholder: "Select a Service",
       type: "select",
-      options: [
-        {
-          show: "Air Force",
-          value: "airforce",
-        },
-        {
-          show: "Army",
-          value: "army",
-        },
-        {
-          show: "Navy",
-          value: "navy",
-        },
-      ],
+      options: cleanDropdownData(allServices, "serviceName", "id"),
       class: "col-6",
+      formik: serviceFormik,
+    },
+    {
+      label: "Corps",
+      name: "corpsName",
+      type: "select",
+      options: cleanDropdownData(allCorps, "corps", "id"),
+      class: `col-6 ${serviceFormik.values.serviceName == 1 ? "" : "d-none"}`, //Enable this only for Service: Army
       formik: serviceFormik,
     },
     {
       label: "Record office",
       placeholder: "Enter record office name",
       name: "recordOfficeName",
-      type: "text",
+      type: "select",
+      options: recordOffices.filter(
+        (d) => d.service == serviceFormik.values.serviceName
+      ),
       class: "col-6",
       formik: serviceFormik,
     },
-    {
-      label: "Corps",
-      placeholder: "Enter your Corps name",
-      name: "corpsName",
-      type: "text",
-      class: "col-6",
-      formik: serviceFormik,
-    },
+
     {
       label: "Rank category",
       name: "rankCategory",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-      ],
+      options: cleanDropdownData(allRankCategories, "category", "id"),
       class: "col-6",
       formik: serviceFormik,
     },
@@ -170,12 +188,7 @@ function ServiceDetails(props) {
       label: "Rank",
       name: "rankName",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-      ],
+      options: cleanDropdownData(allRanks, "rankName", "id"),
       class: "col-6",
       formik: serviceFormik,
     },
@@ -185,24 +198,29 @@ function ServiceDetails(props) {
       type: "select",
       options: [
         {
-          show: "1",
+          show: "X",
           value: "1",
         },
+        {
+          show: "Y",
+          value: "2",
+        },
+        {
+          show: "Z",
+          value: "3",
+        },
       ],
-      class: "col-6",
+      class: `col-6 ${serviceFormik.values.serviceName == 2 ? "" : "d-none"}`, //Enable this only for Service: Air Force
       formik: serviceFormik,
     },
     {
       label: "Trade/Branch",
       name: "tradeName",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-      ],
-      class: "col-6",
+      options: tradeData.filter(
+        (d) => d.group == serviceFormik.values.groupName
+      ),
+      class: `col-6 ${serviceFormik.values.serviceName == 2 ? "" : "d-none"}`, //Enable this only for Service: Air Force
       formik: serviceFormik,
     },
     {
@@ -219,11 +237,11 @@ function ServiceDetails(props) {
       options: [
         {
           show: "Yes",
-          value: true,
+          id: "0",
         },
         {
           show: "No",
-          value: false,
+          id: "1",
         },
       ],
       class: "col-6",
