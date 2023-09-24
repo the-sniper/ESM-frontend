@@ -87,7 +87,7 @@ const AuthState = (props) => {
       const [res] = await Promise.all([
         apiCall(
           "post",
-          "GetUserDetails",
+          "User/GetUserDetails",
           {
             serviceNumber: localStorage.username,
           },

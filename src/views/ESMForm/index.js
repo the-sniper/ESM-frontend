@@ -69,12 +69,13 @@ function ESMForm() {
     setCompleted(newCompleted);
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
+        ? steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
+    // if(steps.length)
+    // console.log('This is the last step')
   };
+  // console.log(activeStep, steps.length, "checkCompletedStep");
 
   const handleReset = () => {
     setActiveStep(0);

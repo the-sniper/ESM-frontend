@@ -225,3 +225,96 @@ export const recordOffices = [
     service: 3,
   },
 ];
+
+export const decorations = [
+  { show: "Param Vir Chakra", value: "pvc" },
+  { show: "Ashoka Chakra", value: "ashoka_chakra" },
+  { show: "Maha Vir Chakra", value: "mvc" },
+  { show: "Kirti Chakra", value: "kirti_chakra" },
+  { show: "Vir Chakra", value: "vir_chakra" },
+  { show: "Shaurya Chakra", value: "shaurya_chakra" },
+  { show: "Sena Medal", value: "sena_medal" },
+  { show: "Nao Sena Medal", value: "nao_sena_medal" },
+  { show: "Vayu Sena Medal", value: "vayu_sena_medal" },
+  { show: "Mention in Despatches", value: "mention_in_despatches" },
+  {
+    show: "President's Police Medal for Gallantry",
+    value: "presidents_police_medal_for_gallantry",
+  },
+  {
+    show: "President's Fire Service Medal for Gallantry",
+    value: "presidents_fire_service_medal_for_gallantry",
+  },
+  {
+    show: "Sarvottam Jeevan Raksha Padak",
+    value: "sarvottam_jeevan_raksha_padak",
+  },
+  { show: "Uttam Jeevan Raksha Padak", value: "uttam_jeevan_raksha_padak" },
+  { show: "Jeevan Raksha Padak", value: "jeevan_raksha_padak" },
+  { show: "Raksha Medal", value: "raksha_medal" },
+  { show: "Vishisht Seva Medal (VSM)", value: "vishisht_seva_medal" },
+  { show: "Yudh Seva Medal", value: "yudh_seva_medal" },
+  { show: "Special Service Medal", value: "special_service_medal" },
+  { show: "Operation Vijay Star", value: "operation_vijay_star" },
+  { show: "Operation Parakram Medal", value: "operation_parakram_medal" },
+  { show: "High-Altitude Service Medal", value: "high_altitude_service_medal" },
+];
+
+export const religionCastes = {
+  religions: [
+    { show: "Hinduism", value: "hinduism" },
+    { show: "Islam", value: "islam" },
+    { show: "Christianity", value: "christianity" },
+    { show: "Sikhism", value: "sikhism" },
+    { show: "Buddhism", value: "buddhism" },
+    { show: "Jainism", value: "jainism" },
+    { show: "Zoroastrianism (Parsi)", value: "zoroastrianism" },
+  ],
+  castes: {
+    hinduism: [
+      { show: "Brahmin", value: "brahmin" },
+      { show: "Kshatriya", value: "kshatriya" },
+      { show: "Vaishya", value: "vaishya" },
+      { show: "Shudra", value: "shudra" },
+      { show: "Dalit", value: "dalit" },
+      { show: "Jat", value: "jat" },
+      { show: "Rajput", value: "rajput" },
+      { show: "Yadav", value: "yadav" },
+      { show: "Lingayat", value: "lingayat" },
+    ],
+    islam: [
+      { show: "Sunni", value: "sunni" },
+      { show: "Shia", value: "shia" },
+      { show: "Sufi", value: "sufi" },
+      { show: "Ahmadiyya", value: "ahmadiyya" },
+    ],
+    christianity: [
+      { show: "Roman Catholic", value: "roman_catholic" },
+      { show: "Protestant (Various denominations)", value: "protestant" },
+      { show: "Orthodox", value: "orthodox" },
+      { show: "Syro-Malabar", value: "syro_malabar" },
+      { show: "Syro-Malankara", value: "syro_malankara" },
+    ],
+    sikhism: [
+      { show: "Jat Sikh", value: "jat_sikh" },
+      { show: "Khatri", value: "khatri" },
+      { show: "Arora", value: "arora" },
+      { show: "Ramgarhia", value: "ramgarhia" },
+    ],
+    buddhism: [
+      { show: "Theravada", value: "theravada" },
+      { show: "Mahayana", value: "mahayana" },
+      { show: "Vajrayana (Tibetan Buddhism)", value: "vajrayana" },
+    ],
+    jainism: [
+      { show: "Digambara", value: "digambara" },
+      { show: "Shwetambara", value: "shwetambara" },
+      { show: "Sthanakvasi", value: "sthanakvasi" },
+      { show: "Terapanthi", value: "terapanthi" },
+    ],
+    zoroastrianism: [
+      { show: "Parsi", value: "parsi" },
+      { show: "Irani", value: "irani" },
+    ],
+  },
+};

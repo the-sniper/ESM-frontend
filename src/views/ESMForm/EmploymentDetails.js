@@ -35,6 +35,7 @@ function EmploymentDetails(props) {
 
   const employmentFormik = useFormik({
     initialValues: {
+      serviceNumber: localStorage.username,
       civilQualification: "",
       additionalCourse: "",
       equivalentTest: "",
@@ -60,26 +61,29 @@ function EmploymentDetails(props) {
   }, []);
 
   useEffect(() => {
-    if (fetchESM) {
-      employmentFormik.values.civilQualification = fetchESM.civilQualification;
-      employmentFormik.values.additionalCourse = fetchESM.additionalCourse;
-      employmentFormik.values.equivalentTest = fetchESM.equivalentTest;
-      employmentFormik.values.civilEmployment = fetchESM.civilEmployment;
-      employmentFormik.values.presentDesignation = fetchESM.presentDesignation;
-      employmentFormik.values.department = fetchESM.department;
-      employmentFormik.values.sector = fetchESM.sector;
-      employmentFormik.values.employer = fetchESM.employer;
-      employmentFormik.values.monthlyIncome = fetchESM.monthlyIncome;
+    if (fetchESM?.data) {
+      employmentFormik.values.civilQualification =
+        fetchESM?.data.civilQualification;
+      employmentFormik.values.additionalCourse =
+        fetchESM?.data.additionalCourse;
+      employmentFormik.values.equivalentTest = fetchESM?.data.equivalentTest;
+      employmentFormik.values.civilEmployment = fetchESM?.data.civilEmployment;
+      employmentFormik.values.presentDesignation =
+        fetchESM?.data.presentDesignation;
+      employmentFormik.values.department = fetchESM?.data.department;
+      employmentFormik.values.sector = fetchESM?.data.sector;
+      employmentFormik.values.employer = fetchESM?.data.employer;
+      employmentFormik.values.monthlyIncome = fetchESM?.data.monthlyIncome;
       employmentFormik.values.officialContactNumber =
-        fetchESM.officialContactNumber;
+        fetchESM?.data.officialContactNumber;
       employmentFormik.values.designationOnRetirement =
-        fetchESM.designationOnRetirement;
-      employmentFormik.values.retirementDate = fetchESM.retirementDate;
-      employmentFormik.values.civilPpoNumber = fetchESM.civilPpoNumber;
+        fetchESM?.data.designationOnRetirement;
+      employmentFormik.values.retirementDate = fetchESM?.data.retirementDate;
+      employmentFormik.values.civilPpoNumber = fetchESM?.data.civilPpoNumber;
 
       setReload(!reload);
     }
-  }, [fetchESM]);
+  }, [fetchESM?.data]);
 
   const formValues = [
     {
@@ -201,23 +205,29 @@ function EmploymentDetails(props) {
     event.preventDefault();
     if (Object.keys(employmentFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
+      employmentFormik.handleSubmit();
     } else {
-      registerESM("EmploymentDetails", employmentFormik.values);
-      props.handleComplete();
+      registerESM(
+        "EmploymentDetails",
+        employmentFormik.values,
+        "employmentForm"
+      );
     }
   };
 
+  console.log(fetchESM, "EmpCheck");
+
   useEffect(() => {
     if (responseStatus) {
-      if (responseStatus.from === "registerESM") {
+      if (responseStatus.from === "employmentForm") {
         if (responseStatus.status === "SUCCESS") {
-          setAlert("Form submitted successfully!", "success");
+          setAlert("Employment Details Submitted Successfully!", "success");
+          props.handleComplete();
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
           clearResponse();
         }
-        // else if (responseStatus.status === "error") {
-        //   setAlert(responseStatus.message, "error");
-        //   clearResponse();
-        // }
       }
     }
   }, [responseStatus]);

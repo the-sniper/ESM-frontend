@@ -5,6 +5,7 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
+import moment from "moment";
 
 function PensionDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -26,19 +27,53 @@ function PensionDetails(props) {
     ),
     dischargeCharacter: Yup.string().required("This is a required field."),
     dischargeBookNumber: Yup.string().required("This is a required field."),
-    isPensioner: Yup.boolean().required("This is a required field."),
-    ppoNumber: Yup.string().required("This is a required field."),
-    pensionSanctioned: Yup.string().required("This is a required field."),
-    presentPension: Yup.string().required("This is a required field."),
-    isSanctionedDisabilityPension: Yup.boolean().required(
-      "This is a required field."
+    isPensioner: Yup.string().required("This is a required field."),
+    ppoNumber: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    pensionSanctioned: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    presentPension: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    isSanctionedDisabilityPension: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    disabilityPension: Yup.number().when(
+      ["isPensioner", "isSanctionedDisabilityPension"],
+      {
+        is: (a, b) => a == "true" && b == "true",
+        then: () => Yup.string().required("This is a required field."),
+      }
     ),
-    disabilityPension: Yup.string().required("This is a required field."),
-    disabilityPercentage: 0,
-    pensionAccountNumber: Yup.string().required("This is a required field."),
-    bankName: Yup.string().required("This is a required field."),
-    branch: Yup.string().required("This is a required field."),
-    ifsc: Yup.string().required("This is a required field."),
+    disabilityPercentage: Yup.number().when(
+      ["isPensioner", "isSanctionedDisabilityPension"],
+      {
+        is: (a, b) => a == "true" && b == "true",
+        then: () => Yup.string().required("This is a required field."),
+      }
+    ),
+    pensionAccountNumber: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    bankName: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    branch: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    ifsc: Yup.string().when("isPensioner", {
+      is: "true",
+      then: () => Yup.string().required("This is a required field."),
+    }),
   });
 
   const pensionformik = useFormik({
@@ -50,12 +85,12 @@ function PensionDetails(props) {
       dischargeMedicalCategory: "",
       dischargeCharacter: "",
       dischargeBookNumber: "",
-      isPensioner: false,
+      isPensioner: "false",
       ppoNumber: "",
       pensionSanctioned: "",
       presentPension: "",
-      isSanctionedDisabilityPension: false,
-      disabilityPension: "",
+      isSanctionedDisabilityPension: "false",
+      disabilityPension: 0,
       disabilityPercentage: 0,
       pensionAccountNumber: "",
       bankName: "",
@@ -68,36 +103,55 @@ function PensionDetails(props) {
       handleSubmit();
     },
   });
+  const [serviceJoiningDate, setServiceJoiningDate] = useState(null);
+  const [pensionFormData, setPensionFormData] = useState({});
+  console.log(pensionformik, "pensionformik");
 
   useEffect(() => {
-    getESM("GetPensionDetails");
+    getESM("GetPensionDetails", "pensionForm");
+    getESM("GetServiceDetails", "serviceForm");
   }, []);
 
   useEffect(() => {
-    if (fetchESM) {
-      pensionformik.values.unitLastServed = fetchESM.fetchESM;
-      pensionformik.values.dischargeDate = fetchESM.dischargeDate;
-      pensionformik.values.dischargeReason = fetchESM.dischargeReason;
+    if (fetchESM.from === "serviceForm") {
+      setServiceJoiningDate(fetchESM?.data?.enrollDate);
+    } else if (fetchESM.from === "pensionForm") {
+      setPensionFormData(fetchESM?.data);
+    }
+  }, [fetchESM]);
+
+  console.log(fetchESM, "fetchESMCheck");
+  useEffect(() => {
+    if (pensionFormData) {
+      pensionformik.values.unitLastServed = pensionFormData.unitLastServed;
+      pensionformik.values.dischargeDate = pensionFormData.dischargeDate;
+      pensionformik.values.dischargeReason = pensionFormData.dischargeReason;
       pensionformik.values.dischargeMedicalCategory =
-        fetchESM.dischargeMedicalCategory;
-      pensionformik.values.dischargeCharacter = fetchESM.dischargeCharacter;
-      pensionformik.values.dischargeBookNumber = fetchESM.dischargeBookNumber;
-      pensionformik.values.isPensioner = fetchESM.isPensioner;
-      pensionformik.values.ppoNumber = fetchESM.ppoNumber;
-      pensionformik.values.pensionSanctioned = fetchESM.pensionSanctioned;
-      pensionformik.values.presentPension = fetchESM.presentPension;
+        pensionFormData.dischargeMedicalCategory;
+      pensionformik.values.dischargeCharacter =
+        pensionFormData.dischargeCharacter;
+      pensionformik.values.dischargeBookNumber =
+        pensionFormData.dischargeBookNumber;
+      pensionformik.values.isPensioner = pensionFormData.isPensioner;
+      pensionformik.values.ppoNumber = pensionFormData.ppoNumber;
+      pensionformik.values.pensionSanctioned =
+        pensionFormData.pensionSanctioned;
+      pensionformik.values.presentPension = pensionFormData.presentPension;
       pensionformik.values.isSanctionedDisabilityPension =
-        fetchESM.isSanctionedDisabilityPension;
-      pensionformik.values.disabilityPension = fetchESM.disabilityPension;
-      pensionformik.values.disabilityPercentage = fetchESM.disabilityPercentage;
-      pensionformik.values.pensionAccountNumber = fetchESM.pensionAccountNumber;
-      pensionformik.values.bankName = fetchESM.bankName;
-      pensionformik.values.branch = fetchESM.branch;
-      pensionformik.values.ifsc = fetchESM.ifsc;
+        pensionFormData.isSanctionedDisabilityPension;
+      pensionformik.values.disabilityPension =
+        pensionFormData.disabilityPension;
+      pensionformik.values.disabilityPercentage =
+        pensionFormData.disabilityPercentage;
+      pensionformik.values.pensionAccountNumber =
+        pensionFormData.pensionAccountNumber;
+      pensionformik.values.bankName = pensionFormData.bankName;
+      pensionformik.values.branch = pensionFormData.branch;
+      pensionformik.values.ifsc = pensionFormData.ifsc;
 
       setReload(!reload);
     }
-  }, [fetchESM]);
+  }, [pensionFormData]);
 
   const formValues = [
     {
@@ -106,7 +160,7 @@ function PensionDetails(props) {
       name: "unitLastServed",
       type: "text",
       class: "col-6",
-      autoFocus: true,
+      autoFocus: false,
       formik: pensionformik,
     },
     {
@@ -115,6 +169,8 @@ function PensionDetails(props) {
       name: "dischargeDate",
       type: "date",
       class: "col-6",
+      minDate: moment(serviceJoiningDate, "DD-MM-YYYY").format("DD-MM-YYYY"),
+
       formik: pensionformik,
     },
     {
@@ -174,11 +230,11 @@ function PensionDetails(props) {
       options: [
         {
           show: "Yes",
-          value: true,
+          id: "true",
         },
         {
           show: "No",
-          value: false,
+          id: "false",
         },
       ],
       class: "col-6",
@@ -189,7 +245,9 @@ function PensionDetails(props) {
       placeholder: "Enter your PPO number",
       name: "ppoNumber",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values?.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -197,7 +255,9 @@ function PensionDetails(props) {
       placeholder: "Enter the pension sanctioned",
       name: "pensionSanctioned",
       type: "number",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values?.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -205,7 +265,9 @@ function PensionDetails(props) {
       placeholder: "Enter the present pension",
       name: "presentPension",
       type: "number",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -215,14 +277,16 @@ function PensionDetails(props) {
       options: [
         {
           show: "Yes",
-          value: true,
+          id: true,
         },
         {
           show: "No",
-          value: false,
+          id: false,
         },
       ],
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -230,7 +294,12 @@ function PensionDetails(props) {
       placeholder: "Enter the disability pension",
       name: "disabilityPension",
       type: "number",
-      class: "col-6",
+      class: `col-3 ${
+        pensionformik?.values.isPensioner == "true" &&
+        pensionformik?.values.isSanctionedDisabilityPension == "true"
+          ? ""
+          : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -238,7 +307,12 @@ function PensionDetails(props) {
       placeholder: "Enter the disability percentage",
       name: "disabilityPercentage",
       type: "number",
-      class: "col-6",
+      class: `col-3 ${
+        pensionformik?.values.isPensioner == "true" &&
+        pensionformik?.values.isSanctionedDisabilityPension == "true"
+          ? ""
+          : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -246,7 +320,9 @@ function PensionDetails(props) {
       placeholder: "Enter the pension account number",
       name: "pensionAccountNumber",
       type: "number",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -254,7 +330,9 @@ function PensionDetails(props) {
       placeholder: "Enter your bank name",
       name: "bankName",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -262,7 +340,9 @@ function PensionDetails(props) {
       placeholder: "Enter your bank branch",
       name: "branch",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
     {
@@ -270,7 +350,9 @@ function PensionDetails(props) {
       placeholder: "Enter your bank IFSC",
       name: "ifsc",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        pensionformik?.values.isPensioner == "true" ? "" : "d-none"
+      }`,
       formik: pensionformik,
     },
   ];
@@ -279,23 +361,23 @@ function PensionDetails(props) {
     event.preventDefault();
     if (Object.keys(pensionformik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
+      pensionformik.handleSubmit();
     } else {
-      registerESM("PensionDetails", pensionformik.values);
-      props.handleComplete();
+      registerESM("PensionDetails", pensionformik.values, "pensionForm");
     }
   };
 
   useEffect(() => {
     if (responseStatus) {
-      if (responseStatus.from === "registerESM") {
+      if (responseStatus.from === "pensionForm") {
         if (responseStatus.status === "SUCCESS") {
-          setAlert("Form submitted successfully!", "success");
+          setAlert("Service Details Submitted Successfully!", "success");
+          props.handleComplete();
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
           clearResponse();
         }
-        // else if (responseStatus.status === "error") {
-        //   setAlert(responseStatus.message, "error");
-        //   clearResponse();
-        // }
       }
     }
   }, [responseStatus]);

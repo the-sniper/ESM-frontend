@@ -23,7 +23,9 @@ const Signup = () => {
     email: Yup.string()
       .email("Invalid email format")
       .required("This field is required!"),
-    mobile: Yup.string().required("This field is required!"),
+    mobile: Yup.string()
+      .matches(/^[789]\d{9}$/, "Enter a valid phone number.")
+      .required("This field is required!"),
     password: Yup.string()
       .min(8, "Minimum 8 characters")
       .required("This field is required!"),

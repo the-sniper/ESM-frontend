@@ -22,3 +22,44 @@
 .stepperBody .esmSubmitBtn {
   min-width: 180px;
 }
+
+.dependentModal .MuiPaper-root {
+  min-width: 800px;
+}
+
+.addDependent.MuiButtonBase-root {
+  color: var(--primColor);
+  border: 1px solid currentColor;
+  margin: 10px;
+  margin-left: auto;
+  display: flex;
+}
+
+.addDependent.MuiButtonBase-root span {
+  padding-right: 5px;
+}
+
+.addFirstDependent.MuiButtonBase-root {
+  color: var(--primColor);
+  border: 1px dashed var(--primColor);
+  margin: 10px;
+  margin-left: auto;
+  display: flex;
+  width: 100%;
+  height: 80px;
+}
+
+.addFirstDependent.MuiButtonBase-root span {
+  padding-right: 5px;
+}
+
+.stepperBody .sameAsPerm .customRadio {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .dependentModal .MuiPaper-root {
+    min-width: 90%;
+  }
+}

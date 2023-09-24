@@ -6,7 +6,12 @@ import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import CommonContext from "../../context/common/commonContext";
-import { recordOffices, tradeData } from "../../utils/commonExports";
+import {
+  decorations,
+  recordOffices,
+  tradeData,
+} from "../../utils/commonExports";
+import moment from "moment";
 
 function ServiceDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -38,20 +43,23 @@ function ServiceDetails(props) {
     tradeName: Yup.string().required("This field is required!"),
     rankName: Yup.string().required("This field is required!"),
     rankCategory: Yup.string().required("This field is required!"),
-    name: Yup.string().required("This field is required!"),
+    name: Yup.string()
+      .required("This field is required!")
+      .matches(/^[A-Za-z\s]+$/, {
+        message: "This field should only contain alphabetic characters.",
+      }),
     gender: Yup.string().required("This field is required!"),
     dob: Yup.string(),
     enrollDate: Yup.string(),
     worldWar2: Yup.string(),
     optAttend: Yup.string().required("This field is required!"),
-    decoration: Yup.string().required("This field is required!"),
+    decoration: Yup.array().required("This field is required!"),
   });
 
   useEffect(() => {
     getAllServices();
     getAllCorps({ serviceId: 1 }); //To Fetch all Corps from Service: Army
     getAllRankCategories();
-    getAllRanks({ serviceId: 2, rankCategoryId: 4 });
   }, []);
 
   console.log(allRanks, "allRanks");
@@ -70,9 +78,9 @@ function ServiceDetails(props) {
       gender: "",
       dob: "",
       enrollDate: "",
-      worldWar2: "",
+      worldWar2: "false",
       optAttend: "",
-      decoration: "",
+      decoration: [],
     },
     validationSchema: serviceValidationArray,
     onSubmit: (values) => {
@@ -85,30 +93,32 @@ function ServiceDetails(props) {
   }, []);
 
   useEffect(() => {
-    if (fetchESM) {
-      serviceFormik.values.serviceName = fetchESM.serviceName;
-      serviceFormik.values.corpsName = fetchESM.corpsName;
-      serviceFormik.values.recordOfficeName = fetchESM.recordOfficeName;
-      serviceFormik.values.groupName = fetchESM.groupName;
-      serviceFormik.values.tradeName = fetchESM.tradeName;
-      serviceFormik.values.rankName = fetchESM.rankName;
-      serviceFormik.values.rankCategory = fetchESM.rankCategory;
-      serviceFormik.values.name = fetchESM.name;
-      serviceFormik.values.gender = fetchESM.gender;
-      serviceFormik.values.dob = "11-02-2014";
-      serviceFormik.values.enrollDate = "11-02-2014";
-      // serviceFormik.values.worldWar2 = fetchESM.worldWar2;
-      serviceFormik.values.optAttend = fetchESM.optAttend;
-      serviceFormik.values.decoration = fetchESM.decoration;
+    if (fetchESM?.data) {
+      serviceFormik.values.serviceName = fetchESM?.data.serviceName;
+      serviceFormik.values.corpsName = fetchESM?.data.corpsName;
+      serviceFormik.values.recordOfficeName = fetchESM?.data.recordOfficeName;
+      serviceFormik.values.groupName = fetchESM?.data.groupName;
+      serviceFormik.values.tradeName = fetchESM?.data.tradeName;
+      serviceFormik.values.rankName = fetchESM?.data.rankName;
+      serviceFormik.values.rankCategory = fetchESM?.data.rankCategory;
+      serviceFormik.values.name = fetchESM?.data.name;
+      serviceFormik.values.gender = fetchESM?.data.gender;
+      serviceFormik.values.dob = fetchESM?.data.dob;
+      serviceFormik.values.enrollDate = fetchESM?.data.enrollDate;
+      serviceFormik.values.worldWar2 = fetchESM?.data.worldWar2;
+      serviceFormik.values.optAttend = fetchESM?.data.optAttend;
+      serviceFormik.values.decoration = fetchESM?.data.decoration;
       setReload(!reload);
     }
-  }, [fetchESM]);
+  }, [fetchESM?.data]);
 
   useEffect(() => {
-    getAllRanks({
-      serviceId: serviceFormik.values.serviceName,
-      rankCategoryId: serviceFormik.values.rankCategory,
-    });
+    if (serviceFormik.values.serviceName && serviceFormik.values.rankCategory) {
+      getAllRanks({
+        serviceId: serviceFormik.values.serviceName,
+        rankCategoryId: serviceFormik.values.rankCategory,
+      });
+    }
   }, [serviceFormik.values.serviceName, serviceFormik.values.rankCategory]);
 
   const formValues = [
@@ -142,7 +152,7 @@ function ServiceDetails(props) {
     {
       label: "Date of birth",
       placeholder: "Enter your date of birth",
-      name: "date",
+      name: "dob",
       type: "date",
       class: "col-6",
       formik: serviceFormik,
@@ -227,6 +237,12 @@ function ServiceDetails(props) {
       label: "Enrollment date",
       name: "enrollDate",
       type: "date",
+      minDate: moment(serviceFormik.values.dob, "DD-MM-YYYY")
+        .add(18, "years")
+        .format("DD-MM-YYYY"),
+      maxDate: moment(new Date(), "DD-MM-YYYY"),
+      helperText:
+        "Enrollment Date should be atleast 18 years greater than the DOB",
       class: "col-6",
       formik: serviceFormik,
     },
@@ -237,11 +253,11 @@ function ServiceDetails(props) {
       options: [
         {
           show: "Yes",
-          id: "0",
+          id: "true",
         },
         {
           show: "No",
-          id: "1",
+          id: "false",
         },
       ],
       class: "col-6",
@@ -258,35 +274,45 @@ function ServiceDetails(props) {
     {
       label: "Decorations",
       name: "decoration",
-      type: "text",
+      type: "multiselect",
       placeholder: "Enter your decorations",
       class: "col-6",
+      options: decorations,
       formik: serviceFormik,
     },
   ];
 
-  console.log(serviceFormik.errors, "serviceFormik.errors");
+  console.log(serviceFormik, "serviceFormikCheck");
+  console.log(
+    moment(serviceFormik.values.dob, "DD-MM-YYYY")
+      .add(18, "years")
+      .format("DD-MM-YYYY"),
+    "checkDate"
+  );
   const handleSubmit = (event) => {
     event.preventDefault();
     if (Object.keys(serviceFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
+      serviceFormik.handleSubmit();
     } else {
-      registerESM("ServiceDetails", serviceFormik.values);
-      props.handleComplete();
+      registerESM("ServiceDetails", serviceFormik.values, "serviceForm");
+      // props.handleComplete();
     }
   };
 
+  console.log(responseStatus, "responseStatusCHeck1");
+
   useEffect(() => {
     if (responseStatus) {
-      if (responseStatus.from === "registerESM") {
+      if (responseStatus.from === "serviceForm") {
         if (responseStatus.status === "SUCCESS") {
-          setAlert("Form submitted successfully!", "success");
+          setAlert("Service Details Submitted Successfully!", "success");
+          props.handleComplete();
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
           clearResponse();
         }
-        // else if (responseStatus.status === "error") {
-        //   setAlert(responseStatus.message, "error");
-        //   clearResponse();
-        // }
       }
     }
   }, [responseStatus]);

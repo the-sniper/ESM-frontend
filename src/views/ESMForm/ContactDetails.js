@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { mapData } from "../../utils";
+import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
+import { stateDistricts } from "../../utils/stateDistricts";
 
 function ContactDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -17,8 +18,9 @@ function ContactDetails(props) {
   const { setAlert } = alertContext;
 
   const contactValidationArray = Yup.object({
-    serviceName: Yup.string(),
-    pincode: Yup.string().required("This is a required field."),
+    pincode: Yup.string()
+      .matches(/^[1-9][0-9]{5}$/, "Invalid PIN code")
+      .required("This is a required field."),
     state: Yup.string().required("This is a required field."),
     district: Yup.string().required("This is a required field."),
     talukName: Yup.string().required("This is a required field."),
@@ -28,7 +30,9 @@ function ContactDetails(props) {
     houseName: Yup.string().required("This is a required field."),
     houseNumber: Yup.string().required("This is a required field."),
     policeStation: Yup.string().required("This is a required field."),
-    permanentPincode: Yup.string().required("This is a required field."),
+    permanentPincode: Yup.string()
+      .matches(/^[1-9][0-9]{5}$/, "Invalid PIN code")
+      .required("This is a required field."),
     permanentState: Yup.string().required("This is a required field."),
     permanentDistrict: Yup.string().required("This is a required field."),
     permanentTalukName: Yup.string().required("This is a required field."),
@@ -39,7 +43,7 @@ function ContactDetails(props) {
     permanentHouseNumber: Yup.string().required("This is a required field."),
     permanentPoliceStation: Yup.string().required("This is a required field."),
     telephoneNumber: Yup.string().required("This is a required field."),
-    sameAsPermanent: Yup.boolean().required("This is a required field."),
+    sameAsPermanent: Yup.string().required("This is a required field."),
   });
 
   const contactFormik = useFormik({
@@ -79,35 +83,72 @@ function ContactDetails(props) {
   }, []);
 
   useEffect(() => {
-    if (fetchESM) {
-      contactFormik.values.pincode = fetchESM.pincode;
-      contactFormik.values.state = fetchESM.state;
-      contactFormik.values.district = fetchESM.district;
-      contactFormik.values.talukName = fetchESM.talukName;
-      contactFormik.values.cityVillage = fetchESM.cityVillage;
-      contactFormik.values.locality = fetchESM.locality;
-      contactFormik.values.street = fetchESM.street;
-      contactFormik.values.houseName = fetchESM.houseName;
-      contactFormik.values.houseNumber = fetchESM.houseNumber;
-      contactFormik.values.policeStation = fetchESM.policeStation;
+    if (fetchESM?.data) {
+      contactFormik.values.pincode = fetchESM?.data.pincode;
+      contactFormik.values.state = fetchESM?.data.state;
+      contactFormik.values.district = fetchESM?.data.district;
+      contactFormik.values.talukName = fetchESM?.data.talukName;
+      contactFormik.values.cityVillage = fetchESM?.data.cityVillage;
+      contactFormik.values.locality = fetchESM?.data.locality;
+      contactFormik.values.street = fetchESM?.data.street;
+      contactFormik.values.houseName = fetchESM?.data.houseName;
+      contactFormik.values.houseNumber = fetchESM?.data.houseNumber;
+      contactFormik.values.policeStation = fetchESM?.data.policeStation;
 
-      contactFormik.values.permanentPincode = fetchESM.permanentPincode;
-      contactFormik.values.permanentState = fetchESM.permanentState;
-      contactFormik.values.permanentDistrict = fetchESM.permanentDistrict;
-      contactFormik.values.permanentTalukName = fetchESM.permanentTalukName;
-      contactFormik.values.permanentCityVillage = fetchESM.permanentCityVillage;
-      contactFormik.values.permanentLocality = fetchESM.permanentLocality;
-      contactFormik.values.permanentStreet = fetchESM.permanentStreet;
-      contactFormik.values.permanentHouseName = fetchESM.permanentHouseName;
-      contactFormik.values.permanentHouseNumber = fetchESM.permanentHouseNumber;
+      contactFormik.values.permanentPincode = fetchESM?.data.permanentPincode;
+      contactFormik.values.permanentState = fetchESM?.data.permanentState;
+      contactFormik.values.permanentDistrict = fetchESM?.data.permanentDistrict;
+      contactFormik.values.permanentTalukName =
+        fetchESM?.data.permanentTalukName;
+      contactFormik.values.permanentCityVillage =
+        fetchESM?.data.permanentCityVillage;
+      contactFormik.values.permanentLocality = fetchESM?.data.permanentLocality;
+      contactFormik.values.permanentStreet = fetchESM?.data.permanentStreet;
+      contactFormik.values.permanentHouseName =
+        fetchESM?.data.permanentHouseName;
+      contactFormik.values.permanentHouseNumber =
+        fetchESM?.data.permanentHouseNumber;
       contactFormik.values.permanentPoliceStation =
-        fetchESM.permanentPoliceStation;
-      contactFormik.values.telephoneNumber = fetchESM.telephoneNumber;
-      contactFormik.values.sameAsPermanent = fetchESM.false;
+        fetchESM?.data.permanentPoliceStation;
+      contactFormik.values.telephoneNumber = fetchESM?.data.telephoneNumber;
+      contactFormik.values.sameAsPermanent = fetchESM?.data.sameAsPermanent;
 
       setReload(!reload);
     }
-  }, [fetchESM]);
+  }, [fetchESM?.data]);
+
+  console.log(fetchESM, "fetchESMContact");
+
+  useEffect(() => {
+    if (contactFormik?.values?.sameAsPermanent == "true") {
+      contactFormik.values.permanentPincode = contactFormik?.values?.pincode;
+      contactFormik.values.permanentState = contactFormik?.values?.state;
+      contactFormik.values.permanentDistrict = contactFormik?.values?.district;
+      contactFormik.values.permanentTalukName =
+        contactFormik?.values?.talukName;
+      contactFormik.values.permanentCityVillage =
+        contactFormik?.values?.cityVillage;
+      contactFormik.values.permanentLocality = contactFormik?.values?.locality;
+      contactFormik.values.permanentStreet = contactFormik?.values?.street;
+      contactFormik.values.permanentHouseName =
+        contactFormik?.values?.houseName;
+      contactFormik.values.permanentHouseNumber =
+        contactFormik?.values?.houseNumber;
+      contactFormik.values.permanentPoliceStation =
+        contactFormik?.values?.policeStation;
+    } else {
+      contactFormik.values.permanentPincode = "";
+      contactFormik.values.permanentState = "";
+      contactFormik.values.permanentDistrict = "";
+      contactFormik.values.permanentTalukName = "";
+      contactFormik.values.permanentCityVillage = "";
+      contactFormik.values.permanentLocality = "";
+      contactFormik.values.permanentStreet = "";
+      contactFormik.values.permanentHouseName = "";
+      contactFormik.values.permanentHouseNumber = "";
+      contactFormik.values.permanentPoliceStation = "";
+    }
+  }, [contactFormik?.values?.sameAsPermanent]);
 
   const formValues = [
     {
@@ -147,24 +188,7 @@ function ContactDetails(props) {
       label: "Select state",
       name: "state",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
-      class: "col-6",
-      formik: contactFormik,
-    },
-    {
-      label: "City",
-      placeholder: "EnterCity",
-      name: "cityVillage",
-      type: "text",
+      options: cleanDropdownData(stateDistricts, "name", "id"),
       class: "col-6",
       formik: contactFormik,
     },
@@ -172,6 +196,19 @@ function ContactDetails(props) {
       label: "District",
       placeholder: "Enter District",
       name: "district",
+      type: "select",
+      options: cleanDropdownData(
+        stateDistricts[parseInt(contactFormik.values.state, 10) - 1]?.districts,
+        "name",
+        "id"
+      ),
+      class: "col-6",
+      formik: contactFormik,
+    },
+    {
+      label: "City",
+      placeholder: "EnterCity",
+      name: "cityVillage",
       type: "text",
       class: "col-6",
       formik: contactFormik,
@@ -202,7 +239,7 @@ function ContactDetails(props) {
     },
     {
       type: "misc",
-      content: "Permanent address",
+      content: <h5 className="my-3">Permanent address</h5>,
       class: "col-12",
     },
     {
@@ -212,15 +249,20 @@ function ContactDetails(props) {
       options: [
         {
           show: "Yes",
-          value: true,
+          id: "true",
         },
         {
           show: "No",
-          value: false,
+          id: "false",
         },
       ],
-      class: "col-6",
+      class: "col-6 sameAsPerm",
       formik: contactFormik,
+    },
+    {
+      type: "misc",
+      content: <></>,
+      class: "col-6",
     },
     {
       label: "House number",
@@ -259,16 +301,21 @@ function ContactDetails(props) {
       label: "Select state",
       name: "permanentState",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      options: cleanDropdownData(stateDistricts, "name", "id"),
+      class: "col-6",
+      formik: contactFormik,
+    },
+    {
+      label: "District",
+      placeholder: "Enter District",
+      name: "permanentDistrict",
+      type: "select",
+      options: cleanDropdownData(
+        stateDistricts[parseInt(contactFormik.values.permanentState, 10) - 1]
+          ?.districts,
+        "name",
+        "id"
+      ),
       class: "col-6",
       formik: contactFormik,
     },
@@ -280,14 +327,7 @@ function ContactDetails(props) {
       class: "col-6",
       formik: contactFormik,
     },
-    {
-      label: "District",
-      placeholder: "Enter District",
-      name: "permanentDistrict",
-      type: "text",
-      class: "col-6",
-      formik: contactFormik,
-    },
+
     {
       label: "Taluk",
       placeholder: "Enter Taluk",
@@ -326,27 +366,26 @@ function ContactDetails(props) {
     event.preventDefault();
     if (Object.keys(contactFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
+      contactFormik.handleSubmit();
     } else {
-      registerESM("ContactDetails", contactFormik.values);
-      props.handleComplete();
+      registerESM("ContactDetails", contactFormik.values, "contactForm");
     }
   };
 
   useEffect(() => {
     if (responseStatus) {
-      if (responseStatus.from === "registerESM") {
+      if (responseStatus.from === "contactForm") {
         if (responseStatus.status === "SUCCESS") {
-          setAlert("Form submitted successfully!", "success");
+          setAlert("Contact Details Submitted Successfully!", "success");
+          props.handleComplete();
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
           clearResponse();
         }
-        // else if (responseStatus.status === "error") {
-        //   setAlert(responseStatus.message, "error");
-        //   clearResponse();
-        // }
       }
     }
   }, [responseStatus]);
-
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>

@@ -15,8 +15,8 @@ const EsmRegState = (props) => {
   const [state, dispatch] = useReducer(esmRegReducer, initialState);
   let resp = new response(dispatch, RESPONSE_STATUS);
 
-  // Bid Confirm
-  const registerESM = async (endpoint, formData) => {
+  // Register ESM Details
+  const registerESM = async (endpoint, formData, fromVariable) => {
     if (localStorage.token) {
       setAuthToken(localStorage.token);
     } else if (sessionStorage.token) {
@@ -26,16 +26,47 @@ const EsmRegState = (props) => {
       const [res] = await Promise.all([
         apiCall("post", endpoint, formData, "", "ESM"),
       ]);
-      resp.commonResponse(res.data, "registerESM");
+
+      if (res && res.status === 200) {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: {
+            status: "SUCCESS",
+            message: "Request processed successfully!",
+            type: res.status,
+            data: res.data,
+            from: fromVariable || "registerESM",
+          },
+        });
+      } else {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: {
+            status: "ERROR",
+            message: "Something went wrong!",
+            type: 0,
+            from: fromVariable || "registerESM",
+          },
+        });
+      }
+
       console.log("Success while getting ESM data");
     } catch (err) {
-      resp.commonErrorResponse("registerESM");
+      await dispatch({
+        type: RESPONSE_STATUS,
+        payload: {
+          status: "ERROR",
+          message: "Something went wrong!",
+          type: err.status,
+          from: fromVariable || "registerESM",
+        },
+      });
       console.log(err, "Error while getting ESM data");
     }
   };
 
   // Get ESM Data
-  const getESM = async (endpoint) => {
+  const getESM = async (endpoint, fromVariable) => {
     if (localStorage.username) {
       try {
         const res = await apiCall(
@@ -52,13 +83,22 @@ const EsmRegState = (props) => {
           await dispatch({
             type: ESM_FETCH,
             payload: {
+              status: "SUCCESS",
+              message: "Request processed successfully!",
+              type: res.status,
               data: res.data,
+              from: fromVariable || "getESM",
             },
           });
         } else {
           await dispatch({
             type: RESPONSE_STATUS,
-            payload: "Something went wrong!",
+            payload: {
+              status: "ERROR",
+              message: "Something went wrong!",
+              type: 0,
+              from: fromVariable || "getESM",
+            },
           });
         }
       } catch (error) {

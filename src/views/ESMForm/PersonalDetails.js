@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { mapData } from "../../utils";
+import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
+import { stateDistricts } from "../../utils/stateDistricts";
+import { religionCastes } from "../../utils/commonExports";
 
 function PersonalDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -18,20 +20,47 @@ function PersonalDetails(props) {
 
   const personalValidationArray = Yup.object({
     serviceName: Yup.string(),
-    fatherName: Yup.string().required("This is a required field."),
-    motherName: Yup.string().required("This is a required field."),
+    fatherName: Yup.string()
+      .required("This field is required!")
+      .matches(/^[A-Za-z\s]+$/, {
+        message: "This field should only contain alphabetic characters.",
+      }),
+    motherName: Yup.string()
+      .required("This field is required!")
+      .matches(/^[A-Za-z\s]+$/, {
+        message: "This field should only contain alphabetic characters.",
+      }),
     relegion: Yup.string().required("This is a required field."),
     casteCategory: Yup.string().required("This is a required field."),
     birthState: Yup.string().required("This is a required field."),
     birthDistrictSurname: Yup.string().required("This is a required field."),
-    birthPlace: Yup.string().required("This is a required field."),
-    aadhar: Yup.string().required("This is a required field."),
-    voterId: Yup.string().required("This is a required field."),
-    pan: Yup.string().required("This is a required field."),
+    birthPlace: Yup.string()
+      .required("This field is required!")
+      .matches(/^[A-Za-z\s]+$/, {
+        message: "This field should only contain alphabetic characters.",
+      }),
+    aadhar: Yup.string()
+      .required("This is a required field.")
+      .matches(/^\d{12}$/, {
+        message: "Aadhar number must be a 12-digit numeric value",
+      }),
+
+    voterId: Yup.string()
+      .required("This is a required field.")
+      .matches(/^[A-Z]{3}[0-9]{7}$/, {
+        message:
+          "Voter ID must be in the format AAA1234567 (3 uppercase letters followed by 7 digits).",
+      }),
+    pan: Yup.string()
+      .required("This is a required field.")
+      .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
+        message:
+          "PAN must be in the format ABCDE1234F (5 uppercase letters, 4 digits, and 1 uppercase letter).",
+      }),
     csd: Yup.string().required("This is a required field."),
     echs: Yup.string().required("This is a required field."),
     identificationMark1: Yup.string().required("This is a required field."),
-    identificationMark2: Yup.string().required("This is a required field."),
+    identificationMark2: Yup.string(),
   });
 
   const personalformik = useFormik({
@@ -63,27 +92,29 @@ function PersonalDetails(props) {
   }, []);
 
   useEffect(() => {
-    if (fetchESM) {
-      personalformik.values.fatherName = fetchESM.fatherName;
-      personalformik.values.motherName = fetchESM.motherName;
-      personalformik.values.relegion = fetchESM.relegion;
-      personalformik.values.casteCategory = fetchESM.casteCategory;
-      personalformik.values.birthState = fetchESM.birthState;
+    if (fetchESM?.data) {
+      personalformik.values.fatherName = fetchESM?.data.fatherName;
+      personalformik.values.motherName = fetchESM?.data.motherName;
+      personalformik.values.relegion = fetchESM?.data.relegion;
+      personalformik.values.casteCategory = fetchESM?.data.casteCategory;
+      personalformik.values.birthState = fetchESM?.data.birthState;
       personalformik.values.birthDistrictSurname =
-        fetchESM.birthDistrictSurname;
-      personalformik.values.birthPlace = fetchESM.birthPlace;
-      personalformik.values.aadhar = fetchESM.aadhar;
-      personalformik.values.voterId = fetchESM.voterId;
-      personalformik.values.pan = fetchESM.pan;
-      personalformik.values.csd = fetchESM.csd;
-      personalformik.values.echs = fetchESM.echs;
-      personalformik.values.identificationMark1 = fetchESM.identificationMark1;
-      personalformik.values.identificationMark2 = fetchESM.identificationMark2;
+        fetchESM?.data.birthDistrictSurname;
+      personalformik.values.birthPlace = fetchESM?.data.birthPlace;
+      personalformik.values.aadhar = fetchESM?.data.aadhar;
+      personalformik.values.voterId = fetchESM?.data.voterId;
+      personalformik.values.pan = fetchESM?.data.pan;
+      personalformik.values.csd = fetchESM?.data.csd;
+      personalformik.values.echs = fetchESM?.data.echs;
+      personalformik.values.identificationMark1 =
+        fetchESM?.data.identificationMark1;
+      personalformik.values.identificationMark2 =
+        fetchESM?.data.identificationMark2;
 
       setReload(!reload);
     }
-  }, [fetchESM]);
-
+  }, [fetchESM?.data]);
+  console.log(personalformik, "personalformik");
   const formValues = [
     {
       label: "Father's name",
@@ -106,7 +137,8 @@ function PersonalDetails(props) {
       label: "Religion",
       placeholder: "Select your religion",
       name: "relegion",
-      type: "text",
+      type: "select",
+      options: religionCastes.religions,
       class: "col-6",
       formik: personalformik,
     },
@@ -114,16 +146,7 @@ function PersonalDetails(props) {
       label: "Caste",
       name: "casteCategory",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      options: religionCastes.castes[personalformik?.values?.relegion],
       class: "col-6",
       formik: personalformik,
     },
@@ -131,16 +154,7 @@ function PersonalDetails(props) {
       label: "Birth state",
       name: "birthState",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      options: cleanDropdownData(stateDistricts, "name", "id"),
       class: "col-6",
       formik: personalformik,
     },
@@ -148,7 +162,13 @@ function PersonalDetails(props) {
       label: "Birth district",
       placeholder: "Enter the district you were born in",
       name: "birthDistrictSurname",
-      type: "text",
+      type: "select",
+      options: cleanDropdownData(
+        stateDistricts[parseInt(personalformik.values.birthState, 10) - 1]
+          ?.districts,
+        "name",
+        "id"
+      ),
       class: "col-6",
       formik: personalformik,
     },
@@ -222,23 +242,24 @@ function PersonalDetails(props) {
     event.preventDefault();
     if (Object.keys(personalformik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
+      personalformik.handleSubmit();
     } else {
-      registerESM("PersonalDetails", personalformik.values);
-      props.handleComplete();
+      registerESM("PersonalDetails", personalformik.values, "personalForm");
     }
   };
+  console.log(responseStatus, "responseStatusCHeck2");
 
   useEffect(() => {
     if (responseStatus) {
-      if (responseStatus.from === "registerESM") {
+      if (responseStatus.from === "personalForm") {
         if (responseStatus.status === "SUCCESS") {
-          setAlert("Form submitted successfully!", "success");
+          setAlert("Personal Details Submitted Successfully!", "success");
+          props.handleComplete();
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
           clearResponse();
         }
-        // else if (responseStatus.status === "error") {
-        //   setAlert(responseStatus.message, "error");
-        //   clearResponse();
-        // }
       }
     }
   }, [responseStatus]);

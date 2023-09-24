@@ -30,6 +30,18 @@ const apiCall = async (method, url, data, headertype, baseurl) => {
           resolve(err);
           break;
         }
+      case "put":
+        try {
+          data = data ? data : {};
+          const res = await axios.put(`${site_url}${url}`, data, config);
+          console.log("responsode from api", res);
+          resolve(res);
+          break;
+        } catch (err) {
+          console.log("responsode error from api", err);
+          resolve(err);
+          break;
+        }
       case "get":
         try {
           console.log("get method", url, config);

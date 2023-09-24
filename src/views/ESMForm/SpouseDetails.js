@@ -5,6 +5,7 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
+import moment from "moment";
 
 function SpouseDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -17,37 +18,128 @@ function SpouseDetails(props) {
   const { setAlert } = alertContext;
 
   const spouseValidationArray = Yup.object({
-    serviceName: Yup.string(),
     maritalStatus: Yup.string().required("This is a required field."),
-    marriageDate: Yup.string().required("This is a required field."),
-    spouseName: Yup.string().required("This is a required field."),
-    spouseRelationship: Yup.string().required("This is a required field."),
-    spouseDob: Yup.string().required("This is a required field."),
-    spouseIdentificationMark: Yup.string().required(
-      "This is a required field."
+    marriageDate: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseName: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseRelationship: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseDob: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseIdentificationMark: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseQualification: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseEmploymentStatus: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseAadhar: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () =>
+        Yup.string()
+          .required("This is a required field.")
+          .matches(/^\d{12}$/, {
+            message: "Aadhar number must be a 12-digit numeric value",
+          }),
+    }),
+    spouseVoterId: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () =>
+        Yup.string()
+          .required("This is a required field.")
+          .matches(/^[A-Z]{3}[0-9]{7}$/, {
+            message:
+              "Voter ID must be in the format AAA1234567 (3 uppercase letters followed by 7 digits).",
+          }),
+    }),
+    spousePan: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () =>
+        Yup.string()
+          .required("This is a required field.")
+          .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
+            message:
+              "PAN must be in the format ABCDE1234F (5 uppercase letters, 4 digits, and 1 uppercase letter).",
+          }),
+    }),
+    spouseCsd: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseEchs: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    spouseDepartment: Yup.string().when(
+      ["maritalStatus", "spouseEmploymentStatus"],
+      {
+        is: (a, b) => a == "married" && b == "employed",
+        then: () => Yup.string().required("This is a required field."),
+      }
     ),
-    spouseQualification: Yup.string().required("This is a required field."),
-    spouseEmploymentStatus: Yup.string().required("This is a required field."),
-    spouseAadhar: Yup.string().required("This is a required field."),
-    spouseVoterId: Yup.string().required("This is a required field."),
-    spousePan: Yup.string().required("This is a required field."),
-    spouseCsd: Yup.string().required("This is a required field."),
-    spouseEchs: Yup.string().required("This is a required field."),
-    spouseDepartment: Yup.string().required("This is a required field."),
-    spouseSector: Yup.string().required("This is a required field."),
-    spousePresentDesignation: Yup.string().required(
-      "This is a required field."
+    spouseSector: Yup.string().when(
+      ["maritalStatus", "spouseEmploymentStatus"],
+      {
+        is: (a, b) => a == "married" && b == "employed",
+        then: () => Yup.string().required("This is a required field."),
+      }
     ),
-    spouseMonthlyIncome: Yup.string().required("This is a required field."),
-    spouseOfficialNumber: Yup.string().required("This is a required field."),
-    spouseDesignationOnRetirement: Yup.string().required(
-      "This is a required field."
+    spousePresentDesignation: Yup.string().when(
+      ["maritalStatus", "spouseEmploymentStatus"],
+      {
+        is: (a, b) => a == "married" && b == "employed",
+        then: () => Yup.string().required("This is a required field."),
+      }
     ),
-    spouseRetirementDate: Yup.string().required("This is a required field."),
-    spouseCivilPpoNumber: Yup.string().required("This is a required field."),
-    divorceDate: Yup.string().required("This is a required field."),
-    courtOrder: Yup.string().required("This is a required field."),
-    deathDate: Yup.string().required("This is a required field."),
+    spouseMonthlyIncome: Yup.string().when(
+      ["maritalStatus", "spouseEmploymentStatus"],
+      {
+        is: (a, b) => a == "married" && b == "employed",
+        then: () => Yup.string().required("This is a required field."),
+      }
+    ),
+    spouseOfficialNumber: Yup.string().when(
+      ["maritalStatus", "spouseEmploymentStatus"],
+      {
+        is: (a, b) => a == "married" && b == "employed",
+        then: () => Yup.string().required("This is a required field."),
+      }
+    ),
+    spouseDesignationOnRetirement: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string(),
+    }),
+    spouseRetirementDate: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string(),
+    }),
+    spouseCivilPpoNumber: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string(),
+    }),
+    divorceDate: Yup.string().when("maritalStatus", {
+      is: "separated",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    courtOrder: Yup.string().when("maritalStatus", {
+      is: "separated",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    deathDate: Yup.string(),
   });
 
   const spouseFormik = useFormik({
@@ -89,40 +181,44 @@ function SpouseDetails(props) {
   }, []);
 
   useEffect(() => {
-    if (fetchESM) {
-      spouseFormik.values.maritalStatus = fetchESM.maritalStatus;
-      spouseFormik.values.marriageDate = fetchESM.marriageDate;
-      spouseFormik.values.spouseName = fetchESM.spouseName;
-      spouseFormik.values.spouseRelationship = fetchESM.spouseRelationship;
-      spouseFormik.values.spouseDob = fetchESM.spouseDob;
+    if (fetchESM?.data) {
+      spouseFormik.values.maritalStatus = fetchESM?.data.maritalStatus;
+      spouseFormik.values.marriageDate = fetchESM?.data.marriageDate;
+      spouseFormik.values.spouseName = fetchESM?.data.spouseName;
+      spouseFormik.values.spouseRelationship =
+        fetchESM?.data.spouseRelationship;
+      spouseFormik.values.spouseDob = fetchESM?.data.spouseDob;
       spouseFormik.values.spouseIdentificationMark =
-        fetchESM.spouseIdentificationMark;
-      spouseFormik.values.spouseQualification = fetchESM.spouseQualification;
+        fetchESM?.data.spouseIdentificationMark;
+      spouseFormik.values.spouseQualification =
+        fetchESM?.data.spouseQualification;
       spouseFormik.values.spouseEmploymentStatus =
-        fetchESM.spouseEmploymentStatus;
-      spouseFormik.values.spouseAadhar = fetchESM.spouseAadhar;
-      spouseFormik.values.spouseVoterId = fetchESM.spouseVoterId;
-      spouseFormik.values.spousePan = fetchESM.spousePan;
-      spouseFormik.values.spouseCsd = fetchESM.spouseCsd;
-      spouseFormik.values.spouseEchs = fetchESM.spouseEchs;
-      spouseFormik.values.spouseDepartment = fetchESM.spouseDepartment;
-      spouseFormik.values.spouseSector = fetchESM.spouseSector;
+        fetchESM?.data.spouseEmploymentStatus;
+      spouseFormik.values.spouseAadhar = fetchESM?.data.spouseAadhar;
+      spouseFormik.values.spouseVoterId = fetchESM?.data.spouseVoterId;
+      spouseFormik.values.spousePan = fetchESM?.data.spousePan;
+      spouseFormik.values.spouseCsd = fetchESM?.data.spouseCsd;
+      spouseFormik.values.spouseEchs = fetchESM?.data.spouseEchs;
+      spouseFormik.values.spouseDepartment = fetchESM?.data.spouseDepartment;
+      spouseFormik.values.spouseSector = fetchESM?.data.spouseSector;
       spouseFormik.values.spousePresentDesignation =
-        fetchESM.spousePresentDesignation;
-      spouseFormik.values.spouseMonthlyIncome = fetchESM.spouseMonthlyIncome;
-      spouseFormik.values.spouseOfficialNumber = fetchESM.spouseOfficialNumber;
+        fetchESM?.data.spousePresentDesignation;
+      spouseFormik.values.spouseMonthlyIncome =
+        fetchESM?.data.spouseMonthlyIncome;
+      spouseFormik.values.spouseOfficialNumber =
+        fetchESM?.data.spouseOfficialNumber;
       spouseFormik.values.spouseDesignationOnRetirement =
-        fetchESM.spouseDesignationOnRetirement;
-      spouseFormik.values.spouseRetirementDate = fetchESM.spouseRetirementDate;
-      spouseFormik.values.spouseCivilPpoNumber = fetchESM.spouseCivilPpoNumber;
-      spouseFormik.values.divorceDate = fetchESM.divorceDate;
-      spouseFormik.values.courtOrder = fetchESM.courtOrder;
-      spouseFormik.values.deathDate = fetchESM.deathDate;
-      spouseFormik.values.identificationMark2 = fetchESM.identificationMark2;
-
+        fetchESM?.data.spouseDesignationOnRetirement;
+      spouseFormik.values.spouseRetirementDate =
+        fetchESM?.data.spouseRetirementDate;
+      spouseFormik.values.spouseCivilPpoNumber =
+        fetchESM?.data.spouseCivilPpoNumber;
+      spouseFormik.values.divorceDate = fetchESM?.data.divorceDate;
+      spouseFormik.values.courtOrder = fetchESM?.data.courtOrder;
+      spouseFormik.values.deathDate = fetchESM?.data.deathDate;
       setReload(!reload);
     }
-  }, [fetchESM]);
+  }, [fetchESM?.data]);
 
   const formValues = [
     {
@@ -147,11 +243,24 @@ function SpouseDetails(props) {
       formik: spouseFormik,
     },
     {
+      label: "Spouse's date of birth",
+      name: "spouseDob",
+      type: "date",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
+      maxDate: moment(new Date(), "DD-MM-YYYY"),
+      formik: spouseFormik,
+    },
+    {
       label: "Date of marriage",
       placeholder: "Enter your date of marriage",
       name: "marriageDate",
       type: "date",
-      class: "col-6",
+      minDate: moment(spouseFormik.values.spouseDob, "DD-MM-YYYY"),
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -159,7 +268,9 @@ function SpouseDetails(props) {
       placeholder: "Enter your spouse's name",
       name: "spouseName",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
 
@@ -177,22 +288,20 @@ function SpouseDetails(props) {
           value: "wife",
         },
       ],
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
-    {
-      label: "Spouse's date of birth",
-      name: "spouseDob",
-      type: "date",
-      class: "col-6",
-      formik: spouseFormik,
-    },
+
     {
       label: "Spouse's identification mark",
       placeholder: "Enter spouse's identification mark",
       name: "spouseIdentificationMark",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -209,7 +318,9 @@ function SpouseDetails(props) {
           value: "2",
         },
       ],
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
 
@@ -218,7 +329,9 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's Aadhar number",
       name: "spouseAadhar",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -226,7 +339,9 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's Voter ID",
       name: "spouseVoterId",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -234,7 +349,9 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's PAN",
       name: "spousePan",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -242,7 +359,9 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's CSD number",
       name: "spouseCsd",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -250,15 +369,9 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's ECHS number",
       name: "spouseEchs",
       type: "text",
-      class: "col-6",
-      formik: spouseFormik,
-    },
-    {
-      label: "Spouse's ECHS number",
-      placeholder: "Enter spouse's ECHS number",
-      name: "spouseDepartment",
-      type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -275,9 +388,25 @@ function SpouseDetails(props) {
           value: "unemployed",
         },
       ],
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
+    {
+      label: "Spouse's Employment Department",
+      placeholder: "Enter spouse's employment department",
+      name: "spouseDepartment",
+      type: "text",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
+      formik: spouseFormik,
+    },
+
     {
       label: "Spouse's employment sector",
       name: "spouseSector",
@@ -292,7 +421,12 @@ function SpouseDetails(props) {
           value: "2",
         },
       ],
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -300,7 +434,12 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's present designation",
       name: "spousePresentDesignation",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -308,7 +447,12 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's monthly income",
       name: "spouseMonthlyIncome",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -316,7 +460,12 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's official number",
       name: "spouseOfficialNumber",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -324,7 +473,12 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's designation on retirement",
       name: "spouseDesignationOnRetirement",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -332,7 +486,13 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's retirement date",
       name: "spouseRetirementDate",
       type: "date",
-      class: "col-6",
+      minDate: moment(spouseFormik.values.spouseDob, "DD-MM-YYYY"),
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -340,7 +500,12 @@ function SpouseDetails(props) {
       placeholder: "Enter spouse's PPO number",
       name: "spouseCivilPpoNumber",
       type: "text",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.spouseEmploymentStatus == "employed"
+          ? ""
+          : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -348,7 +513,10 @@ function SpouseDetails(props) {
       placeholder: "Enter divorce date",
       name: "divorceDate",
       type: "date",
-      class: "col-6",
+      minDate: moment(spouseFormik.values.marriageDate, "DD-MM-YYYY"),
+      class: `col-sm-3 col-12 ${
+        spouseFormik.values.maritalStatus == "separated" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -356,7 +524,10 @@ function SpouseDetails(props) {
       placeholder: "Enter court order",
       name: "courtOrder",
       type: "date",
-      class: "col-6",
+      minDate: moment(spouseFormik.values.marriageDate, "DD-MM-YYYY"),
+      class: `col-sm-3 col-12 ${
+        spouseFormik.values.maritalStatus == "separated" ? "" : "d-none"
+      }`,
       formik: spouseFormik,
     },
     {
@@ -364,7 +535,11 @@ function SpouseDetails(props) {
       placeholder: "Enter date of death",
       name: "deathDate",
       type: "date",
-      class: "col-6",
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
+      minDate: moment(spouseFormik.values.spouseDob, "DD-MM-YYYY"),
+      maxDate: moment(new Date(), "DD-MM-YYYY"),
       formik: spouseFormik,
     },
   ];
@@ -373,23 +548,25 @@ function SpouseDetails(props) {
     event.preventDefault();
     if (Object.keys(spouseFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
+      spouseFormik.handleSubmit();
     } else {
-      registerESM("SpouseDetails", spouseFormik.values);
-      props.handleComplete();
+      registerESM("SpouseDetails", spouseFormik.values, "spouseForm");
     }
   };
 
+  console.log(spouseFormik, "spouseFormik");
+
   useEffect(() => {
     if (responseStatus) {
-      if (responseStatus.from === "registerESM") {
+      if (responseStatus.from === "spouseForm") {
         if (responseStatus.status === "SUCCESS") {
-          setAlert("Form submitted successfully!", "success");
+          setAlert("Spouse Details Submitted Successfully!", "success");
+          props.handleComplete();
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
           clearResponse();
         }
-        // else if (responseStatus.status === "error") {
-        //   setAlert(responseStatus.message, "error");
-        //   clearResponse();
-        // }
       }
     }
   }, [responseStatus]);

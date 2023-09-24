@@ -116,6 +116,32 @@ button:focus {
   margin: 0 10px 0 0;
 }
 
+.customRadio .radioTitle {
+  margin-bottom: 2px;
+}
+
+.customSelect
+  .MuiInputBase-root.Mui-error
+  .customDatepicker.Mui-error
+  .MuiFormLabel-root,
+.customDatepicker.Mui-error .MuiFormHelperText-root {
+  color: #d32f2f;
+}
+.customDatepicker.Mui-error fieldset {
+  border-color: #d32f2f;
+}
+
+.customDialog .closeBtn {
+  width: 40px;
+  height: 40px;
+  min-width: initial;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #8d8d8d;
+}
+
 @media (max-width: 500px) {
   .primButton.small.MuiButton-root,
   .secButton.small.MuiButton-root,
