@@ -14,8 +14,9 @@ function ContactDetails(props) {
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
 
-  const [reload, setReload] = useState(false);
   const { setAlert } = alertContext;
+  const [reload, setReload] = useState(false);
+  const [contactFormData, setContactFormData] = useState({});
 
   const contactValidationArray = Yup.object({
     pincode: Yup.string()
@@ -79,45 +80,51 @@ function ContactDetails(props) {
   });
 
   useEffect(() => {
-    getESM("GetContactDetails");
+    getESM("GetContactDetails", "contactForm");
   }, []);
 
   useEffect(() => {
-    if (fetchESM?.data) {
-      contactFormik.values.pincode = fetchESM?.data.pincode;
-      contactFormik.values.state = fetchESM?.data.state;
-      contactFormik.values.district = fetchESM?.data.district;
-      contactFormik.values.talukName = fetchESM?.data.talukName;
-      contactFormik.values.cityVillage = fetchESM?.data.cityVillage;
-      contactFormik.values.locality = fetchESM?.data.locality;
-      contactFormik.values.street = fetchESM?.data.street;
-      contactFormik.values.houseName = fetchESM?.data.houseName;
-      contactFormik.values.houseNumber = fetchESM?.data.houseNumber;
-      contactFormik.values.policeStation = fetchESM?.data.policeStation;
+    if (fetchESM.from === "contactForm") {
+      setContactFormData(fetchESM?.data?.data);
+    }
+  }, [fetchESM]);
 
-      contactFormik.values.permanentPincode = fetchESM?.data.permanentPincode;
-      contactFormik.values.permanentState = fetchESM?.data.permanentState;
-      contactFormik.values.permanentDistrict = fetchESM?.data.permanentDistrict;
+  useEffect(() => {
+    if (contactFormData) {
+      contactFormik.values.pincode = contactFormData?.pincode;
+      contactFormik.values.state = contactFormData?.state;
+      contactFormik.values.district = contactFormData?.district;
+      contactFormik.values.talukName = contactFormData?.talukName;
+      contactFormik.values.cityVillage = contactFormData?.cityVillage;
+      contactFormik.values.locality = contactFormData?.locality;
+      contactFormik.values.street = contactFormData?.street;
+      contactFormik.values.houseName = contactFormData?.houseName;
+      contactFormik.values.houseNumber = contactFormData?.houseNumber;
+      contactFormik.values.policeStation = contactFormData?.policeStation;
+
+      contactFormik.values.permanentPincode = contactFormData?.permanentPincode;
+      contactFormik.values.permanentState = contactFormData?.permanentState;
+      contactFormik.values.permanentDistrict =
+        contactFormData?.permanentDistrict;
       contactFormik.values.permanentTalukName =
-        fetchESM?.data.permanentTalukName;
+        contactFormData?.permanentTalukName;
       contactFormik.values.permanentCityVillage =
-        fetchESM?.data.permanentCityVillage;
-      contactFormik.values.permanentLocality = fetchESM?.data.permanentLocality;
-      contactFormik.values.permanentStreet = fetchESM?.data.permanentStreet;
+        contactFormData?.permanentCityVillage;
+      contactFormik.values.permanentLocality =
+        contactFormData?.permanentLocality;
+      contactFormik.values.permanentStreet = contactFormData?.permanentStreet;
       contactFormik.values.permanentHouseName =
-        fetchESM?.data.permanentHouseName;
+        contactFormData?.permanentHouseName;
       contactFormik.values.permanentHouseNumber =
-        fetchESM?.data.permanentHouseNumber;
+        contactFormData?.permanentHouseNumber;
       contactFormik.values.permanentPoliceStation =
-        fetchESM?.data.permanentPoliceStation;
-      contactFormik.values.telephoneNumber = fetchESM?.data.telephoneNumber;
-      contactFormik.values.sameAsPermanent = fetchESM?.data.sameAsPermanent;
+        contactFormData?.permanentPoliceStation;
+      contactFormik.values.telephoneNumber = contactFormData?.telephoneNumber;
+      contactFormik.values.sameAsPermanent = contactFormData?.sameAsPermanent;
 
       setReload(!reload);
     }
-  }, [fetchESM?.data]);
-
-  console.log(fetchESM, "fetchESMContact");
+  }, [contactFormData]);
 
   useEffect(() => {
     if (contactFormik?.values?.sameAsPermanent == "true") {
@@ -368,7 +375,12 @@ function ContactDetails(props) {
       setAlert("Please fill out all the mandatory fields!", "error");
       contactFormik.handleSubmit();
     } else {
-      registerESM("ContactDetails", contactFormik.values, "contactForm");
+      registerESM(
+        contactFormData?.submittedBy == null ? "post" : "put",
+        "ContactDetails",
+        contactFormik.values,
+        "contactForm"
+      );
     }
   };
 

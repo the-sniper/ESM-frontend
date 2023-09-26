@@ -15,6 +15,7 @@ function SpouseDetails(props) {
     esmRegContext;
 
   const [reload, setReload] = useState(false);
+  const [spouseFormData, setSpouseFormData] = useState({});
   const { setAlert } = alertContext;
 
   const spouseValidationArray = Yup.object({
@@ -139,7 +140,14 @@ function SpouseDetails(props) {
       is: "separated",
       then: () => Yup.string().required("This is a required field."),
     }),
-    deathDate: Yup.string(),
+    isAlive: Yup.string().when("maritalStatus", {
+      is: "married",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    deathDate: Yup.string().when("isAlive", {
+      is: "2",
+      then: () => Yup.string().required("This is a required field."),
+    }),
   });
 
   const spouseFormik = useFormik({
@@ -168,6 +176,7 @@ function SpouseDetails(props) {
       spouseCivilPpoNumber: "",
       divorceDate: "",
       courtOrder: "",
+      isAlive: "",
       deathDate: "",
     },
     validationSchema: spouseValidationArray,
@@ -177,48 +186,55 @@ function SpouseDetails(props) {
   });
 
   useEffect(() => {
-    getESM("GetSpouseDetails");
+    getESM("GetSpouseDetails", "spouseForm");
   }, []);
 
   useEffect(() => {
-    if (fetchESM?.data) {
-      spouseFormik.values.maritalStatus = fetchESM?.data.maritalStatus;
-      spouseFormik.values.marriageDate = fetchESM?.data.marriageDate;
-      spouseFormik.values.spouseName = fetchESM?.data.spouseName;
+    if (fetchESM.from === "spouseForm") {
+      setSpouseFormData(fetchESM?.data?.data);
+    }
+  }, [fetchESM]);
+
+  useEffect(() => {
+    if (spouseFormData) {
+      spouseFormik.values.maritalStatus = spouseFormData?.maritalStatus;
+      spouseFormik.values.marriageDate = spouseFormData?.marriageDate;
+      spouseFormik.values.spouseName = spouseFormData?.spouseName;
       spouseFormik.values.spouseRelationship =
-        fetchESM?.data.spouseRelationship;
-      spouseFormik.values.spouseDob = fetchESM?.data.spouseDob;
+        spouseFormData?.spouseRelationship;
+      spouseFormik.values.spouseDob = spouseFormData?.spouseDob;
       spouseFormik.values.spouseIdentificationMark =
-        fetchESM?.data.spouseIdentificationMark;
+        spouseFormData?.spouseIdentificationMark;
       spouseFormik.values.spouseQualification =
-        fetchESM?.data.spouseQualification;
+        spouseFormData?.spouseQualification;
       spouseFormik.values.spouseEmploymentStatus =
-        fetchESM?.data.spouseEmploymentStatus;
-      spouseFormik.values.spouseAadhar = fetchESM?.data.spouseAadhar;
-      spouseFormik.values.spouseVoterId = fetchESM?.data.spouseVoterId;
-      spouseFormik.values.spousePan = fetchESM?.data.spousePan;
-      spouseFormik.values.spouseCsd = fetchESM?.data.spouseCsd;
-      spouseFormik.values.spouseEchs = fetchESM?.data.spouseEchs;
-      spouseFormik.values.spouseDepartment = fetchESM?.data.spouseDepartment;
-      spouseFormik.values.spouseSector = fetchESM?.data.spouseSector;
+        spouseFormData?.spouseEmploymentStatus;
+      spouseFormik.values.spouseAadhar = spouseFormData?.spouseAadhar;
+      spouseFormik.values.spouseVoterId = spouseFormData?.spouseVoterId;
+      spouseFormik.values.spousePan = spouseFormData?.spousePan;
+      spouseFormik.values.spouseCsd = spouseFormData?.spouseCsd;
+      spouseFormik.values.spouseEchs = spouseFormData?.spouseEchs;
+      spouseFormik.values.spouseDepartment = spouseFormData?.spouseDepartment;
+      spouseFormik.values.spouseSector = spouseFormData?.spouseSector;
       spouseFormik.values.spousePresentDesignation =
-        fetchESM?.data.spousePresentDesignation;
+        spouseFormData?.spousePresentDesignation;
       spouseFormik.values.spouseMonthlyIncome =
-        fetchESM?.data.spouseMonthlyIncome;
+        spouseFormData?.spouseMonthlyIncome;
       spouseFormik.values.spouseOfficialNumber =
-        fetchESM?.data.spouseOfficialNumber;
+        spouseFormData?.spouseOfficialNumber;
       spouseFormik.values.spouseDesignationOnRetirement =
-        fetchESM?.data.spouseDesignationOnRetirement;
+        spouseFormData?.spouseDesignationOnRetirement;
       spouseFormik.values.spouseRetirementDate =
-        fetchESM?.data.spouseRetirementDate;
+        spouseFormData?.spouseRetirementDate;
       spouseFormik.values.spouseCivilPpoNumber =
-        fetchESM?.data.spouseCivilPpoNumber;
-      spouseFormik.values.divorceDate = fetchESM?.data.divorceDate;
-      spouseFormik.values.courtOrder = fetchESM?.data.courtOrder;
-      spouseFormik.values.deathDate = fetchESM?.data.deathDate;
+        spouseFormData?.spouseCivilPpoNumber;
+      spouseFormik.values.divorceDate = spouseFormData?.divorceDate;
+      spouseFormik.values.courtOrder = spouseFormData?.courtOrder;
+      spouseFormik.values.deathDate = spouseFormData?.deathDate;
+      spouseFormik.values.isAlive = spouseFormData?.isAlive;
       setReload(!reload);
     }
-  }, [fetchESM?.data]);
+  }, [spouseFormData]);
 
   const formValues = [
     {
@@ -531,12 +547,34 @@ function SpouseDetails(props) {
       formik: spouseFormik,
     },
     {
+      label: "Is Spouse Alive?",
+      name: "isAlive",
+      type: "select",
+      options: [
+        {
+          show: "Yes",
+          value: "1",
+        },
+        {
+          show: "No",
+          value: "2",
+        },
+      ],
+      class: `col-6 ${
+        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+      }`,
+      formik: spouseFormik,
+    },
+    {
       label: "Date of death",
       placeholder: "Enter date of death",
       name: "deathDate",
       type: "date",
       class: `col-6 ${
-        spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
+        spouseFormik.values.maritalStatus == "married" &&
+        spouseFormik.values.isAlive == "2"
+          ? ""
+          : "d-none"
       }`,
       minDate: moment(spouseFormik.values.spouseDob, "DD-MM-YYYY"),
       maxDate: moment(new Date(), "DD-MM-YYYY"),
@@ -550,7 +588,12 @@ function SpouseDetails(props) {
       setAlert("Please fill out all the mandatory fields!", "error");
       spouseFormik.handleSubmit();
     } else {
-      registerESM("SpouseDetails", spouseFormik.values, "spouseForm");
+      registerESM(
+        spouseFormData?.submittedBy == null ? "post" : "put",
+        "SpouseDetails",
+        spouseFormik.values,
+        "spouseForm"
+      );
     }
   };
 

@@ -505,7 +505,7 @@ export const mapData = (page, props) => {
                 startAdornment={data.startAdornment}
                 endAdornment={data.endAdornment}
                 error={errorCheck(data, formik)}
-                helperText={helperText(data, formik)}
+                helperText={data.helperText || helperText(data, formik)}
                 inputStyle={data.inputStyle}
                 required={data.required}
               />

@@ -114,40 +114,40 @@ function PensionDetails(props) {
 
   useEffect(() => {
     if (fetchESM.from === "serviceForm") {
-      setServiceJoiningDate(fetchESM?.data?.enrollDate);
+      setServiceJoiningDate(fetchESM?.data?.data.enrollDate);
     } else if (fetchESM.from === "pensionForm") {
-      setPensionFormData(fetchESM?.data);
+      setPensionFormData(fetchESM?.data?.data);
     }
   }, [fetchESM]);
 
-  console.log(fetchESM, "fetchESMCheck");
+  console.log(pensionFormData?.submittedBy, "pensionFormData");
   useEffect(() => {
     if (pensionFormData) {
-      pensionformik.values.unitLastServed = pensionFormData.unitLastServed;
-      pensionformik.values.dischargeDate = pensionFormData.dischargeDate;
-      pensionformik.values.dischargeReason = pensionFormData.dischargeReason;
+      pensionformik.values.unitLastServed = pensionFormData?.unitLastServed;
+      pensionformik.values.dischargeDate = pensionFormData?.dischargeDate;
+      pensionformik.values.dischargeReason = pensionFormData?.dischargeReason;
       pensionformik.values.dischargeMedicalCategory =
-        pensionFormData.dischargeMedicalCategory;
+        pensionFormData?.dischargeMedicalCategory;
       pensionformik.values.dischargeCharacter =
-        pensionFormData.dischargeCharacter;
+        pensionFormData?.dischargeCharacter;
       pensionformik.values.dischargeBookNumber =
-        pensionFormData.dischargeBookNumber;
-      pensionformik.values.isPensioner = pensionFormData.isPensioner;
-      pensionformik.values.ppoNumber = pensionFormData.ppoNumber;
+        pensionFormData?.dischargeBookNumber;
+      pensionformik.values.isPensioner = pensionFormData?.isPensioner;
+      pensionformik.values.ppoNumber = pensionFormData?.ppoNumber;
       pensionformik.values.pensionSanctioned =
-        pensionFormData.pensionSanctioned;
-      pensionformik.values.presentPension = pensionFormData.presentPension;
+        pensionFormData?.pensionSanctioned;
+      pensionformik.values.presentPension = pensionFormData?.presentPension;
       pensionformik.values.isSanctionedDisabilityPension =
-        pensionFormData.isSanctionedDisabilityPension;
+        pensionFormData?.isSanctionedDisabilityPension;
       pensionformik.values.disabilityPension =
-        pensionFormData.disabilityPension;
+        pensionFormData?.disabilityPension;
       pensionformik.values.disabilityPercentage =
-        pensionFormData.disabilityPercentage;
+        pensionFormData?.disabilityPercentage;
       pensionformik.values.pensionAccountNumber =
-        pensionFormData.pensionAccountNumber;
-      pensionformik.values.bankName = pensionFormData.bankName;
-      pensionformik.values.branch = pensionFormData.branch;
-      pensionformik.values.ifsc = pensionFormData.ifsc;
+        pensionFormData?.pensionAccountNumber;
+      pensionformik.values.bankName = pensionFormData?.bankName;
+      pensionformik.values.branch = pensionFormData?.branch;
+      pensionformik.values.ifsc = pensionFormData?.ifsc;
 
       setReload(!reload);
     }
@@ -363,7 +363,12 @@ function PensionDetails(props) {
       setAlert("Please fill out all the mandatory fields!", "error");
       pensionformik.handleSubmit();
     } else {
-      registerESM("PensionDetails", pensionformik.values, "pensionForm");
+      registerESM(
+        pensionFormData?.submittedBy == null ? "post" : "put",
+        "PensionDetails",
+        pensionformik.values,
+        "pensionForm"
+      );
     }
   };
 

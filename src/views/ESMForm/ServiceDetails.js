@@ -33,14 +33,25 @@ function ServiceDetails(props) {
   } = commonContext;
 
   const [reload, setReload] = useState(false);
-  const [services, setServices] = useState([]);
+  const [serviceFormData, setServiceFormData] = useState({});
 
   const serviceValidationArray = Yup.object({
     serviceName: Yup.string().required("This field is required!"),
-    corpsName: Yup.string().required("This field is required!"),
+    esmRegisterationId: Yup.string().required("This field is required!"),
+    corpsName: Yup.number().when("serviceName", {
+      is: 1,
+      then: () => Yup.number().required("This is a required field."),
+    }),
     recordOfficeName: Yup.string().required("This field is required!"),
-    groupName: Yup.string().required("This field is required!"),
-    tradeName: Yup.string().required("This field is required!"),
+    groupName: Yup.string().when("serviceName", {
+      is: "2",
+      then: () => Yup.string().required("This is a required field."),
+    }),
+    tradeName: Yup.number().required("This field is required!"),
+    othersTradeName: Yup.number().when("tradeName", {
+      is: 0,
+      then: () => Yup.number().required("This is a required field."),
+    }),
     rankName: Yup.string().required("This field is required!"),
     rankCategory: Yup.string().required("This field is required!"),
     name: Yup.string()
@@ -54,6 +65,7 @@ function ServiceDetails(props) {
     worldWar2: Yup.string(),
     optAttend: Yup.string().required("This field is required!"),
     decoration: Yup.array().required("This field is required!"),
+    othersDecoration: Yup.string(),
   });
 
   useEffect(() => {
@@ -68,10 +80,12 @@ function ServiceDetails(props) {
     initialValues: {
       serviceNumber: localStorage.username,
       serviceName: "",
+      esmRegisterationId: "",
       corpsName: "",
       recordOfficeName: "",
       groupName: "",
       tradeName: "",
+      othersTradeName: "",
       rankName: "",
       rankCategory: "",
       name: "",
@@ -81,6 +95,7 @@ function ServiceDetails(props) {
       worldWar2: "false",
       optAttend: "",
       decoration: [],
+      othersDecoration: "",
     },
     validationSchema: serviceValidationArray,
     onSubmit: (values) => {
@@ -89,28 +104,38 @@ function ServiceDetails(props) {
   });
 
   useEffect(() => {
-    getESM("GetServiceDetails");
+    getESM("GetServiceDetails", "serviceForm");
   }, []);
 
   useEffect(() => {
-    if (fetchESM?.data) {
-      serviceFormik.values.serviceName = fetchESM?.data.serviceName;
-      serviceFormik.values.corpsName = fetchESM?.data.corpsName;
-      serviceFormik.values.recordOfficeName = fetchESM?.data.recordOfficeName;
-      serviceFormik.values.groupName = fetchESM?.data.groupName;
-      serviceFormik.values.tradeName = fetchESM?.data.tradeName;
-      serviceFormik.values.rankName = fetchESM?.data.rankName;
-      serviceFormik.values.rankCategory = fetchESM?.data.rankCategory;
-      serviceFormik.values.name = fetchESM?.data.name;
-      serviceFormik.values.gender = fetchESM?.data.gender;
-      serviceFormik.values.dob = fetchESM?.data.dob;
-      serviceFormik.values.enrollDate = fetchESM?.data.enrollDate;
-      serviceFormik.values.worldWar2 = fetchESM?.data.worldWar2;
-      serviceFormik.values.optAttend = fetchESM?.data.optAttend;
-      serviceFormik.values.decoration = fetchESM?.data.decoration;
+    if (fetchESM.from === "serviceForm") {
+      setServiceFormData(fetchESM?.data?.data);
+    }
+  }, [fetchESM]);
+
+  useEffect(() => {
+    if (serviceFormData) {
+      serviceFormik.values.serviceName = serviceFormData?.serviceName;
+      serviceFormik.values.esmRegisterationId =
+        serviceFormData?.esmRegisterationId;
+      serviceFormik.values.corpsName = serviceFormData?.corpsName;
+      serviceFormik.values.recordOfficeName = serviceFormData?.recordOfficeName;
+      serviceFormik.values.groupName = serviceFormData?.groupName;
+      serviceFormik.values.tradeName = serviceFormData?.tradeName;
+      serviceFormik.values.othersTradeName = serviceFormData?.othersTradeName;
+      serviceFormik.values.rankName = serviceFormData?.rankName;
+      serviceFormik.values.rankCategory = serviceFormData?.rankCategory;
+      serviceFormik.values.name = serviceFormData?.name;
+      serviceFormik.values.gender = serviceFormData?.gender;
+      serviceFormik.values.dob = serviceFormData?.dob;
+      serviceFormik.values.enrollDate = serviceFormData?.enrollDate;
+      serviceFormik.values.worldWar2 = serviceFormData?.worldWar2;
+      serviceFormik.values.optAttend = serviceFormData?.optAttend;
+      serviceFormik.values.decoration = serviceFormData?.decoration;
+      serviceFormik.values.othersDecoration = serviceFormData?.othersDecoration;
       setReload(!reload);
     }
-  }, [fetchESM?.data]);
+  }, [serviceFormData]);
 
   useEffect(() => {
     if (serviceFormik.values.serviceName && serviceFormik.values.rankCategory) {
@@ -121,14 +146,34 @@ function ServiceDetails(props) {
     }
   }, [serviceFormik.values.serviceName, serviceFormik.values.rankCategory]);
 
+  const [updatedTrade, setUpdatedTrade] = useState([]);
+  useEffect(() => {
+    let tempTrade = tradeData.filter(
+      (d) => d.group == serviceFormik.values.groupName
+    );
+    setUpdatedTrade(tempTrade);
+    if (tempTrade?.length > 0) {
+      setUpdatedTrade([...tempTrade?.flat(), { value: 0, show: "Other" }]);
+    }
+  }, [tradeData, serviceFormik.values]);
+
   const formValues = [
+    {
+      label: "ESM Registeration ID",
+      placeholder: "Enter ESM Registeration ID",
+      name: "esmRegisterationId",
+      type: "text",
+      class: "col-6",
+      autoFocus: true,
+      formik: serviceFormik,
+      required: false,
+    },
     {
       label: "Full name",
       placeholder: "Enter your full name",
       name: "name",
       type: "text",
       class: "col-6",
-      autoFocus: true,
       formik: serviceFormik,
       required: false,
     },
@@ -166,6 +211,7 @@ function ServiceDetails(props) {
       class: "col-6",
       formik: serviceFormik,
     },
+
     {
       label: "Corps",
       name: "corpsName",
@@ -227,10 +273,15 @@ function ServiceDetails(props) {
       label: "Trade/Branch",
       name: "tradeName",
       type: "select",
-      options: tradeData.filter(
-        (d) => d.group == serviceFormik.values.groupName
-      ),
+      options: updatedTrade,
       class: `col-6 ${serviceFormik.values.serviceName == 2 ? "" : "d-none"}`, //Enable this only for Service: Air Force
+      formik: serviceFormik,
+    },
+    {
+      label: "Other Trade/Branch",
+      name: "othersTradeName",
+      type: "text",
+      class: `col-6 ${serviceFormik.values.tradeName == 0 ? "" : "d-none"}`, //Enable this only for Service: Air Force
       formik: serviceFormik,
     },
     {
@@ -280,22 +331,30 @@ function ServiceDetails(props) {
       options: decorations,
       formik: serviceFormik,
     },
+    {
+      label: "Other Decorations",
+      name: "othersDecoration",
+      type: "test",
+      placeholder: "Enter your decorations",
+      class: "col-6",
+      helperText: `Add multiple Decorations by separating by a semicolon(;)`,
+      formik: serviceFormik,
+    },
   ];
-
-  console.log(serviceFormik, "serviceFormikCheck");
-  console.log(
-    moment(serviceFormik.values.dob, "DD-MM-YYYY")
-      .add(18, "years")
-      .format("DD-MM-YYYY"),
-    "checkDate"
-  );
+  console.log(serviceFormik?.errors, "serviceFormik.error");
+  console.log(serviceFormik?.values, "serviceFormik.value");
   const handleSubmit = (event) => {
     event.preventDefault();
     if (Object.keys(serviceFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
       serviceFormik.handleSubmit();
     } else {
-      registerESM("ServiceDetails", serviceFormik.values, "serviceForm");
+      registerESM(
+        serviceFormData?.submittedBy == null ? "post" : "put",
+        "ServiceDetails",
+        serviceFormik.values,
+        "serviceForm"
+      );
       // props.handleComplete();
     }
   };

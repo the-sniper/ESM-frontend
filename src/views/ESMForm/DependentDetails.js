@@ -128,6 +128,7 @@ function DependentDetails(props) {
       placeholder: "Enter the name of the dependent",
       name: "dependentName",
       type: "text",
+      autoFocus: true,
       class: "col-sm-6 col-12",
       formik: dependentFormik,
     },
@@ -414,9 +415,13 @@ function DependentDetails(props) {
         closeBtn={true}
       >
         <div className="row">{Object.values(mapData(formValues))}</div>
+
         <div className="actionWrapper d-flex justify-content-end">
           <CustomButton
-            type="primary"
+            type="submit"
+            disabled={
+              Object.keys(dependentFormik?.errors).length === 0 ? false : true
+            }
             onClick={handleManageDependent}
             label="Submit"
           />

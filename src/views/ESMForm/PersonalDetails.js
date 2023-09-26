@@ -16,6 +16,8 @@ function PersonalDetails(props) {
     esmRegContext;
 
   const [reload, setReload] = useState(false);
+  const [personalFormData, setPersonalFormData] = useState({});
+
   const { setAlert } = alertContext;
 
   const personalValidationArray = Yup.object({
@@ -88,33 +90,39 @@ function PersonalDetails(props) {
   });
 
   useEffect(() => {
-    getESM("GetPersonalDetails");
+    getESM("GetPersonalDetails", "personalForm");
   }, []);
 
   useEffect(() => {
-    if (fetchESM?.data) {
-      personalformik.values.fatherName = fetchESM?.data.fatherName;
-      personalformik.values.motherName = fetchESM?.data.motherName;
-      personalformik.values.relegion = fetchESM?.data.relegion;
-      personalformik.values.casteCategory = fetchESM?.data.casteCategory;
-      personalformik.values.birthState = fetchESM?.data.birthState;
+    if (fetchESM.from === "personalForm") {
+      setPersonalFormData(fetchESM?.data?.data);
+    }
+  }, [fetchESM]);
+
+  useEffect(() => {
+    if (personalFormData) {
+      personalformik.values.fatherName = personalFormData?.fatherName;
+      personalformik.values.motherName = personalFormData?.motherName;
+      personalformik.values.relegion = personalFormData?.relegion;
+      personalformik.values.casteCategory = personalFormData?.casteCategory;
+      personalformik.values.birthState = personalFormData?.birthState;
       personalformik.values.birthDistrictSurname =
-        fetchESM?.data.birthDistrictSurname;
-      personalformik.values.birthPlace = fetchESM?.data.birthPlace;
-      personalformik.values.aadhar = fetchESM?.data.aadhar;
-      personalformik.values.voterId = fetchESM?.data.voterId;
-      personalformik.values.pan = fetchESM?.data.pan;
-      personalformik.values.csd = fetchESM?.data.csd;
-      personalformik.values.echs = fetchESM?.data.echs;
+        personalFormData?.birthDistrictSurname;
+      personalformik.values.birthPlace = personalFormData?.birthPlace;
+      personalformik.values.aadhar = personalFormData?.aadhar;
+      personalformik.values.voterId = personalFormData?.voterId;
+      personalformik.values.pan = personalFormData?.pan;
+      personalformik.values.csd = personalFormData?.csd;
+      personalformik.values.echs = personalFormData?.echs;
       personalformik.values.identificationMark1 =
-        fetchESM?.data.identificationMark1;
+        personalFormData?.identificationMark1;
       personalformik.values.identificationMark2 =
-        fetchESM?.data.identificationMark2;
+        personalFormData?.identificationMark2;
 
       setReload(!reload);
     }
-  }, [fetchESM?.data]);
-  console.log(personalformik, "personalformik");
+  }, [personalFormData]);
+
   const formValues = [
     {
       label: "Father's name",
@@ -244,7 +252,12 @@ function PersonalDetails(props) {
       setAlert("Please fill out all the mandatory fields!", "error");
       personalformik.handleSubmit();
     } else {
-      registerESM("PersonalDetails", personalformik.values, "personalForm");
+      registerESM(
+        personalFormData?.submittedBy == null ? "post" : "put",
+        "PersonalDetails",
+        personalformik.values,
+        "personalForm"
+      );
     }
   };
   console.log(responseStatus, "responseStatusCHeck2");

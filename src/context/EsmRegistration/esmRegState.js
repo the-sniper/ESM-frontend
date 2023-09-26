@@ -16,7 +16,7 @@ const EsmRegState = (props) => {
   let resp = new response(dispatch, RESPONSE_STATUS);
 
   // Register ESM Details
-  const registerESM = async (endpoint, formData, fromVariable) => {
+  const registerESM = async (method, endpoint, formData, fromVariable) => {
     if (localStorage.token) {
       setAuthToken(localStorage.token);
     } else if (sessionStorage.token) {
@@ -24,7 +24,7 @@ const EsmRegState = (props) => {
     }
     try {
       const [res] = await Promise.all([
-        apiCall("post", endpoint, formData, "", "ESM"),
+        apiCall(method || "post", endpoint, formData, "", "ESM"),
       ]);
 
       if (res && res.status === 200) {
