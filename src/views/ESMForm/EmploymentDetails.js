@@ -5,6 +5,7 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
+import { qualification } from "../../utils/commonExports";
 
 function EmploymentDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -155,7 +156,8 @@ function EmploymentDetails(props) {
       label: "Civil qualification",
       placeholder: "Enter your Civil qualification",
       name: "civilQualification",
-      type: "text",
+      type: "select",
+      options: qualification,
       class: `col-6 ${
         employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
       }`,
@@ -173,19 +175,10 @@ function EmploymentDetails(props) {
     },
 
     {
-      label: "Select equivalent test",
+      label: "Equivalent test",
+      label: "Enter equivalent test",
       name: "equivalentTest",
-      type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      type: "text",
       class: `col-6 ${
         employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
       }`,

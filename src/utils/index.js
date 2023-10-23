@@ -42,6 +42,26 @@ export const converDate = (data) => {
   return dataReturn;
 };
 
+export const dateFormatFunction = (data) => {
+  let dataReturn = "-";
+  if (data) {
+    if (moment(data).isValid()) {
+      dataReturn = `${moment(data).format(dateFormat)}`;
+    }
+  }
+  return dataReturn;
+};
+
+export const dateTimeFormatFunction = (data) => {
+  let dataReturn = "-";
+  if (data) {
+    if (moment(data).isValid()) {
+      dataReturn = `${moment(data).format(dateTimeFormat)}`;
+    }
+  }
+  return dataReturn;
+};
+
 const helperText = (data, formik) => {
   return data.filter &&
     formik &&

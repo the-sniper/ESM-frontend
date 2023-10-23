@@ -38,20 +38,22 @@ function ServiceDetails(props) {
   const serviceValidationArray = Yup.object({
     serviceName: Yup.string().required("This field is required!"),
     esmRegisterationId: Yup.string().required("This field is required!"),
-    corpsName: Yup.number().when("serviceName", {
-      is: 1,
-      then: () => Yup.number().required("This is a required field."),
-    }),
+    // corpsName: Yup.number().when("serviceName", {
+    //   is: 1,
+    //   then: () => Yup.number().required("This is a required field."),
+    // }),
     recordOfficeName: Yup.string().required("This field is required!"),
     groupName: Yup.string().when("serviceName", {
       is: "2",
       then: () => Yup.string().required("This is a required field."),
     }),
-    tradeName: Yup.number().required("This field is required!"),
-    othersTradeName: Yup.number().when("tradeName", {
-      is: 0,
-      then: () => Yup.number().required("This is a required field."),
-    }),
+    tradeName: Yup.string().required("This field is required!"),
+    othersTradeName: Yup.string()
+      .nullable()
+      .when("tradeName", {
+        is: "0",
+        then: () => Yup.string(),
+      }),
     rankName: Yup.string().required("This field is required!"),
     rankCategory: Yup.string().required("This field is required!"),
     name: Yup.string()
@@ -70,7 +72,7 @@ function ServiceDetails(props) {
 
   useEffect(() => {
     getAllServices();
-    getAllCorps({ serviceId: 1 }); //To Fetch all Corps from Service: Army
+    // getAllCorps({ serviceId: 1 }); //To Fetch all Corps from Service: Army
     getAllRankCategories();
   }, []);
 
@@ -118,11 +120,12 @@ function ServiceDetails(props) {
       serviceFormik.values.serviceName = serviceFormData?.serviceName;
       serviceFormik.values.esmRegisterationId =
         serviceFormData?.esmRegisterationId;
-      serviceFormik.values.corpsName = serviceFormData?.corpsName;
+      serviceFormik.values.corpsName = "";
       serviceFormik.values.recordOfficeName = serviceFormData?.recordOfficeName;
       serviceFormik.values.groupName = serviceFormData?.groupName;
       serviceFormik.values.tradeName = serviceFormData?.tradeName;
-      serviceFormik.values.othersTradeName = serviceFormData?.othersTradeName;
+      serviceFormik.values.othersTradeName =
+        serviceFormData?.othersTradeName || "";
       serviceFormik.values.rankName = serviceFormData?.rankName;
       serviceFormik.values.rankCategory = serviceFormData?.rankCategory;
       serviceFormik.values.name = serviceFormData?.name;
@@ -212,14 +215,14 @@ function ServiceDetails(props) {
       formik: serviceFormik,
     },
 
-    {
-      label: "Corps",
-      name: "corpsName",
-      type: "select",
-      options: cleanDropdownData(allCorps, "corps", "id"),
-      class: `col-6 ${serviceFormik.values.serviceName == 1 ? "" : "d-none"}`, //Enable this only for Service: Army
-      formik: serviceFormik,
-    },
+    // {
+    //   label: "Corps",
+    //   name: "corpsName",
+    //   type: "select",
+    //   options: cleanDropdownData(allCorps, "corps", "id"),
+    //   class: `col-6 ${serviceFormik.values.serviceName == 1 ? "" : "d-none"}`, //Enable this only for Service: Army
+    //   formik: serviceFormik,
+    // },
     {
       label: "Record office",
       placeholder: "Enter record office name",
@@ -274,7 +277,7 @@ function ServiceDetails(props) {
       name: "tradeName",
       type: "select",
       options: updatedTrade,
-      class: `col-6 ${serviceFormik.values.serviceName == 2 ? "" : "d-none"}`, //Enable this only for Service: Air Force
+      class: `col-6`, //Enable this only for Service: Air Force
       formik: serviceFormik,
     },
     {

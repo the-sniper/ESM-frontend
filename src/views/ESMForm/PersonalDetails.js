@@ -151,10 +151,17 @@ function PersonalDetails(props) {
       formik: personalformik,
     },
     {
-      label: "Caste",
+      label: "Caste Category",
       name: "casteCategory",
       type: "select",
-      options: religionCastes.castes[personalformik?.values?.relegion],
+      options: religionCastes.categories,
+      class: "col-6",
+      formik: personalformik,
+    },
+    {
+      label: "Caste",
+      name: "caste",
+      type: "text",
       class: "col-6",
       formik: personalformik,
     },
@@ -260,7 +267,7 @@ function PersonalDetails(props) {
       );
     }
   };
-  console.log(responseStatus, "responseStatusCHeck2");
+  console.log(personalformik, "personalformik");
 
   useEffect(() => {
     if (responseStatus) {

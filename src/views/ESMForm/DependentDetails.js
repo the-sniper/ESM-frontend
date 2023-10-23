@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { capitalize, mapData } from "../../utils";
+import { capitalize, dateFormatFunction, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import moment from "moment";
@@ -23,11 +23,12 @@ function DependentDetails(props) {
   const [dependentModal, setDependentModal] = useState(false);
   const [currId, setCurrId] = useState(null);
   const [deleteDependent, setDeleteDependent] = useState(false);
+  const [depMaritalStatus, setDepMaritalStatus] = useState([]);
 
   const dependentValidationArray = Yup.object({
     dependentName: Yup.string().required("This is a required field."),
     registeredDate: Yup.string().required("This is a required field."),
-    dependentId: Yup.string().required("This is a required field."),
+    dependentId: Yup.string(),
     relation: Yup.string().required("This is a required field."),
     dependentDob: Yup.string().required("This is a required field."),
     dependentAadhar: Yup.string()
@@ -36,7 +37,7 @@ function DependentDetails(props) {
         message: "Aadhar number must be a 12-digit numeric value",
       }),
     dependentQualification: Yup.string().required("This is a required field."),
-    dependentAcademicYear: Yup.string().required("This is a required field."),
+    dependentAcademicYear: Yup.string(),
     dependentEmploymentStatus: Yup.string().required(
       "This is a required field."
     ),
@@ -57,6 +58,7 @@ function DependentDetails(props) {
       dependentEmploymentStatus: "",
       dependentMaritalStatus: "",
     },
+    enableReinitialize: true,
     validationSchema: dependentValidationArray,
     onSubmit: (values) => {
       handleSubmit();
@@ -64,7 +66,7 @@ function DependentDetails(props) {
   });
 
   useEffect(() => {
-    getESM("GetDependentDetails");
+    getESM("GetAllDependentDetails");
   }, []);
 
   useEffect(() => {
@@ -101,27 +103,27 @@ function DependentDetails(props) {
     setReload(!reload);
   }, [currId]);
 
-  // useEffect(() => {
-  //   if (fetchESM?.data) {
-  //     dependentFormik.values.dependentName = fetchESM?.data.dependentName;
-  //     dependentFormik.values.dependentId = fetchESM?.data.dependentId;
-  //     dependentFormik.values.registeredDate = fetchESM?.data.registeredDate;
-  //     dependentFormik.values.relation = fetchESM?.data.relation;
-  //     dependentFormik.values.dependentDob = fetchESM?.data.dependentDob;
-  //     dependentFormik.values.dependentAadhar = fetchESM?.data.dependentAadhar;
-  //     dependentFormik.values.dependentQualification =
-  //       fetchESM?.data.dependentQualification;
-  //     dependentFormik.values.dependentAcademicYear =
-  //       fetchESM?.data.dependentAcademicYear;
-  //     dependentFormik.values.dependentEmploymentStatus =
-  //       fetchESM?.data.dependentEmploymentStatus;
-  //     dependentFormik.values.dependentMaritalStatus =
-  //       fetchESM?.data.dependentMaritalStatus;
-
-  //     setReload(!reload);
-  //   }
-  // }, [fetchESM?.data]);
-
+  useEffect(() => {
+    if (fetchESM?.data?.data?.length) {
+      // dependentFormik.values.dependentName = fetchESM?.data.dependentName;
+      // dependentFormik.values.dependentId = fetchESM?.data.dependentId;
+      // dependentFormik.values.registeredDate = fetchESM?.data.registeredDate;
+      // dependentFormik.values.relation = fetchESM?.data.relation;
+      // dependentFormik.values.dependentDob = fetchESM?.data.dependentDob;
+      // dependentFormik.values.dependentAadhar = fetchESM?.data.dependentAadhar;
+      // dependentFormik.values.dependentQualification =
+      //   fetchESM?.data.dependentQualification;
+      // dependentFormik.values.dependentAcademicYear =
+      //   fetchESM?.data.dependentAcademicYear;
+      // dependentFormik.values.dependentEmploymentStatus =
+      //   fetchESM?.data.dependentEmploymentStatus;
+      // dependentFormik.values.dependentMaritalStatus =
+      //   fetchESM?.data.dependentMaritalStatus;
+      // setReload(!reload);
+      setDependentList(fetchESM?.data?.data);
+    }
+  }, [fetchESM?.data]);
+  console.log(fetchESM, "fetchESMDep");
   const formValues = [
     {
       label: "Dependent's name",
@@ -251,7 +253,12 @@ function DependentDetails(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    registerESM("DependentDetails", dependentList, "dependentForm");
+    registerESM(
+      dependentList[0]?.submittedBy == null ? "post" : "put",
+      "DependentDetails",
+      dependentList,
+      "dependentForm"
+    );
   };
   useEffect(() => {
     if (responseStatus) {
@@ -268,13 +275,58 @@ function DependentDetails(props) {
     }
   }, [responseStatus]);
 
+  useEffect(() => {
+    if (
+      dependentFormik?.values?.relation == "father" ||
+      dependentFormik?.values?.relation == "mother"
+    ) {
+      setDepMaritalStatus([
+        {
+          show: "Married",
+          value: "married",
+        },
+        {
+          show: "Separated",
+          value: "separated",
+        },
+      ]);
+    } else {
+      setDepMaritalStatus([
+        {
+          show: "Married",
+          value: "married",
+        },
+        {
+          show: "Un-married",
+          value: "unmarried",
+        },
+        {
+          show: "Separated",
+          value: "separated",
+        },
+      ]);
+    }
+    // setReload(!reload);
+    console.log(depMaritalStatus, "depMaritalStatus");
+  }, [dependentFormik?.values?.relation]);
+
+  console.log(dependentFormik, "dependentFormik");
+
   const handleManageDependent = () => {
     if (Object.keys(dependentFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
-      dependentFormik.handleSubmit();
     } else {
       let tempDepList = [...dependentList];
-      tempDepList.push({ ...dependentFormik.values });
+      const existingIndex = tempDepList.findIndex(
+        (dep) => dep.id === dependentFormik.values.id
+      );
+      if (existingIndex !== -1) {
+        // Editing existing entry
+        tempDepList[existingIndex] = { ...dependentFormik.values };
+      } else {
+        // Adding new entry
+        tempDepList.push({ ...dependentFormik.values });
+      }
       setDependentList(tempDepList);
       setDependentModal(false);
       dependentFormik.resetForm();
@@ -301,6 +353,8 @@ function DependentDetails(props) {
     setDependentList(tempList);
     setDeleteDependent(false);
   };
+
+  console.log(dependentList, "dependentList");
 
   return (
     <div>
@@ -337,13 +391,13 @@ function DependentDetails(props) {
                     <tr key={uuidv4()}>
                       <td>{index + 1}</td>
                       <td>{capitalize(data.dependentName)}</td>
-                      <td>{data.dependentDob}</td>
+                      <td>{dateFormatFunction(data.dependentDob)}</td>
                       <td>{data.dependentId}</td>
-                      <td>{data.registeredDate}</td>
+                      <td>{dateFormatFunction(data.registeredDate)}</td>
                       <td>{capitalize(data.relation)}</td>
                       <td>{data.dependentAadhar}</td>
                       <td>{capitalize(data.dependentQualification)}</td>
-                      <td>{data.dependentAcademicYear}</td>
+                      <td>{dateFormatFunction(data.dependentAcademicYear)}</td>
                       {/* <td>{capitalize(data.dependentEmploymentStatus)}</td>
                     <td>{capitalize(data.dependentMaritalStatus)}</td> */}
                       <td>
