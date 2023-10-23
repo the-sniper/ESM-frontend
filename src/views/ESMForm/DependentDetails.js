@@ -58,7 +58,7 @@ function DependentDetails(props) {
       dependentEmploymentStatus: "",
       dependentMaritalStatus: "",
     },
-    enableReinitialize: true,
+    // enableReinitialize: true,
     validationSchema: dependentValidationArray,
     onSubmit: (values) => {
       handleSubmit();
@@ -123,7 +123,7 @@ function DependentDetails(props) {
       setDependentList(fetchESM?.data?.data);
     }
   }, [fetchESM?.data]);
-  console.log(fetchESM, "fetchESMDep");
+
   const formValues = [
     {
       label: "Dependent's name",
@@ -253,12 +253,14 @@ function DependentDetails(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    registerESM(
-      dependentList[0]?.submittedBy == null ? "post" : "put",
-      "DependentDetails",
-      dependentList,
-      "dependentForm"
-    );
+    if (dependentList[0]?.submittedBy != undefined) {
+      registerESM(
+        dependentList[0]?.submittedBy == null ? "post" : "put",
+        "DependentDetails",
+        dependentList,
+        "dependentForm"
+      );
+    }
   };
   useEffect(() => {
     if (responseStatus) {
@@ -307,10 +309,7 @@ function DependentDetails(props) {
       ]);
     }
     // setReload(!reload);
-    console.log(depMaritalStatus, "depMaritalStatus");
   }, [dependentFormik?.values?.relation]);
-
-  console.log(dependentFormik, "dependentFormik");
 
   const handleManageDependent = () => {
     if (Object.keys(dependentFormik.errors).length > 0) {
@@ -318,15 +317,19 @@ function DependentDetails(props) {
     } else {
       let tempDepList = [...dependentList];
       const existingIndex = tempDepList.findIndex(
-        (dep) => dep.id === dependentFormik.values.id
+        (dep) => dep.dependentId === dependentFormik.values.dependentId
       );
       if (existingIndex !== -1) {
         // Editing existing entry
-        tempDepList[existingIndex] = { ...dependentFormik.values };
+        tempDepList[existingIndex] = {
+          ...dependentFormik.values,
+          submittedBy: "USER",
+        };
       } else {
         // Adding new entry
-        tempDepList.push({ ...dependentFormik.values });
+        tempDepList.push({ ...dependentFormik.values, submittedBy: "USER" });
       }
+
       setDependentList(tempDepList);
       setDependentModal(false);
       dependentFormik.resetForm();
@@ -353,8 +356,6 @@ function DependentDetails(props) {
     setDependentList(tempList);
     setDeleteDependent(false);
   };
-
-  console.log(dependentList, "dependentList");
 
   return (
     <div>
