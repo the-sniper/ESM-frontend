@@ -2,17 +2,20 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { mapData } from "../../utils";
+import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import moment from "moment";
+import CommonContext from "../../context/common/commonContext";
 
 function SpouseDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
+  const { getAllEduLevel, allEduLevel } = commonContext;
 
   const [reload, setReload] = useState(false);
   const [spouseFormData, setSpouseFormData] = useState({});
@@ -186,6 +189,10 @@ function SpouseDetails(props) {
   });
 
   useEffect(() => {
+    getAllEduLevel();
+  }, []);
+
+  useEffect(() => {
     getESM("GetSpouseDetails", "spouseForm");
   }, []);
 
@@ -324,16 +331,7 @@ function SpouseDetails(props) {
       label: "Spouse's qualification",
       name: "spouseQualification",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      options: cleanDropdownData(allEduLevel, "educationalQualification", "id"),
       class: `col-6 ${
         spouseFormik.values.maritalStatus == "married" ? "" : "d-none"
       }`,

@@ -3,7 +3,7 @@ import {
   SEARCH_VALUE,
   GET_ALL_COUNTRIES,
   GET_ALL_STATES,
-  GET_ALL_CITIES,
+  GET_ALL_DISTRICTS,
   RESPONSE_STATUS,
   CLEAR_RESPONSE,
   GET_ALL_SERVICES,
@@ -13,6 +13,7 @@ import {
   GET_ALL_RECORD_OFFICES,
   GET_ALL_MED_CATG,
   GET_ALL_DISCHARGE_CHAR,
+  GET_ALL_EDU_LEVEL,
 } from "./commonTypes";
 
 export default (state, action) => {
@@ -38,17 +39,17 @@ export default (state, action) => {
     case GET_ALL_COUNTRIES:
       return {
         ...state,
-        allCountries: action.payload.records,
+        allCountries: action.payload.data,
       };
     case GET_ALL_STATES:
       return {
         ...state,
-        allStates: action.payload.records,
+        allStates: action.payload.data,
       };
-    case GET_ALL_CITIES:
+    case GET_ALL_DISTRICTS:
       return {
         ...state,
-        allCities: action.payload.records,
+        allDistricts: action.payload.data,
       };
     case GET_ALL_SERVICES:
       return {
@@ -84,6 +85,11 @@ export default (state, action) => {
       return {
         ...state,
         allDischargeChar: action.payload.data,
+      };
+    case GET_ALL_EDU_LEVEL:
+      return {
+        ...state,
+        allEduLevel: action.payload.data,
       };
     case CLEAR_RESPONSE:
       return {

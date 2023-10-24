@@ -2,17 +2,19 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { mapData } from "../../utils";
+import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
-import { qualification } from "../../utils/commonExports";
+import CommonContext from "../../context/common/commonContext";
 
 function EmploymentDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
+  const { getAllEduLevel, allEduLevel } = commonContext;
 
   const [reload, setReload] = useState(false);
   const [employmentFormData, setEmploymentFormData] = useState({});
@@ -134,6 +136,10 @@ function EmploymentDetails(props) {
     }
   }, [employmentFormData]);
 
+  useEffect(() => {
+    getAllEduLevel();
+  }, []);
+
   const formValues = [
     {
       label: "Are you employed in Civil?",
@@ -157,7 +163,7 @@ function EmploymentDetails(props) {
       placeholder: "Enter your Civil qualification",
       name: "civilQualification",
       type: "select",
-      options: qualification,
+      options: cleanDropdownData(allEduLevel, "educationalQualification", "id"),
       class: `col-6 ${
         employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
       }`,

@@ -5,16 +5,18 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
-import { stateDistricts } from "../../utils/stateDistricts";
 import { religionCastes } from "../../utils/commonExports";
+import CommonContext from "../../context/common/commonContext";
 
 function PersonalDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
-
+  const { getAllStates, allStates, getAllDistricts, allDistricts } =
+    commonContext;
   const [reload, setReload] = useState(false);
   const [personalFormData, setPersonalFormData] = useState({});
 
@@ -91,6 +93,7 @@ function PersonalDetails(props) {
 
   useEffect(() => {
     getESM("GetPersonalDetails", "personalForm");
+    getAllStates();
   }, []);
 
   useEffect(() => {
@@ -122,6 +125,14 @@ function PersonalDetails(props) {
       setReload(!reload);
     }
   }, [personalFormData]);
+
+  useEffect(() => {
+    if (personalformik.values.birthState) {
+      getAllDistricts({ stateId: personalformik.values.birthState });
+    }
+  }, [personalformik.values.birthState]);
+
+  console.log(allStates, personalformik.values.birthState, "birthState");
 
   const formValues = [
     {
@@ -169,7 +180,7 @@ function PersonalDetails(props) {
       label: "Birth state",
       name: "birthState",
       type: "select",
-      options: cleanDropdownData(stateDistricts, "name", "id"),
+      options: cleanDropdownData(allStates, "name", "id"),
       class: "col-6",
       formik: personalformik,
     },
@@ -178,12 +189,7 @@ function PersonalDetails(props) {
       placeholder: "Enter the district you were born in",
       name: "birthDistrictSurname",
       type: "select",
-      options: cleanDropdownData(
-        stateDistricts[parseInt(personalformik.values.birthState, 10) - 1]
-          ?.districts,
-        "name",
-        "id"
-      ),
+      options: cleanDropdownData(allDistricts, "districtName", "id"),
       class: "col-6",
       formik: personalformik,
     },

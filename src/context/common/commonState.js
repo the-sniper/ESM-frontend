@@ -9,7 +9,7 @@ import {
   SEARCH_VALUE,
   GET_ALL_COUNTRIES,
   GET_ALL_STATES,
-  GET_ALL_CITIES,
+  GET_ALL_DISTRICTS,
   GET_ALL_SERVICES,
   GET_ALL_CORPS,
   GET_ALL_RANK_CATEGORIES,
@@ -17,6 +17,7 @@ import {
   GET_ALL_RECORD_OFFICES,
   GET_ALL_MED_CATG,
   GET_ALL_DISCHARGE_CHAR,
+  GET_ALL_EDU_LEVEL,
   RESPONSE_STATUS,
   CLEAR_RESPONSE,
 } from "./commonTypes";
@@ -34,6 +35,7 @@ const CommonState = (props) => {
     allRecordOffices: [],
     allMedCatg: [],
     allDischargeChar: [],
+    allEduLevel: [],
     searchValue: null,
   };
 
@@ -75,32 +77,23 @@ const CommonState = (props) => {
     }
   };
 
-  const getAllStates = async (formData) => {
-    const from = "getAllStates";
+  const getAllStates = async (payload) => {
     try {
-      const [res] = await Promise.all([
-        apiCall(
-          "post",
-          from,
-          { ...formData, orderby: "name, asc" },
-          "",
-          "commonFunction"
-        ),
-      ]);
+      const res = await apiCall("get", "GetStates", "", "", "dd");
+      console.log(res, "checkRESfromState");
 
-      if (res.data.status === "success") {
-        dispatch({
+      if (res && res.status === 200) {
+        await dispatch({
           type: GET_ALL_STATES,
           payload: {
-            records: res.data.data.responseData.records
-              ? res.data.data.responseData.records
-              : [],
+            data: res.data.data,
           },
         });
-      } else if (res.data.status === "error") {
-        resp.commonResponse(res.data, from);
       } else {
-        resp.commonErrorResponse(from);
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: "Something went wrong!",
+        });
       }
     } catch (err) {
       dispatch({
@@ -110,32 +103,23 @@ const CommonState = (props) => {
     }
   };
 
-  const getAllCities = async (formData) => {
-    const from = "getAllCities";
+  const getAllDistricts = async (payload) => {
     try {
-      const [res] = await Promise.all([
-        apiCall(
-          "post",
-          from,
-          { ...formData, orderby: "name, asc" },
-          "",
-          "commonFunction"
-        ),
-      ]);
+      const res = await apiCall("post", "GetDistrict", payload, "", "dd");
+      console.log(res, "checkRESfromDistrict");
 
-      if (res.data.status === "success") {
-        dispatch({
-          type: GET_ALL_CITIES,
+      if (res && res.status === 200) {
+        await dispatch({
+          type: GET_ALL_DISTRICTS,
           payload: {
-            records: res.data.data.responseData.records
-              ? res.data.data.responseData.records
-              : [],
+            data: res.data.data,
           },
         });
-      } else if (res.data.status === "error") {
-        resp.commonResponse(res.data, from);
       } else {
-        resp.commonErrorResponse(from);
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: "Something went wrong!",
+        });
       }
     } catch (err) {
       dispatch({
@@ -323,6 +307,30 @@ const CommonState = (props) => {
     }
   };
 
+  const getAllEduLevel = async (payload) => {
+    try {
+      const res = await apiCall("post", "GetEducationLevel", "", "", "dd");
+      if (res && res.status === 200) {
+        await dispatch({
+          type: GET_ALL_EDU_LEVEL,
+          payload: {
+            data: res.data.data,
+          },
+        });
+      } else {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: "Something went wrong!",
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: RESPONSE_STATUS,
+        payload: "Something went wrong!",
+      });
+    }
+  };
+
   const setSearchValue = async (data) => {
     dispatch({
       type: SEARCH_VALUE,
@@ -346,7 +354,7 @@ const CommonState = (props) => {
         responseStatus: state.responseStatus,
         allCountries: state.allCountries,
         allStates: state.allStates,
-        allCities: state.allCities,
+        allDistricts: state.allDistricts,
         allServices: state.allServices,
         allCorps: state.allCorps,
         allRankCategories: state.allRankCategories,
@@ -354,17 +362,19 @@ const CommonState = (props) => {
         allRecordOffices: state.allRecordOffices,
         allMedCatg: state.allMedCatg,
         allDischargeChar: state.allDischargeChar,
+        allEduLevel: state.allEduLevel,
         setSearchValue,
         clearSearchValue,
         getAllCountries,
         getAllStates,
-        getAllCities,
+        getAllDistricts,
         getAllServices,
         getAllCorps,
         getAllRankCategories,
         getAllRecordOffices,
         getAllMedCatg,
         getAllDischargeChar,
+        getAllEduLevel,
         getAllRanks,
         clearResponse,
       }}
