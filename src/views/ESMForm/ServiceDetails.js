@@ -234,7 +234,7 @@ function ServiceDetails(props) {
       placeholder: "Enter record office name",
       name: "recordOfficeName",
       type: "select",
-      options: cleanDropdownData(allRecordOffices, "record_office_name", "id"),
+      options: cleanDropdownData(allRecordOffices, "recordOfficeName", "id"),
       // options: recordOffices.filter(
       //   (d) => d.service == serviceFormik.values.serviceName
       // ),
