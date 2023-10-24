@@ -14,6 +14,9 @@ import {
   GET_ALL_CORPS,
   GET_ALL_RANK_CATEGORIES,
   GET_ALL_RANKS,
+  GET_ALL_RECORD_OFFICES,
+  GET_ALL_MED_CATG,
+  GET_ALL_DISCHARGE_CHAR,
   RESPONSE_STATUS,
   CLEAR_RESPONSE,
 } from "./commonTypes";
@@ -28,6 +31,9 @@ const CommonState = (props) => {
     allCities: [],
     allRankCategories: [],
     allRanks: [],
+    allRecordOffices: [],
+    allMedCatg: [],
+    allDischargeChar: [],
     searchValue: null,
   };
 
@@ -236,6 +242,87 @@ const CommonState = (props) => {
     }
   };
 
+  const getAllRecordOffices = async (payload) => {
+    try {
+      const res = await apiCall("post", "GetRecordOffice", payload, "", "dd");
+      console.log(res, "checkRES");
+      if (res && res.status === 200) {
+        await dispatch({
+          type: GET_ALL_RECORD_OFFICES,
+          payload: {
+            data: res.data.data,
+          },
+        });
+      } else {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: "Something went wrong!",
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: RESPONSE_STATUS,
+        payload: "Something went wrong!",
+      });
+    }
+  };
+
+  const getAllMedCatg = async (payload) => {
+    try {
+      const res = await apiCall(
+        "get",
+        "GetAllMedicalCategory",
+        payload,
+        "",
+        "dd"
+      );
+      console.log(res, "checkRES");
+      if (res && res.status === 200) {
+        await dispatch({
+          type: GET_ALL_MED_CATG,
+          payload: {
+            data: res.data.data,
+          },
+        });
+      } else {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: "Something went wrong!",
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: RESPONSE_STATUS,
+        payload: "Something went wrong!",
+      });
+    }
+  };
+
+  const getAllDischargeChar = async (payload) => {
+    try {
+      const res = await apiCall("get", "GetAllCharacters", payload, "", "dd");
+      console.log(res, "checkRES");
+      if (res && res.status === 200) {
+        await dispatch({
+          type: GET_ALL_DISCHARGE_CHAR,
+          payload: {
+            data: res.data.data,
+          },
+        });
+      } else {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: "Something went wrong!",
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: RESPONSE_STATUS,
+        payload: "Something went wrong!",
+      });
+    }
+  };
+
   const setSearchValue = async (data) => {
     dispatch({
       type: SEARCH_VALUE,
@@ -264,6 +351,9 @@ const CommonState = (props) => {
         allCorps: state.allCorps,
         allRankCategories: state.allRankCategories,
         allRanks: state.allRanks,
+        allRecordOffices: state.allRecordOffices,
+        allMedCatg: state.allMedCatg,
+        allDischargeChar: state.allDischargeChar,
         setSearchValue,
         clearSearchValue,
         getAllCountries,
@@ -272,6 +362,9 @@ const CommonState = (props) => {
         getAllServices,
         getAllCorps,
         getAllRankCategories,
+        getAllRecordOffices,
+        getAllMedCatg,
+        getAllDischargeChar,
         getAllRanks,
         clearResponse,
       }}

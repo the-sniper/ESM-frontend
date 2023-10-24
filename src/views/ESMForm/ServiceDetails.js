@@ -26,9 +26,13 @@ function ServiceDetails(props) {
     getAllCorps,
     getAllRankCategories,
     getAllRanks,
+    getAllRecordOffices,
+    getAllStates,
     allServices,
     allCorps,
+    allStates,
     allRankCategories,
+    allRecordOffices,
     allRanks,
   } = commonContext;
 
@@ -74,9 +78,11 @@ function ServiceDetails(props) {
     getAllServices();
     // getAllCorps({ serviceId: 1 }); //To Fetch all Corps from Service: Army
     getAllRankCategories();
+    getAllRecordOffices();
   }, []);
 
   console.log(allRanks, "allRanks");
+  console.log(allRecordOffices, "allRecordOffices");
 
   const serviceFormik = useFormik({
     initialValues: {
@@ -228,9 +234,10 @@ function ServiceDetails(props) {
       placeholder: "Enter record office name",
       name: "recordOfficeName",
       type: "select",
-      options: recordOffices.filter(
-        (d) => d.service == serviceFormik.values.serviceName
-      ),
+      options: cleanDropdownData(allRecordOffices, "record_office_name", "id"),
+      // options: recordOffices.filter(
+      //   (d) => d.service == serviceFormik.values.serviceName
+      // ),
       class: "col-6",
       formik: serviceFormik,
     },

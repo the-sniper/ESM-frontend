@@ -2,20 +2,24 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { mapData } from "../../utils";
+import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import moment from "moment";
+import CommonContext from "../../context/common/commonContext";
 
 function PensionDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
 
   const [reload, setReload] = useState(false);
   const { setAlert } = alertContext;
+  const { getAllMedCatg, allMedCatg, getAllDischargeChar, allDischargeChar } =
+    commonContext;
 
   const pensionValidationArray = Yup.object({
     serviceName: Yup.string(),
@@ -110,8 +114,10 @@ function PensionDetails(props) {
   useEffect(() => {
     getESM("GetPensionDetails", "pensionForm");
     getESM("GetServiceDetails", "serviceForm");
+    getAllMedCatg();
+    getAllDischargeChar();
   }, []);
-
+  console.log(allDischargeChar, "allDischargeChar");
   useEffect(() => {
     if (fetchESM.from === "serviceForm") {
       setServiceJoiningDate(fetchESM?.data?.data.enrollDate);
@@ -185,16 +191,7 @@ function PensionDetails(props) {
       label: "Discharge medical category",
       name: "dischargeMedicalCategory",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      options: cleanDropdownData(allMedCatg, "categoryName", "id"),
       class: "col-6",
       formik: pensionformik,
     },
@@ -202,16 +199,7 @@ function PensionDetails(props) {
       label: "Discharge character",
       name: "dischargeCharacter",
       type: "select",
-      options: [
-        {
-          show: "1",
-          value: "1",
-        },
-        {
-          show: "2",
-          value: "2",
-        },
-      ],
+      options: cleanDropdownData(allDischargeChar, "characterMessage", "id"),
       class: "col-6",
       formik: pensionformik,
     },

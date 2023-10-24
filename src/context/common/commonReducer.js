@@ -10,6 +10,9 @@ import {
   GET_ALL_CORPS,
   GET_ALL_RANK_CATEGORIES,
   GET_ALL_RANKS,
+  GET_ALL_RECORD_OFFICES,
+  GET_ALL_MED_CATG,
+  GET_ALL_DISCHARGE_CHAR,
 } from "./commonTypes";
 
 export default (state, action) => {
@@ -66,6 +69,21 @@ export default (state, action) => {
       return {
         ...state,
         allRanks: action.payload.data,
+      };
+    case GET_ALL_RECORD_OFFICES:
+      return {
+        ...state,
+        allRecordOffices: action.payload.data,
+      };
+    case GET_ALL_MED_CATG:
+      return {
+        ...state,
+        allMedCatg: action.payload.data,
+      };
+    case GET_ALL_DISCHARGE_CHAR:
+      return {
+        ...state,
+        allDischargeChar: action.payload.data,
       };
     case CLEAR_RESPONSE:
       return {
