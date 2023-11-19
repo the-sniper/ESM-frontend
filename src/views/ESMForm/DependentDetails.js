@@ -386,8 +386,10 @@ function DependentDetails(props) {
                   <th>Actions</th>
                 </tr>
               </thead>
+              {console.log(dependentList, "dependentListCheck1")}
               <tbody>
-                {dependentList ? (
+                {dependentList?.typeof == "object" &&
+                dependentList?.length > 0 ? (
                   dependentList?.map((data, index) => (
                     <tr key={uuidv4()}>
                       <td>{index + 1}</td>
@@ -429,7 +431,9 @@ function DependentDetails(props) {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={9}>No Records Found</td>
+                    <td colSpan={10} className="text-center">
+                      No Records Found
+                    </td>
                   </tr>
                 )}
               </tbody>

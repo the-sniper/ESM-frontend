@@ -6,13 +6,17 @@ import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import { stateDistricts } from "../../utils/stateDistricts";
+import CommonContext from "../../context/common/commonContext";
 
 function ContactDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
+  const { getAllStates, allStates, getAllDistricts, allDistricts } =
+    commonContext;
 
   const { setAlert } = alertContext;
   const [reload, setReload] = useState(false);
@@ -81,6 +85,7 @@ function ContactDetails(props) {
 
   useEffect(() => {
     getESM("GetContactDetails", "contactForm");
+    getAllStates();
   }, []);
 
   useEffect(() => {
@@ -88,6 +93,23 @@ function ContactDetails(props) {
       setContactFormData(fetchESM?.data?.data);
     }
   }, [fetchESM]);
+  console.log(contactFormik?.values, "contactState");
+  console.log(contactFormik?.values?.permanentState, "contactPermState");
+  useEffect(() => {
+    if (contactFormik?.values?.state) {
+      getAllDistricts({
+        stateId: contactFormik?.values?.state,
+      });
+    }
+  }, [contactFormik?.values?.state]);
+
+  useEffect(() => {
+    if (contactFormik?.values?.permanentState) {
+      getAllDistricts({
+        stateId: contactFormik?.values?.permanentState,
+      });
+    }
+  }, [contactFormik?.values?.permanentState]);
 
   useEffect(() => {
     if (contactFormData) {
@@ -204,11 +226,8 @@ function ContactDetails(props) {
       placeholder: "Enter District",
       name: "district",
       type: "select",
-      options: cleanDropdownData(
-        stateDistricts[parseInt(contactFormik.values.state, 10) - 1]?.districts,
-        "name",
-        "id"
-      ),
+      options: cleanDropdownData(allDistricts, "districtName", "id"),
+
       class: "col-6",
       formik: contactFormik,
     },
@@ -317,12 +336,8 @@ function ContactDetails(props) {
       placeholder: "Enter District",
       name: "permanentDistrict",
       type: "select",
-      options: cleanDropdownData(
-        stateDistricts[parseInt(contactFormik.values.permanentState, 10) - 1]
-          ?.districts,
-        "name",
-        "id"
-      ),
+      options: cleanDropdownData(allDistricts, "districtName", "id"),
+
       class: "col-6",
       formik: contactFormik,
     },

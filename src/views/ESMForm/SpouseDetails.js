@@ -612,6 +612,14 @@ function SpouseDetails(props) {
     }
   }, [responseStatus]);
 
+  // useEffect(() => {
+  //   spouseFormik.setErrors({});
+  //   spouseFormik.setTouched({});
+  //   spouseFormik.setErrors({});
+  //   spouseFormik.setTouched({});
+  //   setReload(!reload);
+  // }, [spouseFormik.values.maritalStatus]);
+
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>

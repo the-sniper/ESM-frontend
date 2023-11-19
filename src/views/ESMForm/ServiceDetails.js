@@ -76,7 +76,6 @@ function ServiceDetails(props) {
     getAllServices();
     // getAllCorps({ serviceId: 1 }); //To Fetch all Corps from Service: Army
     getAllRankCategories();
-    getAllRecordOffices();
   }, []);
 
   console.log(allRanks, "allRanks");
@@ -152,6 +151,12 @@ function ServiceDetails(props) {
       });
     }
   }, [serviceFormik.values.serviceName, serviceFormik.values.rankCategory]);
+
+  useEffect(() => {
+    if (serviceFormik.values.serviceName) {
+      getAllRecordOffices({ serviceId: serviceFormik.values.serviceName });
+    }
+  }, [serviceFormik.values.serviceName]);
 
   const [updatedTrade, setUpdatedTrade] = useState([]);
   useEffect(() => {
