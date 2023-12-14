@@ -23,54 +23,54 @@ function EmploymentDetails(props) {
 
   const employmentValidationArray = Yup.object({
     serviceName: Yup.string(),
-    civilEmployment: Yup.string().required("This is a required field."),
+    civilEmployment: Yup.string(),
     civilQualification: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     additionalCourse: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     equivalentTest: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     presentDesignation: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     department: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     sector: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     employer: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     monthlyIncome: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     officialContactNumber: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     designationOnRetirement: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     retirementDate: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     civilPpoNumber: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
   });
 

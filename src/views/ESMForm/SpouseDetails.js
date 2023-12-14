@@ -22,105 +22,102 @@ function SpouseDetails(props) {
   const { setAlert } = alertContext;
 
   const spouseValidationArray = Yup.object({
-    maritalStatus: Yup.string().required("This is a required field."),
+    maritalStatus: Yup.string(),
     marriageDate: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseName: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseRelationship: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseDob: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseIdentificationMark: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseQualification: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseEmploymentStatus: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseAadhar: Yup.string().when("maritalStatus", {
       is: "married",
       then: () =>
         Yup.string()
-          .required("This is a required field.")
-          .matches(/^\d{12}$/, {
-            message: "Aadhar number must be a 12-digit numeric value",
-          }),
+        .matches(/^\d{12}$/, {
+          message: "Aadhar number must be a 12-digit numeric value",
+        }),
     }),
     spouseVoterId: Yup.string().when("maritalStatus", {
       is: "married",
       then: () =>
         Yup.string()
-          .required("This is a required field.")
-          .matches(/^[A-Z]{3}[0-9]{7}$/, {
-            message:
-              "Voter ID must be in the format AAA1234567 (3 uppercase letters followed by 7 digits).",
-          }),
+        .matches(/^[A-Z]{3}[0-9]{7}$/, {
+          message:
+            "Voter ID must be in the format AAA1234567 (3 uppercase letters followed by 7 digits).",
+        }),
     }),
     spousePan: Yup.string().when("maritalStatus", {
       is: "married",
       then: () =>
         Yup.string()
-          .required("This is a required field.")
-          .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
-            message:
-              "PAN must be in the format ABCDE1234F (5 uppercase letters, 4 digits, and 1 uppercase letter).",
-          }),
+        .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
+          message:
+            "PAN must be in the format ABCDE1234F (5 uppercase letters, 4 digits, and 1 uppercase letter).",
+        }),
     }),
     spouseCsd: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseEchs: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     spouseDepartment: Yup.string().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     spouseSector: Yup.string().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     spousePresentDesignation: Yup.string().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     spouseMonthlyIncome: Yup.string().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     spouseOfficialNumber: Yup.string().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     spouseDesignationOnRetirement: Yup.string().when("maritalStatus", {
@@ -137,19 +134,19 @@ function SpouseDetails(props) {
     }),
     divorceDate: Yup.string().when("maritalStatus", {
       is: "separated",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     courtOrder: Yup.string().when("maritalStatus", {
       is: "separated",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     isAlive: Yup.string().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     deathDate: Yup.string().when("isAlive", {
       is: "2",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
   });
 

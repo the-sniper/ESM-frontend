@@ -23,60 +23,60 @@ function PensionDetails(props) {
 
   const pensionValidationArray = Yup.object({
     serviceName: Yup.string(),
-    unitLastServed: Yup.string().required("This is a required field."),
-    dischargeDate: Yup.string().required("This is a required field."),
-    dischargeReason: Yup.string().required("This is a required field."),
+    unitLastServed: Yup.string(),
+    dischargeDate: Yup.string(),
+    dischargeReason: Yup.string(),
     dischargeMedicalCategory: Yup.string().required(
       "This is a required field."
     ),
-    dischargeCharacter: Yup.string().required("This is a required field."),
-    dischargeBookNumber: Yup.string().required("This is a required field."),
-    isPensioner: Yup.string().required("This is a required field."),
+    dischargeCharacter: Yup.string(),
+    dischargeBookNumber: Yup.string(),
+    isPensioner: Yup.string(),
     ppoNumber: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     pensionSanctioned: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     presentPension: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     isSanctionedDisabilityPension: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     disabilityPension: Yup.number().when(
       ["isPensioner", "isSanctionedDisabilityPension"],
       {
         is: (a, b) => a == "true" && b == "true",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     disabilityPercentage: Yup.number().when(
       ["isPensioner", "isSanctionedDisabilityPension"],
       {
         is: (a, b) => a == "true" && b == "true",
-        then: () => Yup.string().required("This is a required field."),
+        then: () => Yup.string(),
       }
     ),
     pensionAccountNumber: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     bankName: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     branch: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
     ifsc: Yup.string().when("isPensioner", {
       is: "true",
-      then: () => Yup.string().required("This is a required field."),
+      then: () => Yup.string(),
     }),
   });
 
