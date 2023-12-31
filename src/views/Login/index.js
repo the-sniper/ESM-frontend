@@ -65,7 +65,7 @@ const Login = () => {
 
   const loginInfo = [
     {
-      label: "Username",
+      label: "Service Number",
       name: "username",
       type: "text",
       placeholder: "Enter your username",
