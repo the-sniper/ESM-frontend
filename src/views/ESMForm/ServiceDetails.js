@@ -49,7 +49,7 @@ function ServiceDetails(props) {
       is: "2",
       then: () => Yup.string().required("This is a required field."),
     }),
-    tradeName: Yup.string().required("This field is required!"),
+    tradeName: Yup.string(),
     othersTradeName: Yup.string()
       .nullable()
       .when("tradeName", {
@@ -282,21 +282,21 @@ function ServiceDetails(props) {
       class: `col-6 ${serviceFormik.values.serviceName == 2 ? "" : "d-none"}`, //Enable this only for Service: Air Force
       formik: serviceFormik,
     },
-    {
-      label: "Trade/Branch",
-      name: "tradeName",
-      type: "select",
-      options: updatedTrade,
-      class: `col-6`, //Enable this only for Service: Air Force
-      formik: serviceFormik,
-    },
-    {
-      label: "Other Trade/Branch",
-      name: "othersTradeName",
-      type: "text",
-      class: `col-6 ${serviceFormik.values.tradeName == 0 ? "" : "d-none"}`, //Enable this only for Service: Air Force
-      formik: serviceFormik,
-    },
+    // {
+    //   label: "Trade/Branch",
+    //   name: "tradeName",
+    //   type: "select",
+    //   options: updatedTrade,
+    //   class: `col-6`, //Enable this only for Service: Air Force
+    //   formik: serviceFormik,
+    // },
+    // {
+    //   label: "Other Trade/Branch",
+    //   name: "othersTradeName",
+    //   type: "text",
+    //   class: `col-6 ${serviceFormik.values.tradeName == 0 ? "" : "d-none"}`, //Enable this only for Service: Air Force
+    //   formik: serviceFormik,
+    // },
     {
       label: "Enrollment date",
       name: "enrollDate",

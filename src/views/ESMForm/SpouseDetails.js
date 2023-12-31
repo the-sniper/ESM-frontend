@@ -536,8 +536,7 @@ function SpouseDetails(props) {
       label: "Court order",
       placeholder: "Enter court order",
       name: "courtOrder",
-      type: "date",
-      minDate: moment(spouseFormik.values.marriageDate, "DD-MM-YYYY"),
+      type: "text",
       class: `col-sm-3 col-12 ${
         spouseFormik.values.maritalStatus == "separated" ? "" : "d-none"
       }`,

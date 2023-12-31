@@ -25,30 +25,32 @@ function ContactDetails(props) {
   const contactValidationArray = Yup.object({
     pincode: Yup.string()
       .matches(/^[1-9][0-9]{5}$/, "Invalid PIN code")
-      .required("This is a required field."),
-    state: Yup.string().required("This is a required field."),
-    district: Yup.string().required("This is a required field."),
-    talukName: Yup.string().required("This is a required field."),
-    cityVillage: Yup.string().required("This is a required field."),
-    locality: Yup.string().required("This is a required field."),
-    street: Yup.string().required("This is a required field."),
-    houseName: Yup.string().required("This is a required field."),
-    houseNumber: Yup.string().required("This is a required field."),
-    policeStation: Yup.string().required("This is a required field."),
+      .nullable(),
+    state: Yup.string().nullable(),
+    district: Yup.string().nullable(),
+    talukName: Yup.string().nullable(),
+    cityVillage: Yup.string().nullable(),
+    locality: Yup.string().nullable(),
+    street: Yup.string().nullable(),
+    houseName: Yup.string().nullable(),
+    houseNumber: Yup.string().nullable(),
+    policeStation: Yup.string().nullable(),
+    telephoneNumber: Yup.string().nullable(),
+
     permanentPincode: Yup.string()
       .matches(/^[1-9][0-9]{5}$/, "Invalid PIN code")
-      .required("This is a required field."),
-    permanentState: Yup.string().required("This is a required field."),
-    permanentDistrict: Yup.string().required("This is a required field."),
-    permanentTalukName: Yup.string().required("This is a required field."),
-    permanentCityVillage: Yup.string().required("This is a required field."),
-    permanentLocality: Yup.string().required("This is a required field."),
-    permanentStreet: Yup.string().required("This is a required field."),
-    permanentHouseName: Yup.string().required("This is a required field."),
-    permanentHouseNumber: Yup.string().required("This is a required field."),
-    permanentPoliceStation: Yup.string().required("This is a required field."),
-    telephoneNumber: Yup.string().required("This is a required field."),
-    sameAsPermanent: Yup.string().required("This is a required field."),
+      .nullable(),
+    permanentState: Yup.string().nullable(),
+    permanentDistrict: Yup.string().nullable(),
+    permanentTalukName: Yup.string().nullable(),
+    permanentCityVillage: Yup.string().nullable(),
+    permanentLocality: Yup.string().nullable(),
+    permanentStreet: Yup.string().nullable(),
+    permanentHouseName: Yup.string().nullable(),
+    permanentHouseNumber: Yup.string().nullable(),
+    permanentPoliceStation: Yup.string().nullable(),
+    permanentTelephoneNumber: Yup.string().nullable(),
+    sameAsPermanent: Yup.string().nullable(),
   });
 
   const contactFormik = useFormik({
@@ -64,6 +66,7 @@ function ContactDetails(props) {
       houseName: "",
       houseNumber: "",
       policeStation: "",
+      telephoneNumber: "",
       permanentPincode: "",
       permanentState: "",
       permanentDistrict: "",
@@ -74,7 +77,7 @@ function ContactDetails(props) {
       permanentHouseName: "",
       permanentHouseNumber: "",
       permanentPoliceStation: "",
-      telephoneNumber: "",
+      permanentTelephoneNumber: "",
       sameAsPermanent: false,
     },
     validationSchema: contactValidationArray,
@@ -123,6 +126,7 @@ function ContactDetails(props) {
       contactFormik.values.houseName = contactFormData?.houseName;
       contactFormik.values.houseNumber = contactFormData?.houseNumber;
       contactFormik.values.policeStation = contactFormData?.policeStation;
+      contactFormik.values.telephoneNumber = contactFormData?.telephoneNumber;
 
       contactFormik.values.permanentPincode = contactFormData?.permanentPincode;
       contactFormik.values.permanentState = contactFormData?.permanentState;
@@ -141,7 +145,7 @@ function ContactDetails(props) {
         contactFormData?.permanentHouseNumber;
       contactFormik.values.permanentPoliceStation =
         contactFormData?.permanentPoliceStation;
-      contactFormik.values.telephoneNumber = contactFormData?.telephoneNumber;
+      contactFormik.values.permanentTelephoneNumber = contactFormData?.permanentTelephoneNumber;
       contactFormik.values.sameAsPermanent = contactFormData?.sameAsPermanent;
 
       setReload(!reload);
@@ -270,6 +274,14 @@ function ContactDetails(props) {
       formik: contactFormik,
     },
     {
+      label: "Telephone number",
+      placeholder: "Enter your telephone number",
+      name: "telephoneNumber",
+      type: "number",
+      class: "col-6",
+      formik: contactFormik,
+    },
+    {
       type: "misc",
       content: <h5 className="esmTitle my-3">Permanent address</h5>,
       class: "col-12",
@@ -383,11 +395,12 @@ function ContactDetails(props) {
     {
       label: "Telephone number",
       placeholder: "Enter your telephone number",
-      name: "telephoneNumber",
+      name: "permanentTelephoneNumber",
       type: "number",
       class: "col-6",
       formik: contactFormik,
     },
+    
   ];
 
   const handleSubmit = (event) => {

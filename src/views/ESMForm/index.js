@@ -90,10 +90,9 @@ function ESMForm() {
   //   if (user?.message === "SUCCESS") {
   //     // setActiveStep(user?.data?.formProgressCount)
   //     // setCompleted(user?.data?.formProgressCount)
-  //     // let tempCompleted = {}
-  //     // user?.data?.formProgressCount
-  //     // {2: true, 3: true}
-  //   }, [user])
+      
+  //   }
+  // }, [user])
 
   console.log(completed, 'checkCompleted')
 
@@ -102,7 +101,7 @@ function ESMForm() {
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
           <Step key={label} completed={completed[index]}>
-            <StepButton color="inherit" >
+            <StepButton color="inherit" onClick={handleStep(index)}>
               {label}
             </StepButton>
           </Step>

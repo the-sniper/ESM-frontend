@@ -6,6 +6,7 @@ import { cleanDropdownData, mapData } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import CommonContext from "../../context/common/commonContext";
+import { tradeData } from "../../utils/commonExports";
 
 function EmploymentDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -21,54 +22,72 @@ function EmploymentDetails(props) {
 
   const { setAlert } = alertContext;
 
+  const [updatedTrade, setUpdatedTrade] = useState([]);
+
   const employmentValidationArray = Yup.object({
     serviceName: Yup.string(),
-    civilEmployment: Yup.string(),
-    civilQualification: Yup.string().when("civilEmployment", {
+    civilEmployment: Yup.string().nullable(),
+    civilQualification: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    additionalCourse: Yup.string().when("civilEmployment", {
+    additionalCourse: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    equivalentTest: Yup.string().when("civilEmployment", {
+    tradeName: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    presentDesignation: Yup.string().when("civilEmployment", {
+    othersTradeName: Yup.string().nullable().when("civilEmployment", {
+      is: "2",
+      then: () => Yup.string().nullable(),
+    }),
+    tradeCode: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    department: Yup.string().when("civilEmployment", {
+    empRegField: Yup.string().nullable().when("civilEmployment", {
+      is: "2",
+      then: () => Yup.string().nullable(),
+    }),
+    equivalentTest: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    sector: Yup.string().when("civilEmployment", {
+    presentDesignation: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    employer: Yup.string().when("civilEmployment", {
+    department: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    monthlyIncome: Yup.string().when("civilEmployment", {
+    sector: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    officialContactNumber: Yup.string().when("civilEmployment", {
+    employer: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    designationOnRetirement: Yup.string().when("civilEmployment", {
+    monthlyIncome: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    retirementDate: Yup.string().when("civilEmployment", {
+    officialContactNumber: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
-    civilPpoNumber: Yup.string().when("civilEmployment", {
+    designationOnRetirement: Yup.string().nullable().when("civilEmployment", {
+      is: "1",
+      then: () => Yup.string().nullable(),
+    }),
+    retirementDate: Yup.string().nullable().when("civilEmployment", {
+      is: "1",
+      then: () => Yup.string().nullable(),
+    }),
+    civilPpoNumber: Yup.string().nullable().when("civilEmployment", {
       is: "1",
       then: () => Yup.string().nullable(),
     }),
@@ -79,6 +98,10 @@ function EmploymentDetails(props) {
       serviceNumber: localStorage.username,
       civilQualification: "",
       additionalCourse: "",
+      tradeName: "",
+      othersTradeName: "",
+      tradeCode: "",
+      empRegField: '',
       equivalentTest: "",
       civilEmployment: "",
       presentDesignation: "",
@@ -97,6 +120,8 @@ function EmploymentDetails(props) {
     },
   });
 
+  console.log(employmentFormik, 'checkEmploymentFormik')
+
   useEffect(() => {
     getESM("GetEmploymentDetails", "employmentForm");
   }, []);
@@ -113,6 +138,14 @@ function EmploymentDetails(props) {
         employmentFormData?.civilQualification;
       employmentFormik.values.additionalCourse =
         employmentFormData?.additionalCourse;
+      employmentFormik.values.tradeName =
+        employmentFormData?.tradeName;
+      employmentFormik.values.othersTradeName =
+        employmentFormData?.othersTradeName;
+      employmentFormik.values.tradeCode =
+        employmentFormData?.tradeCode;
+        employmentFormik.values.empRegField =
+        employmentFormData?.empRegField;
       employmentFormik.values.equivalentTest =
         employmentFormData?.equivalentTest;
       employmentFormik.values.civilEmployment =
@@ -140,7 +173,43 @@ function EmploymentDetails(props) {
     getAllEduLevel();
   }, []);
 
+  useEffect(() => {
+
+    setUpdatedTrade(tradeData);
+    if (tradeData?.length > 0) {
+      setUpdatedTrade([...tradeData?.flat(), { value: 0, show: "Other" }]);
+    }
+  }, [tradeData, employmentFormData.values]);
+
+
   const formValues = [
+
+    {
+      label: "Civil qualification",
+      placeholder: "Enter your Civil qualification",
+      name: "civilQualification",
+      type: "select",
+      options: cleanDropdownData(allEduLevel, "educationalQualification", "id"),
+      class: `col-6`,
+      formik: employmentFormik,
+    },
+    {
+      label: "Additional courses",
+      placeholder: "Enter any additional courses taken",
+      name: "additionalCourse",
+      type: "text",
+      class: `col-6`,
+      formik: employmentFormik,
+    },
+
+    {
+      label: "Equivalent test",
+      label: "Enter equivalent test",
+      name: "equivalentTest",
+      type: "text",
+      class: `col-6`,
+      formik: employmentFormik,
+    },
     {
       label: "Are you employed in Civil?",
       name: "civilEmployment",
@@ -159,46 +228,43 @@ function EmploymentDetails(props) {
       formik: employmentFormik,
     },
     {
-      label: "Civil qualification",
-      placeholder: "Enter your Civil qualification",
-      name: "civilQualification",
+      label: "Trade/Branch",
+      name: "tradeName",
       type: "select",
-      options: cleanDropdownData(allEduLevel, "educationalQualification", "id"),
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      options: updatedTrade,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
-      label: "Additional courses",
-      placeholder: "Enter any additional courses taken",
-      name: "additionalCourse",
+      label: "Other Trade/Branch",
+      name: "othersTradeName",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.tradeName == 0 ? "" : employmentFormik.values.civilEmployment == "2" ? 'd-none' : "d-none"}`,
       formik: employmentFormik,
     },
-
     {
-      label: "Equivalent test",
-      label: "Enter equivalent test",
-      name: "equivalentTest",
+      label: "Trade Code",
+      name: "tradeCode",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
-
+    {
+      label: "Employment Registration Field",
+      name: "empRegField",
+      type: "text",
+      class: `col-6 ${ employmentFormik.values.civilEmployment == "2" ? '' : "d-none"}`,
+      formik: employmentFormik,
+    },
     {
       label: "Present designation",
       placeholder: "Enter present designation",
       name: "presentDesignation",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -206,9 +272,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter department",
       name: "department",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -216,9 +281,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter sector",
       name: "sector",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -226,9 +290,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter the name of the employer",
       name: "employer",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -236,9 +299,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter your monthly income",
       name: "monthlyIncome",
       type: "number",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -246,9 +308,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter your official contact number",
       name: "officialContactNumber",
       type: "number",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -256,9 +317,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter your designation on retirement",
       name: "designationOnRetirement",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -266,9 +326,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter your date of retirement",
       name: "retirementDate",
       type: "date",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
     {
@@ -276,9 +335,8 @@ function EmploymentDetails(props) {
       placeholder: "Enter your civil PPO number",
       name: "civilPpoNumber",
       type: "text",
-      class: `col-6 ${
-        employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
-      }`,
+      class: `col-6 ${employmentFormik.values.civilEmployment == "1" ? "" : "d-none"
+        }`,
       formik: employmentFormik,
     },
   ];
@@ -317,7 +375,7 @@ function EmploymentDetails(props) {
 
   return (
     <div>
-    <h1 className="esmTitle">Employment Details</h1>
+      <h1 className="esmTitle">Employment Details</h1>
 
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
