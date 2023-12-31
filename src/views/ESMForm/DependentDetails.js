@@ -2,21 +2,25 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { capitalize, dateFormatFunction, mapData } from "../../utils";
+import { capitalize, cleanDropdownData, dateFormatFunction, mapData, yearFormatFunction } from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import moment from "moment";
 import { Button } from "@mui/material";
 import CustomDialog from "../../components/molecules/CustomDialog";
 import { v4 as uuidv4 } from "uuid";
+import CommonContext from "../../context/common/commonContext";
 
 function DependentDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
+  const commonContext = useContext(CommonContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
   const { setAlert } = alertContext;
+
+  const { getAllEduLevel, allEduLevel } = commonContext;
 
   const [reload, setReload] = useState(false);
   const [dependentList, setDependentList] = useState([]);
@@ -27,7 +31,8 @@ function DependentDetails(props) {
 
   const dependentValidationArray = Yup.object({
     dependentName: Yup.string().required("This is a required field."),
-    registeredDate: Yup.string().required("This is a required field."),
+    registeredDate: Yup.string(),
+    expiryDate: Yup.string(),
     dependentId: Yup.string(),
     relation: Yup.string().required("This is a required field."),
     dependentDob: Yup.string().required("This is a required field."),
@@ -37,6 +42,7 @@ function DependentDetails(props) {
         message: "Aadhar number must be a 12-digit numeric value",
       }),
     dependentQualification: Yup.string().required("This is a required field."),
+    additionalCourse: Yup.string().required("This is a required field."),
     dependentAcademicYear: Yup.string(),
     dependentEmploymentStatus: Yup.string().required(
       "This is a required field."
@@ -50,10 +56,12 @@ function DependentDetails(props) {
       dependentName: "",
       dependentId: "",
       registeredDate: "",
+      expiryDate: "",
       relation: "",
       dependentDob: "",
       dependentAadhar: "",
       dependentQualification: "",
+      additionalCourse: '',
       dependentAcademicYear: "",
       dependentEmploymentStatus: "",
       dependentMaritalStatus: "",
@@ -67,6 +75,7 @@ function DependentDetails(props) {
 
   useEffect(() => {
     getESM("GetAllDependentDetails");
+    getAllEduLevel();
   }, []);
 
   useEffect(() => {
@@ -76,12 +85,16 @@ function DependentDetails(props) {
       dependentFormik.values.dependentId = dependentList[currId]?.dependentId;
       dependentFormik.values.registeredDate =
         dependentList[currId]?.registeredDate;
+      dependentFormik.values.expiryDate =
+        dependentList[currId]?.expiryDate;
       dependentFormik.values.relation = dependentList[currId]?.relation;
       dependentFormik.values.dependentDob = dependentList[currId]?.dependentDob;
       dependentFormik.values.dependentAadhar =
         dependentList[currId]?.dependentAadhar;
       dependentFormik.values.dependentQualification =
         dependentList[currId]?.dependentQualification;
+      dependentFormik.values.additionalCourse =
+        dependentList[currId]?.additionalCourse;
       dependentFormik.values.dependentAcademicYear =
         dependentList[currId]?.dependentAcademicYear;
       dependentFormik.values.dependentEmploymentStatus =
@@ -92,10 +105,12 @@ function DependentDetails(props) {
       dependentFormik.values.dependentName = "";
       dependentFormik.values.dependentId = "";
       dependentFormik.values.registeredDate = "";
+      dependentFormik.values.expiryDate = "";
       dependentFormik.values.relation = "";
       dependentFormik.values.dependentDob = "";
       dependentFormik.values.dependentAadhar = "";
       dependentFormik.values.dependentQualification = "";
+      dependentFormik.values.additionalCourse = "";
       dependentFormik.values.dependentAcademicYear = "";
       dependentFormik.values.dependentEmploymentStatus = "";
       dependentFormik.values.dependentMaritalStatus = "";
@@ -104,7 +119,8 @@ function DependentDetails(props) {
   }, [currId]);
 
   useEffect(() => {
-    if (fetchESM?.data?.data?.length) {
+    console.log(fetchESM, 'fetchESMCheck')
+    if (fetchESM?.data?.data?.length && fetchESM?.data?.message != "FAILED") {
       // dependentFormik.values.dependentName = fetchESM?.data.dependentName;
       // dependentFormik.values.dependentId = fetchESM?.data.dependentId;
       // dependentFormik.values.registeredDate = fetchESM?.data.registeredDate;
@@ -143,23 +159,31 @@ function DependentDetails(props) {
       formik: dependentFormik,
     },
     {
-      label: "Dependent ID number",
-      placeholder: "Enter the dependent ID number",
+      label: "Dependent ID Card number",
+      placeholder: "Enter the dependent ID Card number",
       name: "dependentId",
       type: "text",
       class: "col-sm-6 col-12",
       formik: dependentFormik,
     },
     {
-      label: "Date of registration",
-      placeholder: "Enter the date of registration",
+      label: "Date of Issue",
+      placeholder: "Enter the date of Issue",
       name: "registeredDate",
       type: "date",
       class: "col-sm-6 col-12",
       minDate: moment(dependentFormik.values.dependentDob, "DD-MM-YYYY"),
       formik: dependentFormik,
     },
-
+    {
+      label: "Date of Expiry",
+      placeholder: "Enter the date of Expiry",
+      name: "expiryDate",
+      type: "date",
+      class: "col-sm-6 col-12",
+      minDate: moment(dependentFormik.values.dependentDob, "DD-MM-YYYY"),
+      formik: dependentFormik,
+    },
     {
       label: "Select relation",
       name: "relation",
@@ -198,15 +222,24 @@ function DependentDetails(props) {
       label: "Dependent's qualification",
       placeholder: "Enter dependent's qualification",
       name: "dependentQualification",
-      type: "text",
+      type: "select",
+      options: cleanDropdownData(allEduLevel, "educationalQualification", "id"),
       class: "col-sm-6 col-12",
+      formik: dependentFormik,
+    },
+    {
+      label: "Additional courses",
+      placeholder: "Enter any additional courses taken",
+      name: "additionalCourse",
+      type: "text",
+      class: `col-6`,
       formik: dependentFormik,
     },
     {
       label: "Dependent's year of graduation",
       placeholder: "Enter dependent's year of graduation",
       name: "dependentAcademicYear",
-      type: "date",
+      type: "year",
       class: "col-sm-6 col-12",
       minDate: moment(dependentFormik.values.dependentDob, "DD-MM-YYYY"),
       formik: dependentFormik,
@@ -252,6 +285,7 @@ function DependentDetails(props) {
   ];
 
   const handleSubmit = (event) => {
+    console.log(event, 'checkingEvent')
     event.preventDefault();
     if (dependentList[0]?.submittedBy != undefined) {
       registerESM(
@@ -310,7 +344,7 @@ function DependentDetails(props) {
     }
     // setReload(!reload);
   }, [dependentFormik?.values?.relation]);
-
+  console.log(dependentList, 'dependentListCheck')
   const handleManageDependent = () => {
     if (Object.keys(dependentFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
@@ -329,10 +363,12 @@ function DependentDetails(props) {
         // Adding new entry
         tempDepList.push({ ...dependentFormik.values, submittedBy: "USER" });
       }
-
+      console.log(existingIndex, 'existingIndex')
+      console.log(dependentFormik, 'dependentFormikCheck')
+      console.log(tempDepList, 'tempDepListCheck')
       setDependentList(tempDepList);
-      setDependentModal(false);
-      dependentFormik.resetForm();
+      // setDependentModal(false);
+      // dependentFormik.resetForm();
     }
   };
 
@@ -359,6 +395,8 @@ function DependentDetails(props) {
 
   return (
     <div>
+      <h1 className="esmTitle">Dependent Details</h1>
+
       <form onSubmit={(e) => handleSubmit(e)}>
         {dependentList?.length > 0 ? (
           <>
@@ -376,7 +414,7 @@ function DependentDetails(props) {
                   <th>Name</th>
                   <th>Date of Birth</th>
                   <th>Dependent ID</th>
-                  <th>Date of Reg.</th>
+                  <th>Date of Issue.</th>
                   <th>Relation</th>
                   <th>Aadhar</th>
                   <th>Qualification</th>
@@ -387,20 +425,22 @@ function DependentDetails(props) {
                 </tr>
               </thead>
               {console.log(dependentList, "dependentListCheck1")}
+              {console.log(
+                  dependentList?.length > 0, 'dependentListTest' )}
               <tbody>
-                {dependentList?.typeof == "object" &&
-                dependentList?.length > 0 ? (
+                {typeof dependentList == "object" &&
+                  dependentList?.length > 0 ? (
                   dependentList?.map((data, index) => (
                     <tr key={uuidv4()}>
                       <td>{index + 1}</td>
-                      <td>{capitalize(data.dependentName)}</td>
+                      <td>{data.dependentName}</td>
                       <td>{dateFormatFunction(data.dependentDob)}</td>
                       <td>{data.dependentId}</td>
                       <td>{dateFormatFunction(data.registeredDate)}</td>
-                      <td>{capitalize(data.relation)}</td>
+                      <td>{data.relation}</td>
                       <td>{data.dependentAadhar}</td>
-                      <td>{capitalize(data.dependentQualification)}</td>
-                      <td>{dateFormatFunction(data.dependentAcademicYear)}</td>
+                      <td>{data.dependentQualification}</td>
+                      <td>{yearFormatFunction(data.dependentAcademicYear)}</td>
                       {/* <td>{capitalize(data.dependentEmploymentStatus)}</td>
                     <td>{capitalize(data.dependentMaritalStatus)}</td> */}
                       <td>

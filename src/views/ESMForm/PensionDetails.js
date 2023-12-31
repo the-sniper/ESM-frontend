@@ -377,6 +377,8 @@ function PensionDetails(props) {
 
   return (
     <div>
+    <h1 className="esmTitle">Pension Details</h1>
+
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
         <div className="esmAction">

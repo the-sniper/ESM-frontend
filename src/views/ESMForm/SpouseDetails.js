@@ -22,131 +22,131 @@ function SpouseDetails(props) {
   const { setAlert } = alertContext;
 
   const spouseValidationArray = Yup.object({
-    maritalStatus: Yup.string(),
-    marriageDate: Yup.string().when("maritalStatus", {
+    maritalStatus: Yup.string().nullable(),
+    marriageDate: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseName: Yup.string().when("maritalStatus", {
+    spouseName: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseRelationship: Yup.string().when("maritalStatus", {
+    spouseRelationship: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseDob: Yup.string().when("maritalStatus", {
+    spouseDob: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseIdentificationMark: Yup.string().when("maritalStatus", {
+    spouseIdentificationMark: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseQualification: Yup.string().when("maritalStatus", {
+    spouseQualification: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseEmploymentStatus: Yup.string().when("maritalStatus", {
+    spouseEmploymentStatus: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseAadhar: Yup.string().when("maritalStatus", {
+    spouseAadhar: Yup.string().nullable().when("maritalStatus", {
       is: "married",
       then: () =>
-        Yup.string()
+        Yup.string().nullable()
         .matches(/^\d{12}$/, {
           message: "Aadhar number must be a 12-digit numeric value",
         }),
     }),
-    spouseVoterId: Yup.string().when("maritalStatus", {
+    spouseVoterId: Yup.string().nullable().when("maritalStatus", {
       is: "married",
       then: () =>
-        Yup.string()
+        Yup.string().nullable()
         .matches(/^[A-Z]{3}[0-9]{7}$/, {
           message:
             "Voter ID must be in the format AAA1234567 (3 uppercase letters followed by 7 digits).",
         }),
     }),
-    spousePan: Yup.string().when("maritalStatus", {
+    spousePan: Yup.string().nullable().when("maritalStatus", {
       is: "married",
       then: () =>
-        Yup.string()
+        Yup.string().nullable()
         .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
           message:
             "PAN must be in the format ABCDE1234F (5 uppercase letters, 4 digits, and 1 uppercase letter).",
         }),
     }),
-    spouseCsd: Yup.string().when("maritalStatus", {
+    spouseCsd: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseEchs: Yup.string().when("maritalStatus", {
+    spouseEchs: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseDepartment: Yup.string().when(
+    spouseDepartment: Yup.string().nullable().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string(),
+        then: () => Yup.string().nullable(),
       }
     ),
-    spouseSector: Yup.string().when(
+    spouseSector: Yup.string().nullable().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string(),
+        then: () => Yup.string().nullable(),
       }
     ),
-    spousePresentDesignation: Yup.string().when(
+    spousePresentDesignation: Yup.string().nullable().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string(),
+        then: () => Yup.string().nullable(),
       }
     ),
-    spouseMonthlyIncome: Yup.string().when(
+    spouseMonthlyIncome: Yup.string().nullable().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string(),
+        then: () => Yup.string().nullable(),
       }
     ),
-    spouseOfficialNumber: Yup.string().when(
+    spouseOfficialNumber: Yup.string().nullable().when(
       ["maritalStatus", "spouseEmploymentStatus"],
       {
         is: (a, b) => a == "married" && b == "employed",
-        then: () => Yup.string(),
+        then: () => Yup.string().nullable(),
       }
     ),
-    spouseDesignationOnRetirement: Yup.string().when("maritalStatus", {
+    spouseDesignationOnRetirement: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseRetirementDate: Yup.string().when("maritalStatus", {
+    spouseRetirementDate: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    spouseCivilPpoNumber: Yup.string().when("maritalStatus", {
+    spouseCivilPpoNumber: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    divorceDate: Yup.string().when("maritalStatus", {
+    divorceDate: Yup.string().nullable().when("maritalStatus", {
       is: "separated",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    courtOrder: Yup.string().when("maritalStatus", {
+    courtOrder: Yup.string().nullable().when("maritalStatus", {
       is: "separated",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    isAlive: Yup.string().when("maritalStatus", {
+    isAlive: Yup.string().nullable().when("maritalStatus", {
       is: "married",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
-    deathDate: Yup.string().when("isAlive", {
+    deathDate: Yup.string().nullable().when("isAlive", {
       is: "2",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
   });
 
@@ -184,6 +184,8 @@ function SpouseDetails(props) {
       handleSubmit();
     },
   });
+
+  console.log(spouseFormik, 'spouseFormikCheck')
 
   useEffect(() => {
     getAllEduLevel();
@@ -619,6 +621,8 @@ function SpouseDetails(props) {
 
   return (
     <div>
+    <h1 className="esmTitle">Spouse Details</h1>
+
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
         <div className="esmAction">

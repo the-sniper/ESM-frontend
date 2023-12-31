@@ -26,51 +26,51 @@ function EmploymentDetails(props) {
     civilEmployment: Yup.string(),
     civilQualification: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     additionalCourse: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     equivalentTest: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     presentDesignation: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     department: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     sector: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     employer: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     monthlyIncome: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     officialContactNumber: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     designationOnRetirement: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     retirementDate: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
     civilPpoNumber: Yup.string().when("civilEmployment", {
       is: "1",
-      then: () => Yup.string(),
+      then: () => Yup.string().nullable(),
     }),
   });
 
@@ -317,6 +317,8 @@ function EmploymentDetails(props) {
 
   return (
     <div>
+    <h1 className="esmTitle">Employment Details</h1>
+
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
         <div className="esmAction">

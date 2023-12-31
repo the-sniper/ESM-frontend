@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -14,6 +14,7 @@ import FamilyMemberDetails from "./FamilyMemberDetails";
 import SpouseDetails from "./SpouseDetails";
 import DependentDetails from "./DependentDetails";
 import ContactDetails from "./ContactDetails";
+import AuthContext from "../../context/auth/authContext";
 
 const steps = [
   "Service Details",
@@ -26,8 +27,11 @@ const steps = [
 ];
 
 function ESMForm() {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  console.log(user, 'checkUserStep')
+  const [activeStep, setActiveStep] = useState(0);
+  const [completed, setCompleted] = useState({});
 
   const totalSteps = () => {
     return steps.length;
@@ -49,8 +53,8 @@ function ESMForm() {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
+        // find the first step that has been completed
+        steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
   };
@@ -82,12 +86,23 @@ function ESMForm() {
     setCompleted({});
   };
 
+  // useEffect(() => {
+  //   if (user?.message === "SUCCESS") {
+  //     // setActiveStep(user?.data?.formProgressCount)
+  //     // setCompleted(user?.data?.formProgressCount)
+  //     // let tempCompleted = {}
+  //     // user?.data?.formProgressCount
+  //     // {2: true, 3: true}
+  //   }, [user])
+
+  console.log(completed, 'checkCompleted')
+
   return (
     <div className="customContainer stepperContainer">
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
           <Step key={label} completed={completed[index]}>
-            <StepButton color="inherit" onClick={handleStep(index)}>
+            <StepButton color="inherit" >
               {label}
             </StepButton>
           </Step>

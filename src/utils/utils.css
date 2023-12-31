@@ -93,6 +93,7 @@ button:focus {
   padding-right: 60px !important;
   max-width: 1600px;
   width: 100% !important;
+  margin: 0 auto;
 }
 
 .customRadio {

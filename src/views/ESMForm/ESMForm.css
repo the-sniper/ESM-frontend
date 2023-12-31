@@ -1,3 +1,9 @@
+.esmTitle{
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
 .stepperContainer {
   margin-top: 30px;
 }

@@ -391,6 +391,7 @@ function ServiceDetails(props) {
 
   return (
     <div>
+    <h1 className="esmTitle">Service Details</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
         <div className="esmAction">

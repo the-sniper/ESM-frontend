@@ -42,11 +42,31 @@ export const converDate = (data) => {
   return dataReturn;
 };
 
+export const converYear = (data) => {
+  let dataReturn = "";
+  if (data) {
+    if (moment(data).isValid()) {
+      dataReturn = `${moment(data).format(yearFormat)}`;
+    }
+  }
+  return dataReturn;
+};
+
 export const dateFormatFunction = (data) => {
   let dataReturn = "-";
   if (data) {
     if (moment(data).isValid()) {
       dataReturn = `${moment(data).format(dateFormat)}`;
+    }
+  }
+  return dataReturn;
+};
+
+export const yearFormatFunction = (data) => {
+  let dataReturn = "-";
+  if (data) {
+    if (moment(data).isValid()) {
+      dataReturn = `${moment(data).format(yearFormat)}`;
     }
   }
   return dataReturn;
@@ -147,7 +167,7 @@ export const mapData = (page, props) => {
                   let arrayValue = event.target.value.flat();
                   let allLength = data.filter
                     ? formik.values.filters[data.name].value.length ===
-                      data.options.length
+                    data.options.length
                     : formik.values[data.name]?.length === data.options?.length;
                   if (allLength && arrayValue.length === data.options.length) {
                     arrayValue = [];
@@ -155,9 +175,9 @@ export const mapData = (page, props) => {
                   console.log(arrayValue.join(","), "arrayValue");
                   data.filter
                     ? formik.setFieldValue(
-                        `filters.${data.name}.value`,
-                        arrayValue
-                      )
+                      `filters.${data.name}.value`,
+                      arrayValue
+                    )
                     : formik.setFieldValue(data.name, arrayValue);
                 }}
                 placeholder={data.placeholder}
@@ -174,32 +194,32 @@ export const mapData = (page, props) => {
                     checked={
                       data.filter
                         ? formik.values.filters[data.name].value?.flat()
-                            .length == data.options?.length
+                          .length == data.options?.length
                           ? true
                           : false
                         : formik.values[data.name]?.flat()?.length ==
                           data.options.length
-                        ? true
-                        : false
+                          ? true
+                          : false
                     }
                     onChange={(val) => {
                       val.target.checked
                         ? data.filter
                           ? formik.setFieldValue(
-                              `filters.${data.name}.value`,
-                              formik.values.filters[data.name].value.concat(
-                                multiSelectValue(data, formik)
-                              )
+                            `filters.${data.name}.value`,
+                            formik.values.filters[data.name].value.concat(
+                              multiSelectValue(data, formik)
                             )
+                          )
                           : formik.setFieldValue(
-                              data.name,
-                              formik.values[data.name].concat(
-                                multiSelectValue(data, formik)
-                              )
+                            data.name,
+                            formik.values[data.name].concat(
+                              multiSelectValue(data, formik)
                             )
+                          )
                         : data.filter
-                        ? formik.setFieldValue(`filters.${data.name}.value`, [])
-                        : formik.setFieldValue(data.name, []);
+                          ? formik.setFieldValue(`filters.${data.name}.value`, [])
+                          : formik.setFieldValue(data.name, []);
                     }}
                   />
                   <ListItemText primary={"All"} />
@@ -210,11 +230,11 @@ export const mapData = (page, props) => {
                       checked={
                         data.filter
                           ? formik?.values?.filters[data.name].value
-                              ?.flat()
-                              .indexOf(opt.value) > -1
+                            ?.flat()
+                            .indexOf(opt.value) > -1
                           : formik?.values[data.name]
-                              ?.flat()
-                              .indexOf(opt.value) > -1
+                            ?.flat()
+                            .indexOf(opt.value) > -1
                       }
                       onChange={
                         data.onChange ? data.onChange : formik.handleChange
@@ -301,17 +321,17 @@ export const mapData = (page, props) => {
                   value={
                     data.filter
                       ? moment(
-                          formik.values.filters[data.name].value,
-                          dateFormat
-                        ) || null
+                        formik.values.filters[data.name].value,
+                        dateFormat
+                      ) || null
                       : moment(formik.values[data.name], dateFormat) || null
                   }
                   onChange={(val) => {
                     data.filter
                       ? formik.setFieldValue(
-                          `filters.${data.name}.value`,
-                          converDate(val)
-                        )
+                        `filters.${data.name}.value`,
+                        converDate(val)
+                      )
                       : formik.setFieldValue(data.name, converDate(val));
                   }}
                   KeyboardButtonProps={{
@@ -371,20 +391,20 @@ export const mapData = (page, props) => {
                       data.filter
                         ? formik.values.filters[data.name].value
                           ? moment(
-                              formik.values.filters[data.name].value,
-                              dateFormat
-                            )
+                            formik.values.filters[data.name].value,
+                            dateFormat
+                          )
                           : null
                         : formik.values[data.name]
-                        ? moment(formik.values[data.name], dateFormat)
-                        : null
+                          ? moment(formik.values[data.name], dateFormat)
+                          : null
                     }
                     onChange={(val) => {
                       data.filter
                         ? formik.setFieldValue(
-                            `filters.${data.name}.value`,
-                            converDate(val)
-                          )
+                          `filters.${data.name}.value`,
+                          converDate(val)
+                        )
                         : formik.setFieldValue(data.name, converDate(val));
                     }}
                     KeyboardButtonProps={{
@@ -399,6 +419,75 @@ export const mapData = (page, props) => {
                 </>
               </DemoContainer>
             )
+          ) : data.type === "year" ? (
+            <DemoContainer components={["DatePicker"]}>
+              <>
+                {console.log(errorCheck(data, formik), "checkDataHere")}
+                <DatePicker
+                  margin="0"
+                  autoOk={true}
+                  showTodayButton={true}
+                  id={data.name}
+                  name={data.name}
+                  label={data.label}
+                  variant="outlined"
+                  format={yearFormat}
+                  placeholder={data.placeholder || ""}
+                  disabled={data.disabled}
+                  disableFuture={data.disableFuture || false}
+                  disablePast={data.disablePast || false}
+                  slotProps={{
+                    textField: {
+                      className: errorCheck(data, formik) ? "Mui-error" : "",
+                      helperText: errorCheck(data, formik)
+                        ? errorCheck(data, formik)
+                        : data.helperText,
+                    },
+                  }}
+                  openTo="year"
+                  views={['year']}
+                  maxDate={
+                    moment(data.maxDate, yearFormat) || moment("2100")
+                  }
+                  maxDateMessage={
+                    data.maxDateMessage ||
+                    "Date should not be after maximal date"
+                  }
+                  minDate={
+                    moment(data.minDate, yearFormat) || moment("1900")
+                  }
+                  minDateMessage={
+                    data.minDateMessage ||
+                    "Date should not be before minimal date"
+                  }
+                  className="customDatepicker"
+                  value={
+                    data.filter
+                      ? formik.values.filters[data.name].value
+                        ? moment(
+                          formik.values.filters[data.name].value,
+                          yearFormat
+                        )
+                        : null
+                      : formik.values[data.name]
+                        ? moment(formik.values[data.name], yearFormat)
+                        : null
+                  }
+                  onChange={(val) => {
+                    data.filter
+                      ? formik.setFieldValue(
+                        `filters.${data.name}.value`,
+                        converYear(val)
+                      )
+                      : formik.setFieldValue(data.name, converYear(val));
+                  }}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                  size={data.size}
+                />
+              </>
+            </DemoContainer>
           ) : data.type === "uploadDropZone" ? (
             <>
               <Uploader
@@ -501,8 +590,8 @@ export const mapData = (page, props) => {
                   data.filter
                     ? formik.values.filters[data.name].value
                     : data.value
-                    ? data.value
-                    : formik.values[data.name]
+                      ? data.value
+                      : formik.values[data.name]
                 }
                 autoFocus={data.autoFocus}
                 name={data.filter ? `filters.${data.name}.value` : data.name}
@@ -513,8 +602,8 @@ export const mapData = (page, props) => {
                       ? true
                       : false
                     : formik.values[data.name]
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
                 onBlur={formik.handleBlur}
                 onChange={data.onChange ? data.onChange : formik.handleChange}

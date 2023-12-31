@@ -180,6 +180,12 @@ function ContactDetails(props) {
   }, [contactFormik?.values?.sameAsPermanent]);
 
   const formValues = [
+     {
+      type: "misc",
+      class: "col-12",
+      content: <h1 className="esmTitle">Current Address</h1>,
+      formik: contactFormik,
+    },
     {
       label: "House number",
       placeholder: "House number",
@@ -265,7 +271,7 @@ function ContactDetails(props) {
     },
     {
       type: "misc",
-      content: <h5 className="my-3">Permanent address</h5>,
+      content: <h5 className="esmTitle my-3">Permanent address</h5>,
       class: "col-12",
     },
     {
