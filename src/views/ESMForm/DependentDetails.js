@@ -119,7 +119,6 @@ function DependentDetails(props) {
   }, [currId]);
 
   useEffect(() => {
-    console.log(fetchESM, 'fetchESMCheck')
     if (fetchESM?.data?.data?.length && fetchESM?.data?.message != "FAILED") {
       // dependentFormik.values.dependentName = fetchESM?.data.dependentName;
       // dependentFormik.values.dependentId = fetchESM?.data.dependentId;
@@ -285,7 +284,6 @@ function DependentDetails(props) {
   ];
 
   const handleSubmit = (event) => {
-    console.log(event, 'checkingEvent')
     event.preventDefault();
     if (dependentList[0]?.submittedBy != undefined) {
       registerESM(
@@ -344,7 +342,6 @@ function DependentDetails(props) {
     }
     // setReload(!reload);
   }, [dependentFormik?.values?.relation]);
-  console.log(dependentList, 'dependentListCheck')
   const handleManageDependent = () => {
     if (Object.keys(dependentFormik.errors).length > 0) {
       setAlert("Please fill out all the mandatory fields!", "error");
@@ -367,8 +364,8 @@ function DependentDetails(props) {
       console.log(dependentFormik, 'dependentFormikCheck')
       console.log(tempDepList, 'tempDepListCheck')
       setDependentList(tempDepList);
-      // setDependentModal(false);
-      // dependentFormik.resetForm();
+      setDependentModal(false);
+      dependentFormik.resetForm();
     }
   };
 
