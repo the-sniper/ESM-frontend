@@ -29,7 +29,7 @@ const steps = [
 function ESMForm() {
   const authContext = useContext(AuthContext);
   const { user } = authContext;
-  console.log(user, 'checkUserStep')
+  console.log(user, "checkUserStep");
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
 
@@ -53,8 +53,8 @@ function ESMForm() {
     const newActiveStep =
       isLastStep() && !allStepsCompleted()
         ? // It's the last step, but not all steps have been completed,
-        // find the first step that has been completed
-        steps.findIndex((step, i) => !(i in completed))
+          // find the first step that has been completed
+          steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
   };
@@ -90,11 +90,11 @@ function ESMForm() {
   //   if (user?.message === "SUCCESS") {
   //     // setActiveStep(user?.data?.formProgressCount)
   //     // setCompleted(user?.data?.formProgressCount)
-      
+
   //   }
   // }, [user])
 
-  console.log(completed, 'checkCompleted')
+  console.log(completed, "checkCompleted");
 
   return (
     <div className="customContainer stepperContainer">
@@ -150,6 +150,7 @@ function ESMForm() {
                 <DependentDetails
                   handleComplete={handleComplete}
                   handlePrevious={handlePrevious}
+                  skipStep={handleStep(activeStep + 1)}
                 />
               ) : activeStep === 6 ? (
                 <ContactDetails

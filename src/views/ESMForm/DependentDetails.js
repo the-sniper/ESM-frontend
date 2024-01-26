@@ -2,7 +2,13 @@ import React, { useState, useEffect, useContext } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomButton from "../../components/atoms/buttons/CustomButton";
-import { capitalize, cleanDropdownData, dateFormatFunction, mapData, yearFormatFunction } from "../../utils";
+import {
+  capitalize,
+  cleanDropdownData,
+  dateFormatFunction,
+  mapData,
+  yearFormatFunction,
+} from "../../utils";
 import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import moment from "moment";
@@ -61,7 +67,7 @@ function DependentDetails(props) {
       dependentDob: "",
       dependentAadhar: "",
       dependentQualification: "",
-      additionalCourse: '',
+      additionalCourse: "",
       dependentAcademicYear: "",
       dependentEmploymentStatus: "",
       dependentMaritalStatus: "",
@@ -85,8 +91,7 @@ function DependentDetails(props) {
       dependentFormik.values.dependentId = dependentList[currId]?.dependentId;
       dependentFormik.values.registeredDate =
         dependentList[currId]?.registeredDate;
-      dependentFormik.values.expiryDate =
-        dependentList[currId]?.expiryDate;
+      dependentFormik.values.expiryDate = dependentList[currId]?.expiryDate;
       dependentFormik.values.relation = dependentList[currId]?.relation;
       dependentFormik.values.dependentDob = dependentList[currId]?.dependentDob;
       dependentFormik.values.dependentAadhar =
@@ -360,9 +365,9 @@ function DependentDetails(props) {
         // Adding new entry
         tempDepList.push({ ...dependentFormik.values, submittedBy: "USER" });
       }
-      console.log(existingIndex, 'existingIndex')
-      console.log(dependentFormik, 'dependentFormikCheck')
-      console.log(tempDepList, 'tempDepListCheck')
+      console.log(existingIndex, "existingIndex");
+      console.log(dependentFormik, "dependentFormikCheck");
+      console.log(tempDepList, "tempDepListCheck");
       setDependentList(tempDepList);
       setDependentModal(false);
       dependentFormik.resetForm();
@@ -422,11 +427,10 @@ function DependentDetails(props) {
                 </tr>
               </thead>
               {console.log(dependentList, "dependentListCheck1")}
-              {console.log(
-                  dependentList?.length > 0, 'dependentListTest' )}
+              {console.log(dependentList?.length > 0, "dependentListTest")}
               <tbody>
                 {typeof dependentList == "object" &&
-                  dependentList?.length > 0 ? (
+                dependentList?.length > 0 ? (
                   dependentList?.map((data, index) => (
                     <tr key={uuidv4()}>
                       <td>{index + 1}</td>
@@ -486,21 +490,30 @@ function DependentDetails(props) {
           </Button>
         )}
         <div className="esmAction">
-          <CustomButton
-            label="Previous"
-            className="esmSubmitBtn"
-            disabled={false}
-            onClick={() => props.handlePrevious()}
-            buttonType="secondary"
-          />
-          <CustomButton
-            label="Next"
-            className="esmSubmitBtn"
-            type="submit"
-            onClick={(e) => handleSubmit(e)}
-            buttonType="primary"
-            disabled={dependentList?.length > 0 ? false : true}
-          />
+          <div className="esmActionInner">
+            <CustomButton
+              label="Previous"
+              className="esmSubmitBtn"
+              disabled={false}
+              onClick={() => props.handlePrevious()}
+              buttonType="secondary"
+            />
+            <CustomButton
+              label="Next"
+              className="esmSubmitBtn"
+              type="submit"
+              onClick={(e) => handleSubmit(e)}
+              buttonType="primary"
+              disabled={dependentList?.length > 0 ? false : true}
+            />
+          </div>
+          <Button
+            className="esmSkipBtn"
+            onClick={(e) => props.skipStep(e)}
+            // variant="outlined"
+          >
+            Skip This Step
+          </Button>
         </div>
       </form>
       <CustomDialog
