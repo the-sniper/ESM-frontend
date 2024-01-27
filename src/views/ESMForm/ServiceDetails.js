@@ -45,10 +45,7 @@ function ServiceDetails(props) {
     //   then: () => Yup.number().required("This is a required field."),
     // }),
     recordOfficeName: Yup.string().required("This field is required!"),
-    groupName: Yup.string().when("serviceName", {
-      is: "2",
-      then: () => Yup.string().required("This is a required field."),
-    }),
+    groupName: Yup.string().nullable(),
     tradeName: Yup.string(),
     othersTradeName: Yup.string()
       .nullable()
@@ -391,7 +388,7 @@ function ServiceDetails(props) {
 
   return (
     <div>
-    <h1 className="esmTitle">Service Details</h1>
+      <h1 className="esmTitle">Service Details</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
         <div className="esmAction">
