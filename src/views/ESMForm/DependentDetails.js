@@ -394,7 +394,7 @@ function DependentDetails(props) {
     setDependentList(tempList);
     setDeleteDependent(false);
   };
-
+  console.log(dependentList, "dependentListCheck");
   return (
     <div>
       <h1 className="esmTitle">Dependent Details</h1>

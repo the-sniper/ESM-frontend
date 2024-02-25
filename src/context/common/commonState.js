@@ -105,7 +105,7 @@ const CommonState = (props) => {
 
   const getAllDistricts = async (payload) => {
     try {
-      const res = await apiCall("post", "GetDistrict", payload, "", "dd");
+      const res = await apiCall("post", "GetAllDistricts", payload, "", "dd");
       console.log(res, "checkRESfromDistrict");
 
       if (res && res.status === 200) {

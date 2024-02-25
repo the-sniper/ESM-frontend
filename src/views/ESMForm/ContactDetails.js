@@ -113,6 +113,36 @@ function ContactDetails(props) {
       });
     }
   }, [contactFormik?.values?.permanentState]);
+  useEffect(() => {
+    if (contactFormik?.values?.sameAsPermanent == "true") {
+      contactFormik.values.permanentPincode = contactFormik?.values?.pincode;
+      contactFormik.values.permanentState = contactFormik?.values?.state;
+      contactFormik.values.permanentDistrict = contactFormik?.values?.district;
+      contactFormik.values.permanentTalukName =
+        contactFormik?.values?.talukName;
+      contactFormik.values.permanentCityVillage =
+        contactFormik?.values?.cityVillage;
+      contactFormik.values.permanentLocality = contactFormik?.values?.locality;
+      contactFormik.values.permanentStreet = contactFormik?.values?.street;
+      contactFormik.values.permanentHouseName =
+        contactFormik?.values?.houseName;
+      contactFormik.values.permanentHouseNumber =
+        contactFormik?.values?.houseNumber;
+      contactFormik.values.permanentPoliceStation =
+        contactFormik?.values?.policeStation;
+    } else {
+      contactFormik.values.permanentPincode = "";
+      contactFormik.values.permanentState = "";
+      contactFormik.values.permanentDistrict = "";
+      contactFormik.values.permanentTalukName = "";
+      contactFormik.values.permanentCityVillage = "";
+      contactFormik.values.permanentLocality = "";
+      contactFormik.values.permanentStreet = "";
+      contactFormik.values.permanentHouseName = "";
+      contactFormik.values.permanentHouseNumber = "";
+      contactFormik.values.permanentPoliceStation = "";
+    }
+  }, [contactFormik?.values?.sameAsPermanent]);
 
   useEffect(() => {
     if (contactFormData) {
@@ -145,46 +175,17 @@ function ContactDetails(props) {
         contactFormData?.permanentHouseNumber;
       contactFormik.values.permanentPoliceStation =
         contactFormData?.permanentPoliceStation;
-      contactFormik.values.permanentTelephoneNumber = contactFormData?.permanentTelephoneNumber;
+      contactFormik.values.permanentTelephoneNumber =
+        contactFormData?.permanentTelephoneNumber;
       contactFormik.values.sameAsPermanent = contactFormData?.sameAsPermanent;
 
       setReload(!reload);
     }
   }, [contactFormData]);
-
-  useEffect(() => {
-    if (contactFormik?.values?.sameAsPermanent == "true") {
-      contactFormik.values.permanentPincode = contactFormik?.values?.pincode;
-      contactFormik.values.permanentState = contactFormik?.values?.state;
-      contactFormik.values.permanentDistrict = contactFormik?.values?.district;
-      contactFormik.values.permanentTalukName =
-        contactFormik?.values?.talukName;
-      contactFormik.values.permanentCityVillage =
-        contactFormik?.values?.cityVillage;
-      contactFormik.values.permanentLocality = contactFormik?.values?.locality;
-      contactFormik.values.permanentStreet = contactFormik?.values?.street;
-      contactFormik.values.permanentHouseName =
-        contactFormik?.values?.houseName;
-      contactFormik.values.permanentHouseNumber =
-        contactFormik?.values?.houseNumber;
-      contactFormik.values.permanentPoliceStation =
-        contactFormik?.values?.policeStation;
-    } else {
-      contactFormik.values.permanentPincode = "";
-      contactFormik.values.permanentState = "";
-      contactFormik.values.permanentDistrict = "";
-      contactFormik.values.permanentTalukName = "";
-      contactFormik.values.permanentCityVillage = "";
-      contactFormik.values.permanentLocality = "";
-      contactFormik.values.permanentStreet = "";
-      contactFormik.values.permanentHouseName = "";
-      contactFormik.values.permanentHouseNumber = "";
-      contactFormik.values.permanentPoliceStation = "";
-    }
-  }, [contactFormik?.values?.sameAsPermanent]);
+  console.log(contactFormData, "checkcontactFormData");
 
   const formValues = [
-     {
+    {
       type: "misc",
       class: "col-12",
       content: <h1 className="esmTitle">Current Address</h1>,
@@ -400,7 +401,6 @@ function ContactDetails(props) {
       class: "col-6",
       formik: contactFormik,
     },
-    
   ];
 
   const handleSubmit = (event) => {

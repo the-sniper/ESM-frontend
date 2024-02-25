@@ -40,6 +40,8 @@
 
 .stepperBody .esmSubmitBtn {
   min-width: 180px;
+}
+.stepperBody .esmActionInner button {
   width: 100%;
 }
 
