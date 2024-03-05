@@ -75,7 +75,9 @@ function ESMForm() {
       isLastStep() && !allStepsCompleted()
         ? steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
-    setActiveStep(newActiveStep);
+    if (newActiveStep != 5) {
+      setActiveStep(newActiveStep);
+    }
     // if(steps.length)
     // console.log('This is the last step')
   };
@@ -111,12 +113,8 @@ function ESMForm() {
         {allStepsCompleted() ? (
           <React.Fragment>
             <Typography sx={{ mt: 2, mb: 1 }}>
-              All steps completed - you&apos;re finished
+              Thanks for submitting the form.
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button onClick={handleReset}>Reset</Button>
-            </Box>
           </React.Fragment>
         ) : (
           <React.Fragment>
