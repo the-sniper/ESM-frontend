@@ -7,6 +7,9 @@ import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import { stateDistricts } from "../../utils/stateDistricts";
 import CommonContext from "../../context/common/commonContext";
+import CustomDialog from "../../components/molecules/CustomDialog";
+import Lottie from "react-lottie";
+import successAnimation from "../../assets/lottie/successAnimation.json";
 
 function ContactDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -21,6 +24,7 @@ function ContactDetails(props) {
   const { setAlert } = alertContext;
   const [reload, setReload] = useState(false);
   const [contactFormData, setContactFormData] = useState({});
+  const [formSubmitModal, setFormSubmitModal] = useState(false);
 
   const contactValidationArray = Yup.object({
     pincode: Yup.string()
@@ -432,6 +436,17 @@ function ContactDetails(props) {
       }
     }
   }, [responseStatus]);
+
+  const paymentSuccessOptions = {
+    loop: true,
+    autoplay: true,
+    speed: "0.25",
+    animationData: successAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>
@@ -445,14 +460,44 @@ function ContactDetails(props) {
             buttonType="secondary"
           />
           <CustomButton
-            label="Submit"
+            label="Save"
             className="esmSubmitBtn"
             type="submit"
             onClick={(e) => handleSubmit(e)}
             buttonType="primary"
           />
+          <CustomButton
+            label="Submit"
+            className="esmSubmitBtn"
+            onClick={() => setFormSubmitModal(true)}
+            buttonType="primary"
+          />
         </div>
       </form>
+      <CustomDialog
+        title="Confirm Submission"
+        className="dependentModal"
+        open={formSubmitModal}
+        function={() => setFormSubmitModal(!formSubmitModal)}
+        closeBtn={true}
+      >
+        <h4>Are you sure you want to submit this form?</h4>
+        <h6>Once submitted, this information cannot be changed.</h6>
+        {/* <Lottie
+          options={paymentSuccessOptions}
+          speed="0.25"
+          height="auto"
+          width={150}
+        /> */}
+        <div className="actionWrapper d-flex justify-content-end mt-4">
+          <CustomButton
+            buttonType="secondary"
+            type="submit"
+            label="No, Cancel"
+          />
+          <CustomButton type="submit" className="ml-3" label="Yes, Submit" />
+        </div>
+      </CustomDialog>
     </div>
   );
 }
