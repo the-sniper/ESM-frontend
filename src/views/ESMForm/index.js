@@ -75,9 +75,10 @@ function ESMForm() {
       isLastStep() && !allStepsCompleted()
         ? steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
-    if (newActiveStep != 5) {
-      setActiveStep(newActiveStep);
-    }
+    console.log(newActiveStep, activeStep, "newActiveStep");
+    // if (activeStep != 5) {
+    setActiveStep(newActiveStep);
+    // }
     // if(steps.length)
     // console.log('This is the last step')
   };
