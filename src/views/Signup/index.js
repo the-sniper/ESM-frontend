@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -7,6 +7,7 @@ import { LOGO, SITE_NAME, mapData } from "../../utils";
 import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
 import "./signup.css";
+import CustomDialog from "../../components/molecules/CustomDialog";
 
 const Signup = () => {
   const authContext = useContext(AuthContext);
@@ -16,6 +17,7 @@ const Signup = () => {
 
   const { register, responseStatus, clearResponse } = authContext;
   const navigate = useNavigate();
+  const [esmIdModal, setEsmIdModal] = useState(false);
 
   const validationArray = Yup.object({
     name: Yup.string().required("This field is required!"),
@@ -49,6 +51,9 @@ const Signup = () => {
     validationSchema: validationArray,
     onSubmit: (values) => {
       register(values);
+      if (values?.regType === "WDW") {
+        setEsmIdModal(true);
+      }
       console.log(values, "Signup values");
     },
   });
@@ -118,6 +123,61 @@ const Signup = () => {
     },
   ];
 
+  const esmValidationArray = Yup.object({
+    esmIdCheck: Yup.string().required("This field is required!"),
+    esmId: Yup.string().when("esmIdCheck", {
+      is: "false",
+      then: () => Yup.string(),
+      otherwise: () => Yup.string().required("This field is required!"),
+    }),
+  });
+
+  const esmCheckFormik = useFormik({
+    initialValues: {
+      esmIdCheck: "",
+      esmId: "",
+    },
+    validationSchema: esmValidationArray,
+    onSubmit: (values) => {
+      if (values?.esmIdCheck == "false") {
+        navigate("/login");
+      }
+      console.log(values, "ESM Check values");
+    },
+  });
+
+  const esmCheck = [
+    {
+      label: "Do you have an ESM ID?",
+      name: "esmIdCheck",
+      type: "radio",
+      options: [
+        {
+          show: "Yes",
+          id: "true",
+        },
+        {
+          show: "No",
+          id: "false",
+        },
+      ],
+      class: "col-6",
+      formik: esmCheckFormik,
+    },
+    {
+      label: "ESM ID",
+      name: "esmId",
+      type: "text",
+      placeholder: "Enter the ESM ID",
+      class: `col-12 ${
+        esmCheckFormik?.values?.esmIdCheck == "true" ? "" : "d-none"
+      }`,
+      formik: esmCheckFormik,
+    },
+  ];
+
+  console.log(formik, "esmCheckFormik");
+
   useEffect(() => {
     console.log(responseStatus, "login_responseStatus");
     if (responseStatus) {
@@ -125,7 +185,7 @@ const Signup = () => {
         if (responseStatus.status === "SUCCESS") {
           setAlert("Registered successfully!", "success");
           clearResponse();
-          navigate("/login");
+          // navigate("/login");
 
           console.log("Login Success 1");
         }
@@ -159,6 +219,22 @@ const Signup = () => {
       <h4 className="loginHelper">
         Already have an account? <Link to="/login">Login here.</Link>{" "}
       </h4>
+      <CustomDialog
+        title=""
+        className="dependentModal"
+        open={esmIdModal}
+        function={() => setEsmIdModal(!esmIdModal)}
+        closeBtn={false}
+      >
+        {/* <h4>Do you have an ESM ID?</h4> */}
+        <form onSubmit={esmCheckFormik.handleSubmit}>
+          <div className="row">{Object.values(mapData(esmCheck))}</div>
+
+          <div className="actionWrapper d-flex justify-content-end mt-4">
+            <CustomButton type="submit" className="ml-3" label="Submit" />
+          </div>
+        </form>
+      </CustomDialog>
     </div>
   );
 };
