@@ -287,17 +287,15 @@ function DependentDetails(props) {
       formik: dependentFormik,
     },
   ];
-
+  console.log(dependentList, "getDepDetails");
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (dependentList[0]?.submittedBy != undefined) {
-      registerESM(
-        dependentList[0]?.submittedBy == null ? "post" : "put",
-        "DependentDetails",
-        dependentList,
-        "dependentForm"
-      );
-    }
+    registerESM(
+      dependentList[0]?.submittedBy == null ? "post" : "put",
+      "DependentDetails",
+      dependentList,
+      "dependentForm"
+    );
   };
   useEffect(() => {
     if (responseStatus) {
@@ -359,11 +357,11 @@ function DependentDetails(props) {
         // Editing existing entry
         tempDepList[existingIndex] = {
           ...dependentFormik.values,
-          submittedBy: "USER",
+          // submittedBy: "USER",
         };
       } else {
         // Adding new entry
-        tempDepList.push({ ...dependentFormik.values, submittedBy: "USER" });
+        tempDepList.push({ ...dependentFormik.values });
       }
       console.log(existingIndex, "existingIndex");
       console.log(dependentFormik, "dependentFormikCheck");

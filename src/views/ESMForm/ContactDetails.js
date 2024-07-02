@@ -10,6 +10,7 @@ import CommonContext from "../../context/common/commonContext";
 import CustomDialog from "../../components/molecules/CustomDialog";
 import Lottie from "react-lottie";
 import successAnimation from "../../assets/lottie/successAnimation.json";
+import { useNavigate } from "react-router-dom";
 
 function ContactDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
@@ -25,6 +26,7 @@ function ContactDetails(props) {
   const [reload, setReload] = useState(false);
   const [contactFormData, setContactFormData] = useState({});
   const [formSubmitModal, setFormSubmitModal] = useState(false);
+  const navigate = useNavigate();
 
   const contactValidationArray = Yup.object({
     pincode: Yup.string()
@@ -447,6 +449,8 @@ function ContactDetails(props) {
     },
   };
 
+  console.log(global?.formProgressCount, "formProgressCount");
+
   return (
     <div>
       <form onSubmit={(e) => handleSubmit(e)}>
@@ -473,31 +477,40 @@ function ContactDetails(props) {
             buttonType="primary"
           />
         </div>
-      </form>
-      <CustomDialog
-        title="Confirm Submission"
-        className="dependentModal"
-        open={formSubmitModal}
-        function={() => setFormSubmitModal(!formSubmitModal)}
-        closeBtn={true}
-      >
-        <h4>Are you sure you want to submit this form?</h4>
-        <h6>Once submitted, this information cannot be changed.</h6>
-        {/* <Lottie
+        <CustomDialog
+          title="Confirm Submission"
+          className="dependentModal"
+          open={formSubmitModal}
+          function={() => setFormSubmitModal(!formSubmitModal)}
+          closeBtn={true}
+        >
+          <h4>Are you sure you want to submit this form?</h4>
+          <h6>Once submitted, this information cannot be changed.</h6>
+          {/* <Lottie
           options={paymentSuccessOptions}
           speed="0.25"
           height="auto"
           width={150}
         /> */}
-        <div className="actionWrapper d-flex justify-content-end mt-4">
-          <CustomButton
-            buttonType="secondary"
-            type="submit"
-            label="No, Cancel"
-          />
-          <CustomButton type="submit" className="ml-3" label="Yes, Submit" />
-        </div>
-      </CustomDialog>
+          <div className="actionWrapper d-flex justify-content-end mt-4">
+            <CustomButton
+              buttonType="secondary"
+              type="submit"
+              label="No, Cancel"
+            />
+            <CustomButton
+              type="submit"
+              className="ml-3"
+              label="Yes, Submit"
+              onClick={(e) => {
+                handleSubmit(e);
+                setFormSubmitModal(false);
+                navigate("/dashboard");
+              }}
+            />
+          </div>
+        </CustomDialog>
+      </form>
     </div>
   );
 }

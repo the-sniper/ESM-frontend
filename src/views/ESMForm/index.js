@@ -66,7 +66,6 @@ function ESMForm() {
   const handleStep = (step) => () => {
     setActiveStep(step);
   };
-
   const handleComplete = () => {
     const newCompleted = completed;
     newCompleted[activeStep] = true;
@@ -103,7 +102,8 @@ function ESMForm() {
     <div className="customContainer stepperContainer">
       <Stepper nonLinear activeStep={activeStep}>
         {steps.map((label, index) => (
-          <Step key={label} completed={completed[index]}>
+          <Step key={label} completed={completed[index + 1]}>
+            {console.log(label, index + 1, completed[index + 1], "getIndex")}
             <StepButton color="inherit" onClick={handleStep(index)}>
               {label}
             </StepButton>
@@ -157,7 +157,7 @@ function ESMForm() {
                   handlePrevious={handlePrevious}
                 />
               ) : (
-                "none"
+                ""
               )}
             </div>
           </React.Fragment>

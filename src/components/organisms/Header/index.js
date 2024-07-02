@@ -18,6 +18,14 @@ function Header() {
   useEffect(() => {
     loadUser();
   }, []);
+
+  useEffect(() => {
+    console.log(user, "viewUser");
+    if (user?.data) {
+      global.formProgressCount = user?.data?.formProgressCount;
+    }
+  }, [user?.data]);
+
   const onLogout = () => {
     logout();
     setAlert("Logged out successfully", "success");

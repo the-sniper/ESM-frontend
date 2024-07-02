@@ -35,6 +35,8 @@ const Signup = () => {
       .oneOf([Yup.ref("password")], "Passwords do not match")
       .required("This field is required!"),
     regType: Yup.string().required("This field is required!"),
+    esmDateOfBirth: Yup.string(),
+    esmDateOfDeath: Yup.string(),
   });
 
   const formik = useFormik({
@@ -46,19 +48,43 @@ const Signup = () => {
       password: "",
       confirmPassword: "",
       regType: "",
+      esmDateOfBirth: "",
+      esmDateOfDeath: "",
       role: "",
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
-      register(values);
-      if (values?.regType === "WDW") {
-        setEsmIdModal(true);
-      }
+      register(
+        values?.regType === "WDW" ? "RegisterWidow" : "RegisterUser",
+        values,
+        values?.regType === "WDW" ? "Widow" : ""
+      );
+      // if (values?.regType === "WDW") {
+      //   setEsmIdModal(true);
+      // }
       console.log(values, "Signup values");
     },
   });
 
   const signupInfo = [
+    {
+      label: "Registration type",
+      name: "regType",
+      type: "select",
+      options: [
+        { show: "ESM", value: "ESM" },
+        {
+          show: "Widow",
+          value: "WDW",
+        },
+      ],
+      class: "col-sm-6 col-12",
+      formik: formik,
+    },
+    {
+      type: "misc",
+      class: "col-sm-6 col-12",
+    },
     {
       label: "Full name",
       name: "name",
@@ -107,74 +133,98 @@ const Signup = () => {
       class: "col-sm-6 col-12",
       formik: formik,
     },
+
+    // {
+    //   label: "Do you have an ESM ID?",
+    //   name: "esmIdCheck",
+    //   type: "radio",
+    //   options: [
+    //     {
+    //       show: "Yes",
+    //       id: "true",
+    //     },
+    //     {
+    //       show: "No",
+    //       id: "false",
+    //     },
+    //   ],
+    //   class: `col-sm-6 col-12 ${
+    //     formik?.values?.regType === "WDW" ? "" : "d-none"
+    //   }`,
+    //   formik: formik,
+    // },
     {
-      label: "Registration type",
-      name: "regType",
-      type: "select",
-      options: [
-        { show: "ESM", value: "ESM" },
-        {
-          show: "Widow",
-          value: "WDW",
-        },
-      ],
-      class: "col-sm-6 col-12",
+      label: "ESM Date of Birth",
+      name: "esmDateOfBirth",
+      type: "date",
+      class: `col-sm-6 col-12 ${
+        formik?.values?.regType === "WDW" ? "" : "d-none"
+      }`,
+      formik: formik,
+    },
+    {
+      label: "ESM Date of Death",
+      name: "esmDateOfDeath",
+      type: "date",
+      class: `col-sm-6 col-12 ${
+        formik?.values?.regType === "WDW" ? "" : "d-none"
+      }`,
       formik: formik,
     },
   ];
 
-  const esmValidationArray = Yup.object({
-    esmIdCheck: Yup.string().required("This field is required!"),
-    esmId: Yup.string().when("esmIdCheck", {
-      is: "false",
-      then: () => Yup.string(),
-      otherwise: () => Yup.string().required("This field is required!"),
-    }),
-  });
+  // const esmValidationArray = Yup.object({
+  //   esmIdCheck: Yup.string().required("This field is required!"),
+  //   serviceId: Yup.string().when("esmIdCheck", {
+  //     is: "false",
+  //     then: () => Yup.string(),
+  //     otherwise: () => Yup.string().required("This field is required!"),
+  //   }),
+  // });
 
-  const esmCheckFormik = useFormik({
-    initialValues: {
-      esmIdCheck: "",
-      esmId: "",
-    },
-    validationSchema: esmValidationArray,
-    onSubmit: (values) => {
-      if (values?.esmIdCheck == "false") {
-        navigate("/login");
-      }
-      console.log(values, "ESM Check values");
-    },
-  });
+  // const esmCheckFormik = useFormik({
+  //   initialValues: {
+  //     esmIdCheck: "",
+  //     serviceId: "",
+  //   },
+  //   validationSchema: esmValidationArray,
+  //   onSubmit: (values) => {
+  //     if (values?.esmIdCheck == "false") {
+  //       navigate("/login");
+  //     }
+  //     console.log(values, "ESM Check values");
+  //   },
+  // });
 
-  const esmCheck = [
-    {
-      label: "Do you have an ESM ID?",
-      name: "esmIdCheck",
-      type: "radio",
-      options: [
-        {
-          show: "Yes",
-          id: "true",
-        },
-        {
-          show: "No",
-          id: "false",
-        },
-      ],
-      class: "col-6",
-      formik: esmCheckFormik,
-    },
-    {
-      label: "ESM ID",
-      name: "esmId",
-      type: "text",
-      placeholder: "Enter the ESM ID",
-      class: `col-12 ${
-        esmCheckFormik?.values?.esmIdCheck == "true" ? "" : "d-none"
-      }`,
-      formik: esmCheckFormik,
-    },
-  ];
+  // const esmCheck = [
+  //   {
+  //     label: "Do you have an ESM ID?",
+  //     name: "esmIdCheck",
+  //     type: "radio",
+  //     options: [
+  //       {
+  //         show: "Yes",
+  //         id: "true",
+  //       },
+  //       {
+  //         show: "No",
+  //         id: "false",
+  //       },
+  //     ],
+  //     class: "col-6",
+  //     formik: esmCheckFormik,
+  //   },
+  //   {
+  //     label: "ESM ID",
+  //     name: "serviceId",
+  //     type: "text",
+  //     placeholder: "Enter the ESM ID",
+  //     class: `col-12 ${
+  //       esmCheckFormik?.values?.esmIdCheck == "true" ? "" : "d-none"
+  //     }`,
+  //     formik: esmCheckFormik,
+  //   },
+  // ];
 
   console.log(formik, "esmCheckFormik");
 
@@ -182,12 +232,16 @@ const Signup = () => {
     console.log(responseStatus, "login_responseStatus");
     if (responseStatus) {
       if (responseStatus.from === "register") {
-        if (responseStatus.status === "SUCCESS") {
+        if (
+          responseStatus.status === "SUCCESS" ||
+          responseStatus?.message?.includes("Successful")
+        ) {
           setAlert("Registered successfully!", "success");
           clearResponse();
-          // navigate("/login");
-
-          console.log("Login Success 1");
+          navigate("/login");
+        } else if (responseStatus.status === "error") {
+          setAlert(responseStatus?.message, "error");
+          clearResponse();
         }
       } else if (responseStatus.from === "checkValidation") {
         if (responseStatus.status !== "SUCCESS") {
@@ -219,14 +273,13 @@ const Signup = () => {
       <h4 className="loginHelper">
         Already have an account? <Link to="/login">Login here.</Link>{" "}
       </h4>
-      <CustomDialog
+      {/* <CustomDialog
         title=""
         className="dependentModal"
         open={esmIdModal}
         function={() => setEsmIdModal(!esmIdModal)}
         closeBtn={false}
       >
-        {/* <h4>Do you have an ESM ID?</h4> */}
         <form onSubmit={esmCheckFormik.handleSubmit}>
           <div className="row">{Object.values(mapData(esmCheck))}</div>
 
@@ -234,7 +287,7 @@ const Signup = () => {
             <CustomButton type="submit" className="ml-3" label="Submit" />
           </div>
         </form>
-      </CustomDialog>
+      </CustomDialog> */}
     </div>
   );
 };

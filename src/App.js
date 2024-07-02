@@ -15,6 +15,7 @@ import EsmRegState from "./context/EsmRegistration/esmRegState";
 import CommonState from "./context/common/commonState";
 
 global.site_url = process.env.REACT_APP_DOMAIN;
+global.formProgressCount = null;
 // global.registerToken = true;
 
 function App() {

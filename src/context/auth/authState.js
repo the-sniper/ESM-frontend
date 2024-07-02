@@ -28,10 +28,10 @@ const AuthState = (props) => {
   let resp = new response(dispatch, RESPONSE_STATUS);
 
   // Register User
-  const register = async (formData) => {
+  const register = async (endpoint, formData, type) => {
     try {
       const [res] = await Promise.all([
-        apiCall("post", "RegisterUser", formData, "", ""),
+        apiCall("post", endpoint, formData, "", type || "ESM"),
       ]);
       resp.commonResponse(res.data, "register");
       console.log(res, "checkResData");

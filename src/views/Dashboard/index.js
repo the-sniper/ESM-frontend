@@ -5,7 +5,10 @@ import CustomButton from "../../components/atoms/buttons/CustomButton";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { LinearProgress } from "@mui/material";
-import { greetingBasedOnTime } from "../../utils";
+import { greetingBasedOnTime, mapData } from "../../utils";
+import CustomDialog from "../../components/molecules/CustomDialog";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 function LinearProgressWithLabel(props) {
   return (
     <div>
@@ -30,6 +33,38 @@ const Dashboard = () => {
     loadUser();
   }, []);
   const navigate = useNavigate();
+  const [esmIdModal, setEsmIdModal] = useState(false);
+
+  const esmValidationArray = Yup.object({
+    esmDateOfDeath: Yup.string().required("This field is required!"),
+  });
+
+  const esmCheckFormik = useFormik({
+    initialValues: {
+      esmDateOfDeath: "",
+    },
+    validationSchema: esmValidationArray,
+    onSubmit: (values) => {
+      console.log(values, "ESM Check values");
+    },
+  });
+
+  const esmCheck = [
+    {
+      label: "ESM Date of Death",
+      name: "esmDateOfDeath",
+      type: "date",
+      placeholder: "Enter the ESM Date of Death",
+      class: `col-12`,
+      formik: esmCheckFormik,
+    },
+  ];
+
+  useEffect(() => {
+    if (user?.regType === "WDW") {
+      setEsmIdModal(true);
+    }
+  }, [user]);
 
   return (
     <div className="dashboard">
@@ -59,7 +94,9 @@ const Dashboard = () => {
               </div>
               <div className="userInfoItem">
                 <span className="userInfoLabel">Type:</span>
-                <span className="userInfoValue">{user.data.regType}</span>
+                <span className="userInfoValue">
+                  {user.data.regType === "WDW" ? "Widow" : "ESM"}
+                </span>
               </div>
             </div>
             {console.log(user.data.formProgressCount, "formProgressCount")}
@@ -91,6 +128,22 @@ const Dashboard = () => {
       ) : (
         "Loading"
       )}
+      <CustomDialog
+        title="Enter ESM details"
+        className="esmModal"
+        open={esmIdModal}
+        function={() => setEsmIdModal(!esmIdModal)}
+        closeBtn={false}
+      >
+        {/* <h4>Do you have an ESM ID?</h4> */}
+        <form onSubmit={esmCheckFormik.handleSubmit}>
+          <div className="row">{Object.values(mapData(esmCheck))}</div>
+
+          <div className="actionWrapper d-flex justify-content-end">
+            <CustomButton type="submit" className="" label="Submit" />
+          </div>
+        </form>
+      </CustomDialog>
     </div>
   );
 };

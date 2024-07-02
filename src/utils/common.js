@@ -4,12 +4,12 @@ export class response {
     this.RESPONSE_STATUS = RESPONSE_STATUS;
   }
 
-  async commonErrorResponse(from) {
+  async commonErrorResponse(from, message) {
     this.dispatch({
       type: this.RESPONSE_STATUS,
       payload: {
         status: "error",
-        message: "Something went wrong!",
+        message: message || "Something went wrong!",
         type: 0,
         from: from,
       },
@@ -51,7 +51,7 @@ export class response {
         },
       });
     } else {
-      this.commonErrorResponse(from);
+      this.commonErrorResponse(from, data.message);
     }
   }
 }
