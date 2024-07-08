@@ -31,7 +31,7 @@ const AuthState = (props) => {
   const register = async (endpoint, formData, type) => {
     try {
       const [res] = await Promise.all([
-        apiCall("post", endpoint, formData, "", type || "ESM"),
+        apiCall("post", endpoint, formData, "", type || ""),
       ]);
       resp.commonResponse(res.data, "register");
       console.log(res, "checkResData");
