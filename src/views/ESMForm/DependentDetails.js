@@ -71,6 +71,7 @@ function DependentDetails(props) {
       dependentAcademicYear: "",
       dependentEmploymentStatus: "",
       dependentMaritalStatus: "",
+      updateStatus: "false",
     },
     // enableReinitialize: true,
     validationSchema: dependentValidationArray,
@@ -106,6 +107,7 @@ function DependentDetails(props) {
         dependentList[currId]?.dependentEmploymentStatus;
       dependentFormik.values.dependentMaritalStatus =
         dependentList[currId]?.dependentMaritalStatus;
+      dependentFormik.values.updateStatus = dependentList[currId]?.updateStatus;
     } else {
       dependentFormik.values.dependentName = "";
       dependentFormik.values.dependentId = "";
@@ -119,6 +121,7 @@ function DependentDetails(props) {
       dependentFormik.values.dependentAcademicYear = "";
       dependentFormik.values.dependentEmploymentStatus = "";
       dependentFormik.values.dependentMaritalStatus = "";
+      dependentFormik.values.updateStatus = "false";
     }
     setReload(!reload);
   }, [currId]);
@@ -287,22 +290,23 @@ function DependentDetails(props) {
       formik: dependentFormik,
     },
   ];
-  console.log(dependentList, "getDepDetails");
+  console.log(dependentList, fetchESM?.data, "getDepDetails");
   const handleSubmit = (event) => {
     event.preventDefault();
-    registerESM(
-      dependentList[0]?.submittedBy == null ? "post" : "put",
-      "DependentDetails",
-      dependentList,
-      "dependentForm"
-    );
+    // registerESM(
+    //   // dependentList[0]?.submittedBy == null ? "post" : "put",
+    //   "post",
+    //   "DependentDetails",
+    //   dependentList,
+    //   "dependentForm"
+    // );
   };
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "dependentForm") {
         if (responseStatus.status === "SUCCESS") {
           setAlert("Dependent Details Submitted Successfully!", "success");
-          props.handleComplete();
+          // props.handleComplete();
           clearResponse();
         } else if (responseStatus.status === "ERROR") {
           setAlert(responseStatus.message, "error");
@@ -358,16 +362,25 @@ function DependentDetails(props) {
         tempDepList[existingIndex] = {
           ...dependentFormik.values,
           // submittedBy: "USER",
+          updateStatus: "true",
         };
       } else {
         // Adding new entry
         tempDepList.push({ ...dependentFormik.values });
+        // tempDepList = [dependentFormik.values];
       }
       console.log(existingIndex, "existingIndex");
       console.log(dependentFormik, "dependentFormikCheck");
       console.log(tempDepList, "tempDepListCheck");
       setDependentList(tempDepList);
       setDependentModal(false);
+      registerESM(
+        // dependentList[0]?.submittedBy == null ? "post" : "put",
+        "post",
+        "DependentDetails",
+        tempDepList.slice(-1),
+        "dependentForm"
+      );
       dependentFormik.resetForm();
     }
   };
@@ -380,6 +393,7 @@ function DependentDetails(props) {
     } else if (type == "edit") {
       setCurrId(id);
       setDependentModal(true);
+      // updateStatus
     } else if (type == "delete") {
       setCurrId(id);
       setDeleteDependent(true);
@@ -390,6 +404,13 @@ function DependentDetails(props) {
     let tempList = [...dependentList];
     tempList.splice(currId, 1);
     setDependentList(tempList);
+    registerESM(
+      // dependentList[0]?.submittedBy == null ? "post" : "put",
+      "post",
+      "DependentDetails",
+      tempList,
+      "dependentForm"
+    );
     setDeleteDependent(false);
   };
   console.log(dependentList, "dependentListCheck");
@@ -433,9 +454,9 @@ function DependentDetails(props) {
                     <tr key={uuidv4()}>
                       <td>{index + 1}</td>
                       <td>{data.dependentName}</td>
-                      <td>{dateFormatFunction(data.dependentDob)}</td>
+                      <td>{data.dependentDob}</td>
                       <td>{data.dependentId}</td>
-                      <td>{dateFormatFunction(data.registeredDate)}</td>
+                      <td>{data.registeredDate}</td>
                       <td>{data.relation}</td>
                       <td>{data.dependentAadhar}</td>
                       <td>{data.dependentQualification}</td>
@@ -522,7 +543,7 @@ function DependentDetails(props) {
         closeBtn={true}
       >
         <div className="row">{Object.values(mapData(formValues))}</div>
-
+        {console.log(dependentFormik.values, "dependentFormikCheck")}
         <div className="actionWrapper d-flex justify-content-end">
           <CustomButton
             type="submit"

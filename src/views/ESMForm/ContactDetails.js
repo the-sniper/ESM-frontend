@@ -84,7 +84,7 @@ function ContactDetails(props) {
       permanentHouseNumber: "",
       permanentPoliceStation: "",
       permanentTelephoneNumber: "",
-      sameAsPermanent: false,
+      sameAsPermanent: "false",
     },
     validationSchema: contactValidationArray,
     onSubmit: (values) => {
@@ -188,7 +188,6 @@ function ContactDetails(props) {
       setReload(!reload);
     }
   }, [contactFormData]);
-  console.log(contactFormData, "checkcontactFormData");
 
   const formValues = [
     {
@@ -243,8 +242,13 @@ function ContactDetails(props) {
       placeholder: "Enter District",
       name: "district",
       type: "select",
-      options: cleanDropdownData(allDistricts, "districtName", "id"),
-
+      options: cleanDropdownData(
+        allDistricts,
+        "districtName",
+        "id",
+        "stateId",
+        contactFormik?.values?.state
+      ),
       class: "col-6",
       formik: contactFormik,
     },
@@ -361,8 +365,13 @@ function ContactDetails(props) {
       placeholder: "Enter District",
       name: "permanentDistrict",
       type: "select",
-      options: cleanDropdownData(allDistricts, "districtName", "id"),
-
+      options: cleanDropdownData(
+        allDistricts,
+        "districtName",
+        "id",
+        "stateId",
+        contactFormik?.values?.permanentState
+      ),
       class: "col-6",
       formik: contactFormik,
     },
