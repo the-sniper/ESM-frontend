@@ -42,6 +42,20 @@ const apiCall = async (method, url, data, headertype, baseurl) => {
           resolve(err);
           break;
         }
+      case "delete":
+        try {
+          data = data || {};
+          const res = await axios.delete(`${site_url}${url}`, {
+            ...config,
+            data: data,
+          });
+          console.log("Response from API:", res);
+          resolve(res);
+        } catch (err) {
+          console.log("Error response from API:", err);
+          resolve(err);
+        }
+
       case "get":
         try {
           console.log("get method", url, config);

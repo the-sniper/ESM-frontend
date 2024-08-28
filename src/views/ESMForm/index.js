@@ -49,18 +49,22 @@ function ESMForm() {
     return completedSteps() === totalSteps();
   };
 
-  const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
-  };
+  // const handleNext = () => {
+  //   const newActiveStep =
+  //     isLastStep() && !allStepsCompleted()
+  //       ? // It's the last step, but not all steps have been completed,
+  //         // find the first step that has been completed
+  //         steps.findIndex((step, i) => !(i in completed))
+  //       : activeStep + 1;
+  //   setActiveStep(newActiveStep);
+  // };
 
   const handlePrevious = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleStep = (step) => () => {
@@ -149,6 +153,7 @@ function ESMForm() {
                 <DependentDetails
                   handleComplete={handleComplete}
                   handlePrevious={handlePrevious}
+                  handleNext={handleNext}
                   skipStep={handleStep(activeStep + 1)}
                 />
               ) : activeStep === 6 ? (

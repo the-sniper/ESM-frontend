@@ -48,7 +48,7 @@ function DependentDetails(props) {
         message: "Aadhar number must be a 12-digit numeric value",
       }),
     dependentQualification: Yup.string().required("This is a required field."),
-    additionalCourse: Yup.string().required("This is a required field."),
+    additionalCourse: Yup.string(),
     dependentAcademicYear: Yup.string(),
     dependentEmploymentStatus: Yup.string().required(
       "This is a required field."
@@ -165,14 +165,14 @@ function DependentDetails(props) {
       class: "col-sm-6 col-12",
       formik: dependentFormik,
     },
-    {
-      label: "Dependent ID Card number",
-      placeholder: "Enter the dependent ID Card number",
-      name: "dependentId",
-      type: "text",
-      class: "col-sm-6 col-12",
-      formik: dependentFormik,
-    },
+    // {
+    //   label: "Dependent ID Card number",
+    //   placeholder: "Enter the dependent ID Card number",
+    //   name: "dependentId",
+    //   type: "text",
+    //   class: "col-sm-6 col-12",
+    //   formik: dependentFormik,
+    // },
     {
       label: "Date of Issue",
       placeholder: "Enter the date of Issue",
@@ -354,6 +354,11 @@ function DependentDetails(props) {
       setAlert("Please fill out all the mandatory fields!", "error");
     } else {
       let tempDepList = [...dependentList];
+      console.log(
+        tempDepList,
+        dependentFormik.values.dependentId,
+        "dependentFormikdependentId"
+      );
       const existingIndex = tempDepList.findIndex(
         (dep) => dep.dependentId === dependentFormik.values.dependentId
       );
@@ -401,19 +406,19 @@ function DependentDetails(props) {
   };
 
   const handleDependentDelete = () => {
-    let tempList = [...dependentList];
-    tempList.splice(currId, 1);
+    let tempList = [...dependentList].filter((item, index) => index !== currId);
     setDependentList(tempList);
+
     registerESM(
       // dependentList[0]?.submittedBy == null ? "post" : "put",
-      "post",
+      "delete",
       "DependentDetails",
-      tempList,
+      dependentList[currId],
       "dependentForm"
     );
     setDeleteDependent(false);
   };
-  console.log(dependentList, "dependentListCheck");
+
   return (
     <div>
       <h1 className="esmTitle">Dependent Details</h1>
@@ -521,7 +526,7 @@ function DependentDetails(props) {
               label="Next"
               className="esmSubmitBtn"
               type="submit"
-              onClick={(e) => handleSubmit(e)}
+              onClick={() => props.handleNext()}
               buttonType="primary"
               disabled={dependentList?.length > 0 ? false : true}
             />
@@ -543,7 +548,7 @@ function DependentDetails(props) {
         closeBtn={true}
       >
         <div className="row">{Object.values(mapData(formValues))}</div>
-        {console.log(dependentFormik.values, "dependentFormikCheck")}
+        {console.log(dependentFormik.errors, "dependentFormikCheck")}
         <div className="actionWrapper d-flex justify-content-end">
           <CustomButton
             type="submit"
