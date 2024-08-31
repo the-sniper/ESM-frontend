@@ -17,6 +17,7 @@ const apiCall = async (method, url, data, headertype, baseurl) => {
         "content-type": type,
       },
     };
+    console.log(method, "methodfromapi");
     switch (method) {
       case "post":
         try {

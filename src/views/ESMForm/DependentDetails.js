@@ -290,7 +290,6 @@ function DependentDetails(props) {
       formik: dependentFormik,
     },
   ];
-  console.log(dependentList, fetchESM?.data, "getDepDetails");
   const handleSubmit = (event) => {
     event.preventDefault();
     // registerESM(
@@ -301,6 +300,7 @@ function DependentDetails(props) {
     //   "dependentForm"
     // );
   };
+
   useEffect(() => {
     if (responseStatus) {
       if (responseStatus.from === "dependentForm") {
@@ -464,7 +464,11 @@ function DependentDetails(props) {
                       <td>{data.registeredDate}</td>
                       <td>{data.relation}</td>
                       <td>{data.dependentAadhar}</td>
-                      <td>{data.dependentQualification}</td>
+                      <td>
+                        {allEduLevel
+                          ?.filter((d) => d.id == data.dependentQualification)
+                          .map((data) => data.educationalQualification)}
+                      </td>
                       <td>{yearFormatFunction(data.dependentAcademicYear)}</td>
                       {/* <td>{capitalize(data.dependentEmploymentStatus)}</td>
                     <td>{capitalize(data.dependentMaritalStatus)}</td> */}
