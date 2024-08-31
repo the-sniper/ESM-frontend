@@ -40,15 +40,15 @@ const AuthState = (props) => {
     }
   };
 
-  // Check Email User
-  const checkValidation = async (formData) => {
+  // Validate ESM Profile
+  const checkESMValidation = async (formData) => {
     try {
       const [res] = await Promise.all([
-        apiCall("post", "checkValidation", formData, "", ""),
+        apiCall("post", "validateESMProfile", formData, "", "Widow"),
       ]);
-      resp.commonResponse(res.data, "checkValidation");
+      resp.commonResponse(res.data, "checkESMValidation");
     } catch (err) {
-      resp.commonErrorResponse("checkValidation");
+      resp.commonErrorResponse("checkESMValidation");
     }
   };
 
@@ -160,7 +160,7 @@ const AuthState = (props) => {
         responseStatus: state.responseStatus,
         callEnd: state.callEnd,
         register,
-        checkValidation,
+        checkESMValidation,
         login,
         logout,
         loadUser,

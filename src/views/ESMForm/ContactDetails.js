@@ -233,7 +233,7 @@ function ContactDetails(props) {
       label: "Select state",
       name: "state",
       type: "select",
-      options: cleanDropdownData(stateDistricts, "name", "id"),
+      options: cleanDropdownData(allStates, "name", "id"),
       class: "col-6",
       formik: contactFormik,
     },

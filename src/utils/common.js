@@ -40,12 +40,17 @@ export class response {
           from: from,
         },
       });
-    } else if (data && data.message && data.message === "ERROR") {
+    } else if (
+      data &&
+      data.message &&
+      (data.message === "ERROR" || data.message === "FAILED")
+    ) {
       this.dispatch({
         type: this.RESPONSE_STATUS,
         payload: {
           status: "error",
           message: data.statusText || "Request failed!",
+          message2: data,
           type: data.data.responseType,
           from: from,
         },

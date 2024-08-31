@@ -109,7 +109,7 @@ function PensionDetails(props) {
   });
   const [serviceJoiningDate, setServiceJoiningDate] = useState(null);
   const [pensionFormData, setPensionFormData] = useState({});
-  console.log(pensionformik, "pensionformik");
+  console.log(pensionformik?.values, "pensionformik");
 
   useEffect(() => {
     getESM("GetPensionDetails", "pensionForm");
@@ -375,9 +375,21 @@ function PensionDetails(props) {
     }
   }, [responseStatus]);
 
+  useEffect(() => {
+    if (pensionformik?.values?.isPensioner == "false") {
+      pensionformik.values.ppoNumber = "";
+      pensionformik.values.pensionSanctioned = 0;
+      pensionformik.values.presentPension = 0;
+      pensionformik.values.isSanctionedDisabilityPension = "false";
+      pensionformik.values.disabilityPension = 0;
+      pensionformik.values.disabilityPercentage = 0;
+      pensionformik.values.pensionAccountNumber = 0;
+    }
+  }, [pensionformik?.values?.isPensioner]);
+
   return (
     <div>
-    <h1 className="esmTitle">Pension Details</h1>
+      <h1 className="esmTitle">Pension Details</h1>
 
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>

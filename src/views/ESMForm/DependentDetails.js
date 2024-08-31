@@ -61,8 +61,6 @@ function DependentDetails(props) {
       serviceNumber: localStorage.username,
       dependentName: "",
       dependentId: "",
-      registeredDate: "",
-      expiryDate: "",
       relation: "",
       dependentDob: "",
       dependentAadhar: "",
@@ -90,9 +88,7 @@ function DependentDetails(props) {
       dependentFormik.values.dependentName =
         dependentList[currId]?.dependentName;
       dependentFormik.values.dependentId = dependentList[currId]?.dependentId;
-      dependentFormik.values.registeredDate =
-        dependentList[currId]?.registeredDate;
-      dependentFormik.values.expiryDate = dependentList[currId]?.expiryDate;
+
       dependentFormik.values.relation = dependentList[currId]?.relation;
       dependentFormik.values.dependentDob = dependentList[currId]?.dependentDob;
       dependentFormik.values.dependentAadhar =
@@ -111,8 +107,6 @@ function DependentDetails(props) {
     } else {
       dependentFormik.values.dependentName = "";
       dependentFormik.values.dependentId = "";
-      dependentFormik.values.registeredDate = "";
-      dependentFormik.values.expiryDate = "";
       dependentFormik.values.relation = "";
       dependentFormik.values.dependentDob = "";
       dependentFormik.values.dependentAadhar = "";
@@ -173,24 +167,7 @@ function DependentDetails(props) {
     //   class: "col-sm-6 col-12",
     //   formik: dependentFormik,
     // },
-    {
-      label: "Date of Issue",
-      placeholder: "Enter the date of Issue",
-      name: "registeredDate",
-      type: "date",
-      class: "col-sm-6 col-12",
-      minDate: moment(dependentFormik.values.dependentDob, "DD-MM-YYYY"),
-      formik: dependentFormik,
-    },
-    {
-      label: "Date of Expiry",
-      placeholder: "Enter the date of Expiry",
-      name: "expiryDate",
-      type: "date",
-      class: "col-sm-6 col-12",
-      minDate: moment(dependentFormik.values.dependentDob, "DD-MM-YYYY"),
-      formik: dependentFormik,
-    },
+
     {
       label: "Select relation",
       name: "relation",
@@ -440,7 +417,6 @@ function DependentDetails(props) {
                   <th>Name</th>
                   <th>Date of Birth</th>
                   <th>Dependent ID</th>
-                  <th>Date of Issue.</th>
                   <th>Relation</th>
                   <th>Aadhar</th>
                   <th>Qualification</th>
@@ -461,7 +437,6 @@ function DependentDetails(props) {
                       <td>{data.dependentName}</td>
                       <td>{data.dependentDob}</td>
                       <td>{data.dependentId}</td>
-                      <td>{data.registeredDate}</td>
                       <td>{data.relation}</td>
                       <td>{data.dependentAadhar}</td>
                       <td>

@@ -43,24 +43,10 @@ function PersonalDetails(props) {
       .matches(/^[A-Za-z\s]+$/, {
         message: "This field should only contain alphabetic characters.",
       }),
-    aadhar: Yup.string()
-      .required("This is a required field.")
-      .matches(/^\d{12}$/, {
-        message: "Aadhar number must be a 12-digit numeric value",
-      }),
+    aadhar: Yup.string().required("This is a required field."),
 
-    voterId: Yup.string()
-      .required("This is a required field.")
-      .matches(/^[A-Z]{3}[0-9]{7}$/, {
-        message:
-          "Voter ID must be in the format AAA1234567 (3 uppercase letters followed by 7 digits).",
-      }),
-    pan: Yup.string()
-      .required("This is a required field.")
-      .matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, {
-        message:
-          "PAN must be in the format ABCDE1234F (5 uppercase letters, 4 digits, and 1 uppercase letter).",
-      }),
+    voterId: Yup.string().required("This is a required field."),
+    pan: Yup.string().required("This is a required field."),
     csd: Yup.string().required("This is a required field."),
     echs: Yup.string().required("This is a required field."),
     identificationMark1: Yup.string().required("This is a required field."),
@@ -189,7 +175,14 @@ function PersonalDetails(props) {
       placeholder: "Enter the district you were born in",
       name: "birthDistrictSurname",
       type: "select",
-      options: cleanDropdownData(allDistricts, "districtName", "id"),
+      // options: cleanDropdownData(allDistricts, "districtName", "id"),
+      options: cleanDropdownData(
+        allDistricts,
+        "districtName",
+        "id",
+        "stateId",
+        personalformik?.values?.birthState
+      ),
       class: "col-6",
       formik: personalformik,
     },
@@ -292,7 +285,7 @@ function PersonalDetails(props) {
 
   return (
     <div>
-    <h1 className="esmTitle">ESM Personal Details</h1>
+      <h1 className="esmTitle">ESM Personal Details</h1>
 
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="row">{Object.values(mapData(formValues))}</div>
