@@ -216,7 +216,7 @@ function EmploymentDetails(props) {
       name: "civilQualification",
       type: "select",
       options: cleanDropdownData(allEduLevel, "educationalQualification", "id"),
-      class: `col-6`,
+      class: "col-6",
       formik: employmentFormik,
     },
     {
@@ -224,7 +224,7 @@ function EmploymentDetails(props) {
       placeholder: "Enter any additional courses taken",
       name: "additionalCourse",
       type: "text",
-      class: `col-6`,
+      class: "col-6",
       formik: employmentFormik,
     },
 
@@ -233,7 +233,7 @@ function EmploymentDetails(props) {
       label: "Enter equivalent test",
       name: "equivalentTest",
       type: "text",
-      class: `col-6`,
+      class: "col-6",
       formik: employmentFormik,
     },
     {
@@ -241,7 +241,7 @@ function EmploymentDetails(props) {
       name: "tradeName",
       type: "select",
       options: updatedTrade,
-      class: `col-6`,
+      class: "col-6",
       formik: employmentFormik,
     },
     {
@@ -255,7 +255,7 @@ function EmploymentDetails(props) {
       label: "Trade Code",
       name: "tradeCode",
       type: "text",
-      class: `col-6 `,
+      class: "col-6 ",
       formik: employmentFormik,
     },
     {

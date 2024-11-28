@@ -216,7 +216,7 @@ function DependentDetails(props) {
       placeholder: "Enter any additional courses taken",
       name: "additionalCourse",
       type: "text",
-      class: `col-6`,
+      class: "col-6",
       formik: dependentFormik,
     },
     {
