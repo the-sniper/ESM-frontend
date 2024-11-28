@@ -297,7 +297,7 @@ const Signup = () => {
       label: "ESM Date of Death",
       name: "esmDateOfDeath",
       type: "date",
-      class: `col-sm-6 col-12`,
+      class: "col-sm-6 col-12",
       formik: widowNewFormik,
     },
   ];
@@ -461,14 +461,14 @@ const Signup = () => {
       label: "ESM Date of Birth",
       name: "esmDateOfBirth",
       type: "date",
-      class: `col-sm-6 col-12`,
+      class: "col-sm-6 col-12",
       formik: widowExFormik,
     },
     {
       label: "ESM Date of Death",
       name: "esmDateOfDeath",
       type: "date",
-      class: `col-sm-6 col-12`,
+      class: "col-sm-6 col-12",
       formik: widowExFormik,
     },
   ];

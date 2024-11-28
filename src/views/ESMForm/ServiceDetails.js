@@ -347,7 +347,7 @@ function ServiceDetails(props) {
       type: "test",
       placeholder: "Enter your decorations",
       class: "col-6",
-      helperText: `Add multiple Decorations by separating by a semicolon(;)`,
+      helperText: "Add multiple Decorations by separating by a semicolon(;)",
       formik: serviceFormik,
     },
   ];
