@@ -12,14 +12,16 @@ import {
   tradeData,
 } from "../../utils/commonExports";
 import moment from "moment";
+import AuthContext from "../../context/auth/authContext";
 
 function ServiceDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
   const commonContext = useContext(CommonContext);
+  const authContext = useContext(AuthContext);
 
-  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
-    esmRegContext;
+  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } = esmRegContext;
+  const { user } = authContext;
   const { setAlert } = alertContext;
   const {
     getAllServices,
@@ -36,10 +38,9 @@ function ServiceDetails(props) {
 
   const [reload, setReload] = useState(false);
   const [serviceFormData, setServiceFormData] = useState({});
-
   const serviceValidationArray = Yup.object({
     serviceName: Yup.string().required("This field is required!"),
-    esmRegisterationId: Yup.string().required("This field is required!"),
+    // esmRegisterationId: Yup.string().required("This field is required!"),
     // corpsName: Yup.number().when("serviceName", {
     //   is: 1,
     //   then: () => Yup.number().required("This is a required field."),
@@ -55,11 +56,11 @@ function ServiceDetails(props) {
       }),
     rankName: Yup.string().required("This field is required!"),
     rankCategory: Yup.string().required("This field is required!"),
-    name: Yup.string()
-      .required("This field is required!")
-      .matches(/^[A-Za-z\s]+$/, {
-        message: "This field should only contain alphabetic characters.",
-      }),
+    // name: Yup.string()
+    //   .required("This field is required!")
+    //   .matches(/^[A-Za-z\s]+$/, {
+    //     message: "This field should only contain alphabetic characters.",
+    //   }),
     gender: Yup.string().required("This field is required!"),
     dob: Yup.string(),
     enrollDate: Yup.string(),
@@ -82,7 +83,7 @@ function ServiceDetails(props) {
     initialValues: {
       serviceNumber: localStorage.username,
       serviceName: "",
-      esmRegisterationId: "",
+      // esmRegisterationId: "",
       corpsName: "",
       recordOfficeName: "",
       groupName: "",
@@ -118,8 +119,8 @@ function ServiceDetails(props) {
   useEffect(() => {
     if (serviceFormData) {
       serviceFormik.values.serviceName = serviceFormData?.serviceName;
-      serviceFormik.values.esmRegisterationId =
-        serviceFormData?.esmRegisterationId;
+      // serviceFormik.values.esmRegisterationId =
+      //   serviceFormData?.esmRegisterationId;
       serviceFormik.values.corpsName = "";
       serviceFormik.values.recordOfficeName = serviceFormData?.recordOfficeName;
       serviceFormik.values.groupName = serviceFormData?.groupName;
@@ -128,7 +129,8 @@ function ServiceDetails(props) {
         serviceFormData?.othersTradeName || "";
       serviceFormik.values.rankName = serviceFormData?.rankName;
       serviceFormik.values.rankCategory = serviceFormData?.rankCategory;
-      serviceFormik.values.name = serviceFormData?.name;
+      // serviceFormik.values.name = serviceFormData?.name;
+      serviceFormik.values.name = user?.data?.name;
       serviceFormik.values.gender = serviceFormData?.gender;
       serviceFormik.values.dob = serviceFormData?.dob;
       serviceFormik.values.enrollDate = serviceFormData?.enrollDate;
@@ -167,15 +169,26 @@ function ServiceDetails(props) {
   }, [tradeData, serviceFormik.values]);
 
   const formValues = [
+    // {
+    //   label: "ESM Registeration ID",
+    //   placeholder: "Enter ESM Registeration ID",
+    //   name: "esmRegisterationId",
+    //   type: "text",
+    //   class: "col-6",
+    //   autoFocus: true,
+    //   formik: serviceFormik,
+    //   required: false,
+    // },
     {
-      label: "ESM Registeration ID",
-      placeholder: "Enter ESM Registeration ID",
-      name: "esmRegisterationId",
+      label: "Service Number",
+      placeholder: "ESM Service Number",
+      name: "serviceNumber",
       type: "text",
       class: "col-6",
-      autoFocus: true,
+      autoFocus: false,
       formik: serviceFormik,
       required: false,
+      disabled:true
     },
     {
       label: "Full name",
@@ -183,8 +196,10 @@ function ServiceDetails(props) {
       name: "name",
       type: "text",
       class: "col-6",
+      autoFocus: true,
       formik: serviceFormik,
       required: false,
+      disabled:true
     },
     {
       label: "Gender",

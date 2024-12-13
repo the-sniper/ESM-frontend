@@ -219,6 +219,7 @@ const Signup = () => {
       .required("This field is required!"),
     regType: Yup.string(),
     esmDateOfDeath: Yup.string(),
+    esmCauseOfDeath: Yup.string(),
   });
 
   const widowNewFormik = useFormik({
@@ -231,6 +232,7 @@ const Signup = () => {
       confirmPassword: "",
       regType: "WDW-N",
       esmDateOfDeath: "",
+      esmCauseOfDeath: "",
       role: "USER",
     },
     validationSchema: widowNewValidationArray,
@@ -297,6 +299,13 @@ const Signup = () => {
       label: "ESM Date of Death",
       name: "esmDateOfDeath",
       type: "date",
+      class: `col-sm-6 col-12`,
+      formik: widowNewFormik,
+    },
+    {
+      label: "ESM Cause of Death",
+      name: "esmCauseOfDeath",
+      type: "text",
       class: `col-sm-6 col-12`,
       formik: widowNewFormik,
     },

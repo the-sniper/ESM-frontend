@@ -7,20 +7,25 @@ import EsmRegContext from "../../context/EsmRegistration/esmRegContext";
 import AlertContext from "../../context/alert/alertContext";
 import { religionCastes } from "../../utils/commonExports";
 import CommonContext from "../../context/common/commonContext";
+import AuthContext from "../../context/auth/authContext";
 
 function PersonalDetails(props) {
   const esmRegContext = useContext(EsmRegContext);
   const alertContext = useContext(AlertContext);
   const commonContext = useContext(CommonContext);
+  const authContext = useContext(AuthContext);
 
   const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
     esmRegContext;
   const { getAllStates, allStates, getAllDistricts, allDistricts } =
     commonContext;
+  const { user } = authContext;
+
   const [reload, setReload] = useState(false);
   const [personalFormData, setPersonalFormData] = useState({});
 
   const { setAlert } = alertContext;
+  console.log(user, 'getUSER')
 
   const personalValidationArray = Yup.object({
     serviceName: Yup.string(),
@@ -51,6 +56,8 @@ function PersonalDetails(props) {
     echs: Yup.string().required("This is a required field."),
     identificationMark1: Yup.string().required("This is a required field."),
     identificationMark2: Yup.string(),
+    esmDateOfDeath: Yup.string(),
+    esmCauseOfDeath: Yup.string(),
   });
 
   const personalformik = useFormik({
@@ -70,6 +77,8 @@ function PersonalDetails(props) {
       echs: "",
       identificationMark1: "",
       identificationMark2: "",
+      esmDateOfDeath: "",
+      esmCauseOfDeath: "",
     },
     validationSchema: personalValidationArray,
     onSubmit: (values) => {
@@ -107,6 +116,8 @@ function PersonalDetails(props) {
         personalFormData?.identificationMark1;
       personalformik.values.identificationMark2 =
         personalFormData?.identificationMark2;
+      personalformik.values.esmDateOfDeath = user?.data?.esmDateOfDeath || "";
+      personalformik.values.esmCauseOfDeath = user?.data?.esmCauseOfDeath || "";
 
       setReload(!reload);
     }
@@ -248,6 +259,20 @@ function PersonalDetails(props) {
       name: "identificationMark2",
       type: "text",
       class: "col-6",
+      formik: personalformik,
+    },
+    {
+      label: "ESM Date of Death",
+      name: "esmDateOfDeath",
+      type: "date",
+      class: `col-sm-6 col-12 ${(user?.data?.regType === "WDW-N" || user?.data?.regType === "WDW-X") ? "" : "d-none"}`,
+      formik: personalformik,
+    },
+    {
+      label: "ESM Cause of Death",
+      name: "esmCauseOfDeath",
+      type: "text",
+      class: `col-sm-6 col-12 ${(user?.data?.regType === "WDW-N" || user?.data?.regType === "WDW-X") ? "" : "d-none"}`,
       formik: personalformik,
     },
   ];
