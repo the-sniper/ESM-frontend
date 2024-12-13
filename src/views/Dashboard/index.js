@@ -55,7 +55,7 @@ const Dashboard = () => {
       name: "esmDateOfDeath",
       type: "date",
       placeholder: "Enter the ESM Date of Death",
-      class: `col-12`,
+      class: "col-12",
       formik: esmCheckFormik,
     },
   ];
