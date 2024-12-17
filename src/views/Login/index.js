@@ -28,19 +28,20 @@ const Login = () => {
   const validationArray = Yup.object({
     username: Yup.string().required("This field is required!"),
     password: Yup.string().required("This field is required!"),
+    regType: Yup.string().required("This field is required!"),
   });
 
   const formik = useFormik({
     initialValues: {
       username: localStorage.username ? localStorage.username : "",
       password: localStorage.password ? localStorage.password : "",
-      regType: "ESM",
+      regType: "esm",
       remember_me: localStorage.remember_me ? localStorage.remember_me : false,
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
       if (values.remember_me) {
-        localStorage.username = values.serviceNumber;
+        localStorage.username = values?.regType?.includes("WDW") ? values.username + "|W" : values.username;
         localStorage.password = values.password;
         localStorage.remember_me = values.remember_me;
       } else {
@@ -48,7 +49,7 @@ const Login = () => {
         delete localStorage.password;
         delete localStorage.remember_me;
       }
-      login(values);
+      login({...values, username : values?.regType?.includes("WDW") ? values.username + "|W" : values.username});
     },
   });
 
@@ -64,6 +65,23 @@ const Login = () => {
   ];
 
   const loginInfo = [
+    {
+      label: "User Type",
+      name: "regType",
+      type: "radio",
+      options: [
+        {
+          show: "ESM",
+          id: "ESM",
+        },
+        {
+          show: "Widow",
+          id: "WDW",
+        },
+      ],
+      class: "col-12",
+      formik: formik,
+    },
     {
       label: "Service Number",
       name: "username",

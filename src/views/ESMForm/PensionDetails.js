@@ -82,7 +82,7 @@ function PensionDetails(props) {
 
   const pensionformik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
+      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
       unitLastServed: "",
       dischargeDate: "",
       dischargeReason: "",

@@ -41,6 +41,7 @@ function PersonalDetails(props) {
       }),
     relegion: Yup.string().required("This is a required field."),
     casteCategory: Yup.string().required("This is a required field."),
+    caste: Yup.string().required("This is a required field."),
     birthState: Yup.string().required("This is a required field."),
     birthDistrictSurname: Yup.string().required("This is a required field."),
     birthPlace: Yup.string()
@@ -62,11 +63,12 @@ function PersonalDetails(props) {
 
   const personalformik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
+      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
       fatherName: "",
       motherName: "",
       relegion: "",
       casteCategory: "",
+      caste: "",
       birthState: "",
       birthDistrictSurname: "",
       birthPlace: "",
@@ -103,6 +105,7 @@ function PersonalDetails(props) {
       personalformik.values.motherName = personalFormData?.motherName;
       personalformik.values.relegion = personalFormData?.relegion;
       personalformik.values.casteCategory = personalFormData?.casteCategory;
+      personalformik.values.caste = personalFormData?.caste;
       personalformik.values.birthState = personalFormData?.birthState;
       personalformik.values.birthDistrictSurname =
         personalFormData?.birthDistrictSurname;
@@ -265,14 +268,14 @@ function PersonalDetails(props) {
       label: "ESM Date of Death",
       name: "esmDateOfDeath",
       type: "date",
-      class: `col-sm-6 col-12 ${(user?.data?.regType === "WDW-N" || user?.data?.regType === "WDW-X") ? "" : "d-none"}`,
+      class: `col-sm-6 col-12 ${user?.data?.regType?.includes("WDW") ? "" : "d-none"}`,
       formik: personalformik,
     },
     {
       label: "ESM Cause of Death",
       name: "esmCauseOfDeath",
       type: "text",
-      class: `col-sm-6 col-12 ${(user?.data?.regType === "WDW-N" || user?.data?.regType === "WDW-X") ? "" : "d-none"}`,
+      class: `col-sm-6 col-12 ${user?.data?.regType?.includes("WDW") ? "" : "d-none"}`,
       formik: personalformik,
     },
   ];

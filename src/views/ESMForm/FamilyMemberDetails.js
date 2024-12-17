@@ -27,7 +27,7 @@ function FamilyMemberDetails() {
 
   const formik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
+      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
       dependentName: "",
       registeredDate: "",
       relation: "",

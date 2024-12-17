@@ -58,7 +58,7 @@ function DependentDetails(props) {
 
   const dependentFormik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
+      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
       dependentName: "",
       dependentId: "",
       relation: "",
@@ -426,7 +426,6 @@ function DependentDetails(props) {
                   <th>Actions</th>
                 </tr>
               </thead>
-              {console.log(dependentList, "dependentListCheck1")}
               {console.log(dependentList?.length > 0, "dependentListTest")}
               <tbody>
                 {typeof dependentList == "object" &&

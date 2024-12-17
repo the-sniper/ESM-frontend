@@ -61,7 +61,7 @@ function ContactDetails(props) {
 
   const contactFormik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
+      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
       pincode: "",
       state: "",
       district: "",
@@ -136,6 +136,8 @@ function ContactDetails(props) {
         contactFormik?.values?.houseNumber;
       contactFormik.values.permanentPoliceStation =
         contactFormik?.values?.policeStation;
+      contactFormik.values.permanentTelephoneNumber =
+        contactFormik?.values?.telephoneNumber;
     } else {
       contactFormik.values.permanentPincode = "";
       contactFormik.values.permanentState = "";
@@ -147,6 +149,7 @@ function ContactDetails(props) {
       contactFormik.values.permanentHouseName = "";
       contactFormik.values.permanentHouseNumber = "";
       contactFormik.values.permanentPoliceStation = "";
+      contactFormik.values.permanentTelephoneNumber = "";
     }
   }, [contactFormik?.values?.sameAsPermanent]);
 

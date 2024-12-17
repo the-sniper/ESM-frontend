@@ -81,7 +81,7 @@ function ServiceDetails(props) {
 
   const serviceFormik = useFormik({
     initialValues: {
-      serviceNumber: localStorage.username,
+      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
       serviceName: "",
       // esmRegisterationId: "",
       corpsName: "",

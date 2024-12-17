@@ -95,16 +95,16 @@ const Dashboard = () => {
               <div className="userInfoItem">
                 <span className="userInfoLabel">Type:</span>
                 <span className="userInfoValue">
-                  {user.data.regType === "WDW" ? "Widow" : "ESM"}
+                  {user.data.regType?.includes("WDW") ? "Widow" : "ESM"}
                 </span>
               </div>
             </div>
-            {console.log(user.data.formProgressCount, "formProgressCount")}
+            {console.log(user.data, "formProgressCount")}
             <div className="dashStatus">
               <div className="dashFormStatus">
                 <h6>Form Completion Progress</h6>
                 <LinearProgressWithLabel
-                  value={(user.data.formProgressCount / 7) * 100}
+                  value={(user.data.formProgressCount / 6) * 100}
                 />
 
                 <CustomButton

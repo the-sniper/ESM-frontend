@@ -73,7 +73,7 @@ const EsmRegState = (props) => {
           "post",
           endpoint,
           {
-            serviceNumber: localStorage.username,
+            serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
           },
           "",
           "ESM"
