@@ -112,6 +112,52 @@ const EsmRegState = (props) => {
     }
   };
 
+   // Register ESM Details
+   const finalSubmit = async (serviceNumber, fromVariable) => {
+   
+    try {
+      const [res] = await Promise.all([
+        apiCall("post", 'NextStep', {serviceNumber: serviceNumber}, "", "ESM"),
+      ]);
+      console.log(res, "finalSubmitRes");
+      if (res && res.status === 200) {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: {
+            status: "SUCCESS",
+            message: "Request processed successfully!",
+            type: res.status,
+            data: res.data.message,
+            from: fromVariable || "finalSubmit",
+          },
+        });
+      } else {
+        await dispatch({
+          type: RESPONSE_STATUS,
+          payload: {
+            status: "ERROR",
+            message: "Something went wrong!",
+            type: 0,
+            from: fromVariable || "finalSubmit",
+          },
+        });
+      }
+
+      console.log("Success while doing a final submission");
+    } catch (err) {
+      await dispatch({
+        type: RESPONSE_STATUS,
+        payload: {
+          status: "ERROR",
+          message: "Something went wrong!",
+          type: err.status,
+          from: fromVariable || "finalSubmit",
+        },
+      });
+      console.log(err, "Error while doing a final submission");
+    }
+  };
+
   // Clear Response
   const clearResponse = () =>
     dispatch({
@@ -125,6 +171,7 @@ const EsmRegState = (props) => {
         fetchESM: state.fetchESM,
         clearResponse,
         registerESM,
+        finalSubmit,
         getESM,
       }}
     >

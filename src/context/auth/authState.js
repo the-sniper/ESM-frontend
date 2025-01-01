@@ -63,10 +63,10 @@ const AuthState = (props) => {
       if (res && res.status === 200) {
         if (global.session) {
           sessionStorage.setItem("token", res.data.token);
-          sessionStorage.setItem("username", formData.username);
+          sessionStorage.setItem("username", (formData.regType==="WDW" && !formData.username.endsWith("|W")) ? formData.username+"|W" : formData.username);
         } else {
           localStorage.setItem("token", res.data.token);
-          localStorage.setItem("username", formData.username);
+          localStorage.setItem("username", (formData.regType==="WDW" && !formData.username.endsWith("|W"))  ? formData.username+"|W" : formData.username);
         }
         loadUser();
       }

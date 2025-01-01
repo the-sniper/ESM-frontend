@@ -17,7 +17,7 @@ function ContactDetails(props) {
   const alertContext = useContext(AlertContext);
   const commonContext = useContext(CommonContext);
 
-  const { registerESM, getESM, fetchESM, responseStatus, clearResponse } =
+  const { registerESM, getESM, fetchESM, finalSubmit, responseStatus, clearResponse } =
     esmRegContext;
   const { getAllStates, allStates, getAllDistricts, allDistricts } =
     commonContext;
@@ -59,9 +59,11 @@ function ContactDetails(props) {
     sameAsPermanent: Yup.string().nullable(),
   });
 
+  const serviceNumber = localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username;
+
   const contactFormik = useFormik({
     initialValues: {
-      serviceNumber: localStorage?.username?.endsWith("|W") ? localStorage?.username?.slice(0, -2) : localStorage?.username,
+      serviceNumber: serviceNumber,
       pincode: "",
       state: "",
       district: "",
@@ -102,8 +104,7 @@ function ContactDetails(props) {
       setContactFormData(fetchESM?.data?.data);
     }
   }, [fetchESM]);
-  console.log(contactFormik?.values, "contactState");
-  console.log(contactFormik?.values?.permanentState, "contactPermState");
+
   useEffect(() => {
     if (contactFormik?.values?.state) {
       getAllDistricts({
@@ -447,9 +448,19 @@ function ContactDetails(props) {
           setAlert(responseStatus.message, "error");
           clearResponse();
         }
+      } else if (responseStatus.from === "finalSubmit") {
+        if (responseStatus.status === "SUCCESS") {
+          setAlert("Form submitted successfully!", "success");
+          navigate("/dashboard")
+          clearResponse();
+        } else if (responseStatus.status === "ERROR") {
+          setAlert(responseStatus.message, "error");
+          clearResponse();
+        }
       }
     }
   }, [responseStatus]);
+  
 
   const paymentSuccessOptions = {
     loop: true,
@@ -461,7 +472,6 @@ function ContactDetails(props) {
     },
   };
 
-  console.log(global?.formProgressCount, "formProgressCount");
 
   return (
     <div>
@@ -517,7 +527,7 @@ function ContactDetails(props) {
               onClick={(e) => {
                 handleSubmit(e);
                 setFormSubmitModal(false);
-                navigate("/dashboard");
+                finalSubmit(serviceNumber, 'finalSubmit')
               }}
             />
           </div>

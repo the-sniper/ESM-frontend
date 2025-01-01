@@ -35,13 +35,14 @@ const Login = () => {
     initialValues: {
       username: localStorage.username ? localStorage.username : "",
       password: localStorage.password ? localStorage.password : "",
-      regType: "esm",
+      regType: "ESM",
       remember_me: localStorage.remember_me ? localStorage.remember_me : false,
     },
     validationSchema: validationArray,
     onSubmit: (values) => {
       if (values.remember_me) {
         localStorage.username = values?.regType?.includes("WDW") ? values.username + "|W" : values.username;
+        // localStorage.username = values.username;
         localStorage.password = values.password;
         localStorage.remember_me = values.remember_me;
       } else {
@@ -49,7 +50,8 @@ const Login = () => {
         delete localStorage.password;
         delete localStorage.remember_me;
       }
-      login({...values, username : values?.regType?.includes("WDW") ? values.username + "|W" : values.username});
+      // login({...values, username : values?.regType?.includes("WDW") ? values.username + "|W" : values.username});
+      login({...values, username : values.username}); 
     },
   });
 
@@ -86,7 +88,7 @@ const Login = () => {
       label: "Service Number",
       name: "username",
       type: "text",
-      placeholder: "Enter your username",
+      placeholder: "Enter your service number",
       class: "col-12",
       autoFocus: true,
       formik: formik,

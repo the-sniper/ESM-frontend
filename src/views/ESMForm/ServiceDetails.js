@@ -142,6 +142,8 @@ function ServiceDetails(props) {
     }
   }, [serviceFormData]);
 
+  console.log(serviceFormData,user, 'serviceFormDataUser')
+
   useEffect(() => {
     if (serviceFormik.values.serviceName && serviceFormik.values.rankCategory) {
       getAllRanks({
